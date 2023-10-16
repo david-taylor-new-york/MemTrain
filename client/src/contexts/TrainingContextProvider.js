@@ -121,41 +121,80 @@ export function TrainingContextProvider({ children }) {
         return cardsToReview
     }
 
-    const train = () => {
-        const currentCard = cardsToReview[currentCardIndex]
-        const givenAnswer = submitAnswerFormRef.current.answer.value
-
+    const validateGivenAnswer = (givenAnswer) => {
         if (givenAnswer === "") {
-            submitAnswerFormRef.current.reset()
-            return
+            submitAnswerFormRef.current.reset();
+            return false;
         }
-
-        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 10) / 100
-        setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
-
-        let isCorrect = false
-        if (currentCard.answer === givenAnswer) {
-            setNumberCorrect(numberCorrect + 1)
-            isCorrect = true
+        return true;
+    }
+    
+    const updateScores = (isCorrect) => {
+        if (isCorrect) {
+            setNumberCorrect(numberCorrect + 1);
         } else {
-            setNumberIncorrect(numberIncorrect + 1)
+            setNumberIncorrect(numberIncorrect + 1);
         }
-        setNumberRemaining(numberRemaining - 1)
-        const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
-        updateCardResults(cardResult)
-
-        submitAnswerFormRef.current.reset()
-
+        setNumberRemaining(numberRemaining - 1);
+    }
+    
+    const handleNextOrFinish = () => {
         if (currentCardIndex < cardsToReview.length - 1) {
-            getNextCard()
-
+            getNextCard();
         } else {
-            setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
-            setCurrentTrainingState("FinishedTraining")
-            setProgressValue(1)
+            setCurrentTrainingState("FinishedTraining");
+            setProgressValue(1);
         }
     }
+    
+    const train = () => {
+        const currentCard = cardsToReview[currentCardIndex];
+        const givenAnswer = submitAnswerFormRef.current.answer.value;
+    
+        // Validate answer
+        if (!validateGivenAnswer(givenAnswer)) {
+            return;
+        }
+    
+        // Calculate time taken for this card
+        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 10) / 100;
+        setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard);
+    
+        // Check answer correctness
+        let isCorrect = compareAnswers(currentCard.answer, givenAnswer);
+        // let isCorrect = (currentCard.answer === givenAnswer);
+        updateScores(isCorrect);
+    
+        // Create and update card results
+        const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard);
+        updateCardResults(cardResult);
+    
+        // Reset form and move to next card or finish training
+        submitAnswerFormRef.current.reset();
+        handleNextOrFinish();
+    }
 
+    const normalizeText = (text) => {
+        return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '');
+      }
+      
+    const compareAnswers = (expectedAnswer, givenAnswer) => {
+    const expectedWords = normalizeText(expectedAnswer).split(' ').sort();
+    const givenWords = normalizeText(givenAnswer).split(' ').sort();
+    
+    if (expectedWords.length !== givenWords.length) {
+        return false;
+    }
+    
+    for (let i = 0; i < expectedWords.length; i++) {
+        if (expectedWords[i] !== givenWords[i]) {
+        return false;
+        }
+    }
+    
+    return true;
+    }
+      
     const createCardResult = (card, givenAnswer, answer, isCorrect, secondsToAnswerThisCard) => {
         return {
             training_session_id: currentTrainingSession.id,
