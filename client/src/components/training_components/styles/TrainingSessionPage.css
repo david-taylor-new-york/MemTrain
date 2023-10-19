@@ -1,0 +1,26 @@
+@import './../../commonStyles.css';
+
+.table-wrapper {
+    border: 1px solid black;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.correct-row {
+    background-color: lightgreen;
+}
+
+.incorrect-guess {
+    background-color: red;
+}
+
+.input-label {
+    margin-right: 10px;
+}
+
+.input-button {
+    padding: 10px;
+    cursor: pointer;
+}

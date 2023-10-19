@@ -1,0 +1,25 @@
+@import './../../commonStyles.css';
+
+.widget-container {
+    margin: 10px 0;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.label-text {
+    margin-right: 10px;
+}
+
+.button-main-css {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.hidden-input {
+    visibility: hidden;
+}

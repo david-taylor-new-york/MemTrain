@@ -1,0 +1,18 @@
+@import './../../commonStyles.css';
+
+.edit-card-form label,
+.set-card-to-edit-form label {
+    display: block;
+    margin-top: 1rem;
+}
+
+.edit-card-form input,
+.set-card-to-edit-form input {
+    margin-top: 0.5rem;
+}
+
+.edit-card-form button,
+.set-card-to-edit-form button {
+    margin-top: 1rem;
+    margin-right: 0.5rem;
+}

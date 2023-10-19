@@ -1,0 +1,14 @@
+@import './../../commonStyles.css';
+
+.create-card-form label {
+    display: block;
+    margin-top: 1rem;
+}
+
+.create-card-form input {
+    margin-top: 0.5rem;
+}
+
+.create-card-form button {
+    margin-top: 1rem;
+}

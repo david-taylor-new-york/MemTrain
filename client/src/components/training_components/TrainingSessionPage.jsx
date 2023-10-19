@@ -3,6 +3,7 @@ import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
 import { ToastContainer } from 'react-toastify';
+import './styles/TrainingSessionPage.css'; // Import styles
 
 export const TrainingSessionPage = () => {
 
@@ -30,21 +31,23 @@ export const TrainingSessionPage = () => {
 
                     <hr />
                     <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
-                    <table style={{ border: "1px solid black" }} >
+                    <table className="table-wrapper">
                         <tbody>
                             < ResultsHeader />
                             < TrainingSessionCardResultsList trainingResults={trainingSessionCardResults} />
                         </tbody>
                     </table>
                     <hr />
-                    <form ref={myTrainingContext.trainingSessionFormRef} >
-                        <label>
+
+                    <form ref={myTrainingContext.trainingSessionFormRef}>
+                        <label className="input-label">
                             Card Id:{" "}
                             <input type="number" name="cardId" autoFocus required minLength="1" />
-                            {/* <input type="text" autoComplete="off" /> */}
                         </label>
                         <br />
-                        <button type="submit" onClick={myTrainingUpdateContext.loadTrainingCardResultsPage} > View All Answers </button>
+                        <button type="submit" className="input-button" onClick={myTrainingUpdateContext.loadTrainingCardResultsPage}>
+                            View All Answers
+                        </button>
                     </form>
                 </>
             )
@@ -74,7 +77,7 @@ export const TrainingSessionPage = () => {
                     if (result.is_correct) {
 
                         return (
-                            <tr key={result.id} style={{ backgroundColor: 'lightgreen' }}>
+                            <tr key={result.id} className="correct-row">
                                 <td style={{ textAlign: 'center' }}> {result.card_id} </td>
                                 <td> {result.guess} </td>
                                 <td> &#10003; </td>
@@ -87,7 +90,7 @@ export const TrainingSessionPage = () => {
                         return (
                             <tr key={result.id} >
                                 <td style={{ textAlign: 'center' }}> {result.card_id} </td>
-                                <td style={{ backgroundColor: 'red' }}> {result.guess} </td>
+                                <td className="incorrect-guess">{result.guess}</td>
                                 <td> {result.answer} </td>
                                 <td> {secToAnswer} </td>
                             </tr>

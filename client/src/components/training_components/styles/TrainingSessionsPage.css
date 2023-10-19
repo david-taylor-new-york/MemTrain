@@ -1,0 +1,22 @@
+@import './../../commonStyles.css';
+
+.table-wrapper {
+    border: 1px solid black;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.input-label {
+    margin-right: 10px;
+}
+
+.input-button {
+    padding: 10px;
+    cursor: pointer;
+}

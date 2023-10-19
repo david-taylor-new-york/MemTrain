@@ -1,46 +1,29 @@
-import React from 'react'
-import { CurrentCardsTable, BackButton } from '../Components'
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { LogOutButton } from '../Components'
+import React from 'react';
+import { CurrentCardsTable, BackButton, LogOutButton } from '../Components';
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
+import './styles/CardMenuPage.css';  // Import the new CardMenu.css
 
 export const CardMenuPage = () => {
-    const myAppContext = useMyAppContext()
-    const myAppUpdateContext = useMyAppUpdateContext()
-
-    const CreateCardsButton = () => {
-        return (
-            <input type="button" className="button-main-css" order="4" defaultValue="Create" progress="10" onClick={ () => { myAppUpdateContext.updateCurrentPageTo( "CreateCardsPage" ) }} />
-        )
-    }
-
-    const EditCardsButton = () => {
-        return (
-            <input type="button" className="button-main-css" order="5" defaultValue="Edit" onClick={ () => { myAppUpdateContext.updateCurrentPageTo( "EditCardsPage" ) }} />
-        )
-    }
-
-    const DeleteCardsButton = () => {
-        return (
-            <input type="button" className="button-main-css" order="5" defaultValue="Delete" onClick={ () => { myAppUpdateContext.updateCurrentPageTo( "DeleteCardsPage" ) }} />
-        )
-    }
+    const myAppContext = useMyAppContext();
+    const myAppUpdateContext = useMyAppUpdateContext();
 
     return (
-        <>
-            < BackButton previousPage="MainMenuPage" />
-            < LogOutButton />
-            <h5> Subject: { myAppContext.subjectName } </h5>
-            <h3> Card Menu </h3>
-            <hr/>
-            <br/>
-            <div>
-                < CreateCardsButton />
-                < EditCardsButton />
-                < DeleteCardsButton />
+        <div className="container">
+            <div className="button-group-top">
+                <BackButton previousPage="MainMenuPage" />
+                <LogOutButton />
+            </div>
+            <h5 className="sub-header">Subject: {myAppContext.subjectName}</h5>
+            <h3 className="header">Card Menu</h3>
+            <hr />
+            <div className="button-group">
+                <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo("CreateCardsPage")}>Create</button>
+                <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo("EditCardsPage")}>Edit</button>
+                <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo("DeleteCardsPage")}>Delete</button>
             </div>
             <div>
-                < CurrentCardsTable />
+                <CurrentCardsTable />
             </div>
-        </>
-    )
-}
+        </div>
+    );
+};

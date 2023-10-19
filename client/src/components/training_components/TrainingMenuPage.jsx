@@ -2,6 +2,7 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton, LogOutButton } from '../Components'
+import './styles/TrainingMenuPage.css'; // Import styles
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -13,29 +14,39 @@ export const TrainingMenuPage = () => {
 
     const TrainingPageButton = () => {
         return (
-            <input type="button" className="button-main-css" order="4" defaultValue="Train" progress="10" onClick={ () => { myTrainingUpdateContext.loadTrainingSetupPage()  }} />
-        )
-    }
+            <input 
+                type="button" 
+                className="button-main-css" 
+                defaultValue="Train" 
+                onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage(); }} 
+            />
+        );
+    };
     
     const TrainingSessionsPageButton = () => {
         return (
-            <input type="button" className="button-main-css" order="5" defaultValue="Training Sessions" onClick={ () => { myTrainingUpdateContext.loadTrainingSessionsPage() }} />
-        )
-    }
+            <input 
+                type="button" 
+                className="button-main-css" 
+                defaultValue="Training Sessions" 
+                onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage(); }} 
+            />
+        );
+    };
 
     return (
         <>
-            < BackButton previousPage="MainMenuPage" />
-            < LogOutButton />
+            <BackButton previousPage="MainMenuPage" />
+            <LogOutButton />
             <h5> Subject: { myAppContext.subjectName } </h5>
             <h3> Training Menu </h3>
-            <hr/>
-            <br/>
+            <hr />
+            <br />
             <div>
-                { displayTrainingPageButton ? < TrainingPageButton /> : null }
-                { displayTrainingSessionsButton > 0 ? < TrainingSessionsPageButton /> : null }
-                { !displayTrainingPageButton > 0 && !displayTrainingSessionsButton ? "Create some cards!" : null }
+                { displayTrainingPageButton && <TrainingPageButton /> }
+                { displayTrainingSessionsButton && <TrainingSessionsPageButton /> }
+                { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
             </div>
         </>
-    )
-}
+    );
+};

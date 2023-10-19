@@ -1,8 +1,9 @@
-import { React, useState, useEffect } from 'react'
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { LogOutButton, BackButton } from '../Components'
-import { getSubjectsBy } from '../../utils/httpClient'
+import { React, useState, useEffect } from 'react';
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
+import { LogOutButton, BackButton } from '../Components';
+import { getSubjectsBy } from '../../utils/httpClient';
 import { ToastContainer } from 'react-toastify';
+import './styles/SubjectPage.css';  // Import the CSS
 
 export const SubjectPage = () => {
     const myAppContext = useMyAppContext()
@@ -109,14 +110,19 @@ export const SubjectPage = () => {
     }
 
     return (
-        <>
-            < Header />
-            <h5> Subject: {myAppContext.subjectName}</h5>
-            <h3> Select Subject < ChooseSubjectForm /> </h3>
+        <div className="subject-container">
+            <div className="subject-header">
+                < Header />
+                <h5 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h5>
+            </div>
+            <div>
+                <h3 className="subject-header">Select Subject</h3>
+                < ChooseSubjectForm />
+            </div>
             < SubmitButton />
             <hr />
             < CreateSubject />
             < ToastContainer />
-        </>
-    )
+        </div>
+    );
 }
