@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from 'react'
 import { createUser, getUser, createSubject, getSubjectsBy, createCard, getCards, updateCard, deleteCard } from '../utils/httpClient'
-import { showToast } from '../utils/utils';
+import { showToast } from '../utils/utils'
 
 const MyAppContext = React.createContext()
 const MyAppUpdateContext = React.createContext()

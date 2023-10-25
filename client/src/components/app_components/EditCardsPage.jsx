@@ -1,16 +1,16 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { BackButton, CurrentCardsTable } from '../Components';
-import { ToastContainer } from 'react-toastify';
-import './styles/EditCardsPage.css'; 
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { BackButton, CurrentCardsTable } from '../Components'
+import { ToastContainer } from 'react-toastify'
+import './styles/EditCardsPage.css' 
 
 export const EditCardsPage = () => {
-    const myAppContext = useMyAppContext();
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     const EditPageWidget = () => {
-        return myAppContext.cardToEditIndex === null ? <EditCardHeader /> : <EditCardWidget />;
-    };
+        return myAppContext.cardToEditIndex === null ? <EditCardHeader /> : <EditCardWidget />
+    }
 
     const EditCardHeader = () => {
         return (
@@ -23,11 +23,11 @@ export const EditCardsPage = () => {
                     Edit Card
                 </button>
             </form>
-        );
-    };
+        )
+    }
 
     const EditCardWidget = () => {
-        const cardToEdit = myAppContext.allCards[myAppContext.cardToEditIndex];
+        const cardToEdit = myAppContext.allCards[myAppContext.cardToEditIndex]
 
         return (
             <form className="edit-card-form" ref={myAppContext.editCardWidgetFormRef}>
@@ -50,8 +50,8 @@ export const EditCardsPage = () => {
                     Cancel
                 </button>
             </form>
-        );
-    };
+        )
+    }
 
     return (
         <>
@@ -62,5 +62,5 @@ export const EditCardsPage = () => {
             <CurrentCardsTable />
             <ToastContainer />
         </>
-    );
-};
+    )
+}

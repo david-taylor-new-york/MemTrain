@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 
 export const calculateNextCardSchedule = (cardSchedule, cardResult) => {
     // const today = new Date()
@@ -50,5 +50,5 @@ const calculateBuoyancy = (existingBuoyancy, cardResult) => {
 }
 
 export const showToast = (msg) => {
-    toast.info(msg);
+    toast.info(msg)
   }

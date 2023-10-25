@@ -1,9 +1,9 @@
-import { React, useState, useEffect } from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { LogOutButton, BackButton } from '../Components';
-import { getSubjectsBy } from '../../utils/httpClient';
-import { ToastContainer } from 'react-toastify';
-import './styles/SubjectPage.css';  // Import the CSS
+import { React, useState, useEffect } from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { LogOutButton, BackButton } from '../Components'
+import { getSubjectsBy } from '../../utils/httpClient'
+import { ToastContainer } from 'react-toastify'
+import './styles/SubjectPage.css'
 
 export const SubjectPage = () => {
     const myAppContext = useMyAppContext()
@@ -124,5 +124,5 @@ export const SubjectPage = () => {
             < CreateSubject />
             < ToastContainer />
         </div>
-    );
+    )
 }

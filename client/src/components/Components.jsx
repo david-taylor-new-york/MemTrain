@@ -1,6 +1,6 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../contexts/AppContextProvider';
-import './commonStyles.css';  // Import the common styles
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../contexts/AppContextProvider'
+import './commonStyles.css'
 
 export const CurrentCardsTable = () => {
     const myAppContext = useMyAppContext()
@@ -24,8 +24,8 @@ export const CurrentCardsTable = () => {
                     <CurrentCardList cards={cards} showAnswer={showAnswer} />
                 </table>
             </div>
-        );
-    };
+        )
+    }
 }
 
 const ResultsHeader = ({ showAnswer }) => {
@@ -38,8 +38,8 @@ const ResultsHeader = ({ showAnswer }) => {
                 { showAnswer && <th>Follows</th> }
             </tr>
         </thead>
-    );
-};
+    )
+}
 
 const CurrentCardList = ({ cards, showAnswer }) => {
 
@@ -54,25 +54,25 @@ const CurrentCardList = ({ cards, showAnswer }) => {
                 </tr>
             ))}
         </tbody>
-    );
-};
+    )
+}
 
 export const LogOutButton = () => {
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
         <button className="button" onClick={myAppUpdateContext.handleLogout}>
             Logout
         </button>
-    );
-};
+    )
+}
 
 export const BackButton = ({ previousPage }) => {
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
         <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo(previousPage)}>
             Back
         </button>
-    );
-};
+    )
+}

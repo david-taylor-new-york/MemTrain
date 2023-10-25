@@ -1,13 +1,13 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { CurrentCardsTable, BackButton } from '../Components';
-import { ToastContainer } from 'react-toastify';
-import './styles/DeleteCardsPage.css';
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { CurrentCardsTable, BackButton } from '../Components'
+import { ToastContainer } from 'react-toastify'
+import './styles/DeleteCardsPage.css'
 
 export const DeleteCardsPage = () => {
 
-    const myAppContext = useMyAppContext();
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     const DeleteCardWidget = () => {
         return (
@@ -25,8 +25,8 @@ export const DeleteCardsPage = () => {
                 </form>
                 <hr />
             </div>
-        );
-    };
+        )
+    }
 
     return (
         <>
@@ -35,5 +35,5 @@ export const DeleteCardsPage = () => {
             <CurrentCardsTable />
             <ToastContainer />
         </>
-    );
-};
+    )
+}

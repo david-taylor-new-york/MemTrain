@@ -1,13 +1,13 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider';
-import { LogOutButton } from '../Components';
-import './styles/MainMenuPage.css';  // Import the CSS
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
+import { LogOutButton } from '../Components'
+import './styles/MainMenuPage.css'
 
 export const MainMenuPage = () => {
-    const myAppContext = useMyAppContext();
-    const myAppUpdateContext = useMyAppUpdateContext();
-    const myTrainingUpdateContext = useMyTrainingUpdateContext();
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
+    const myTrainingUpdateContext = useMyTrainingUpdateContext()
     
     return (
         <div className="container">
@@ -21,5 +21,5 @@ export const MainMenuPage = () => {
                 <button className="button" onClick={() => myTrainingUpdateContext.loadTrainingMenuPage()}>Training</button>
             </div>
         </div>
-    );
-};
+    )
+}

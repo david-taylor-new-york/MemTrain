@@ -1,11 +1,11 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { CurrentCardsTable, BackButton } from '../Components';
-import './styles/CreateCardsPage.css';  // Import the unique styles for CreateCardsPage
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { CurrentCardsTable, BackButton } from '../Components'
+import './styles/CreateCardsPage.css'
 
 export const CreateCardsPage = () => {
-    const myAppUpdateContext = useMyAppUpdateContext();
-    const myAppContext = useMyAppContext();
+    const myAppUpdateContext = useMyAppUpdateContext()
+    const myAppContext = useMyAppContext()
 
     const CreateCardWidget = () => {
         return (
@@ -30,8 +30,8 @@ export const CreateCardsPage = () => {
                 </form>
                 <hr />
             </div>
-        );
-    };
+        )
+    }
 
     return (
         <>
@@ -39,5 +39,5 @@ export const CreateCardsPage = () => {
             <CreateCardWidget />
             <CurrentCardsTable />
         </>
-    );
+    )
 }

@@ -2,8 +2,8 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
-import { ToastContainer } from 'react-toastify';
-import './styles/TrainingSessionPage.css'; // Import styles
+import { ToastContainer } from 'react-toastify'
+import './styles/TrainingSessionPage.css' // Import styles
 
 export const TrainingSessionPage = () => {
 
@@ -80,7 +80,7 @@ export const TrainingSessionPage = () => {
                             <tr key={result.id} className="correct-row">
                                 <td style={{ textAlign: 'center' }}> {result.card_id} </td>
                                 <td> {result.guess} </td>
-                                <td> &#10003; </td>
+                                <td> &#10003 </td>
                                 <td> {secToAnswer} </td>
                             </tr>
                         )

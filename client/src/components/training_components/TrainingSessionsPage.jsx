@@ -2,8 +2,8 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
-import { ToastContainer } from 'react-toastify';
-import './styles/TrainingSessionsPage.css'; // Import the styles
+import { ToastContainer } from 'react-toastify'
+import './styles/TrainingSessionsPage.css' // Import the styles
 
 export const TrainingSessionsPage = () => {
 

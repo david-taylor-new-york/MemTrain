@@ -1,11 +1,11 @@
-import React from 'react';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import { ToastContainer } from 'react-toastify';
-import './styles/LoginPage.css';  // Import the CSS
+import React from 'react'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { ToastContainer } from 'react-toastify'
+import './styles/LoginPage.css'
 
 export const LoginPage = () => {
-    const myAppContext = useMyAppContext();
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
         <div className="container">
@@ -27,5 +27,5 @@ export const LoginPage = () => {
             </div>
             <ToastContainer />
         </div>
-    );
+    )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton, LogOutButton } from '../Components'
-import './styles/TrainingMenuPage.css'; // Import styles
+import './styles/TrainingMenuPage.css' // Import styles
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -18,10 +18,10 @@ export const TrainingMenuPage = () => {
                 type="button" 
                 className="button-main-css" 
                 defaultValue="Train" 
-                onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage(); }} 
+                onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage() }} 
             />
-        );
-    };
+        )
+    }
     
     const TrainingSessionsPageButton = () => {
         return (
@@ -29,10 +29,10 @@ export const TrainingMenuPage = () => {
                 type="button" 
                 className="button-main-css" 
                 defaultValue="Training Sessions" 
-                onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage(); }} 
+                onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage() }} 
             />
-        );
-    };
+        )
+    }
 
     return (
         <>
@@ -48,5 +48,5 @@ export const TrainingMenuPage = () => {
                 { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
             </div>
         </>
-    );
-};
+    )
+}

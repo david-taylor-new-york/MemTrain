@@ -1,11 +1,11 @@
-import React from 'react';
-import { CurrentCardsTable, BackButton, LogOutButton } from '../Components';
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider';
-import './styles/CardMenuPage.css';  // Import the new CardMenu.css
+import React from 'react'
+import { CurrentCardsTable, BackButton, LogOutButton } from '../Components'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import './styles/CardMenuPage.css'
 
 export const CardMenuPage = () => {
-    const myAppContext = useMyAppContext();
-    const myAppUpdateContext = useMyAppUpdateContext();
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
         <div className="container">
@@ -25,5 +25,5 @@ export const CardMenuPage = () => {
                 <CurrentCardsTable />
             </div>
         </div>
-    );
-};
+    )
+}
