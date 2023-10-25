@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
+import './styles/TrainingPage.css' // Import the styles
 
 export const TrainingPage = () => {
 
@@ -37,9 +38,9 @@ export const TrainingPage = () => {
         },)
 
         return (
-            <div>
-                <h4> [ Enter ] to Start Training </h4>
-                <input type="text" autoComplete="off" hidden />
+            <div className="widget-container">
+                 <h4 className="center-align">[ Enter ] to Start Training</h4>
+                 <input type="text" className="hidden-input" autoComplete="off" />
             </div>
         )
     }
@@ -48,7 +49,7 @@ export const TrainingPage = () => {
 
         const card = myAppContext.allCards[myTrainingContext.currentCardIndex]
         return (
-            <div>
+            <div className="widget-container">
                 <h5>
                     Question:
                 </h5>
@@ -79,7 +80,7 @@ export const TrainingPage = () => {
         },)
 
         return (
-            <div>
+            <div className="widget-container">
                 <h2> DONE! </h2>
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Total Time: {Math.round(myTrainingContext.cumulativeTrainingSessionTimeInSeconds * 10) / 10} seconds </h4>
@@ -93,10 +94,10 @@ export const TrainingPage = () => {
 
         return (
             <div>
-                < BackButton previousPage="TrainingSetupPage" />
-                <h5> Subject: {myAppContext.subjectName} </h5>
-                <h3> Train </h3>
-                <progress value={myTrainingContext.progressValue} />
+                <BackButton className="widget-container" previousPage="TrainingSetupPage" />
+                <h5>Subject: {myAppContext.subjectName}</h5>
+                <h3>Train</h3>
+                <progress className="progress-bar" value={myTrainingContext.progressValue} />
                 <hr />
             </div>
         )

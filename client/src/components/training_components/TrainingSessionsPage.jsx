@@ -2,7 +2,8 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
+import './styles/TrainingSessionsPage.css' // Import the styles
 
 export const TrainingSessionsPage = () => {
 
@@ -40,8 +41,8 @@ export const TrainingSessionsPage = () => {
             )
         } else {
             return (
-                <table style={{ border: "1px solid black" }} >
-                    <tbody>
+                <table className="table-wrapper">
+                <tbody>
                         < TrainingSessionsTableHeader />
                         < TrainingSessionsList trainingSessions={trainingSessions} />
                     </tbody>
@@ -79,13 +80,13 @@ export const TrainingSessionsPage = () => {
 
                     return (
                         <tr key={trainingSession.id}>
-                            <td style={{ textAlign: 'center' }}> {trainingSession.id} </td>
-                            <td style={{ textAlign: 'center' }}> {session_start_timee.getMonth() + "/" + session_start_timee.getDate()}</td>
-                            <td style={{ textAlign: 'center' }}> {session_start_timee.getHours() + ":" + session_start_timee.getMinutes()}</td>
-                            <td style={{ textAlign: 'center' }}> {trainingSession.num_correct} </td>
-                            <td style={{ textAlign: 'center' }}> {trainingSession.num_incorrect} </td>
-                            <td>{percentCorrect}</td>
-                        </tr>
+                        <td className="center-align">{trainingSession.id}</td>
+                        <td className="center-align">{session_start_timee.getMonth() + "/" + session_start_timee.getDate()}</td>
+                        <td className="center-align">{session_start_timee.getHours() + ":" + session_start_timee.getMinutes()}</td>
+                        <td className="center-align">{trainingSession.num_correct}</td>
+                        <td className="center-align">{trainingSession.num_incorrect}</td>
+                        <td>{percentCorrect}</td>
+                    </tr>
                     )
                 })
         )
@@ -96,12 +97,14 @@ export const TrainingSessionsPage = () => {
         return (
             <>
                 <form ref={myTrainingContext.trainingSessionsFormRef} >
-                    <label>
+                <label className="input-label">
                         Session Id:{" "}
                         <input type="number" name="sessionId" autoFocus required minLength="1" />
                     </label>
                     <br />
-                    <button type="submit" onClick={myTrainingUpdateContext.loadTrainingSessionPage}> View Session </button>
+                    <button type="submit" className="input-button" onClick={myTrainingUpdateContext.loadTrainingSessionPage}>
+                        View Session
+                    </button>
                 </form>
                 <hr />
             </>

@@ -1,0 +1,14 @@
+@import './../../commonStyles.css';
+
+.delete-card-form label {
+    display: block;
+    margin-top: 1rem;
+}
+
+.delete-card-form input {
+    margin-top: 0.5rem;
+}
+
+.delete-card-form button {
+    margin-top: 1rem;
+}

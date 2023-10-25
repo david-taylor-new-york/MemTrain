@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton, LogOutButton } from '../Components'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
 
 export const TrainingSummaryPage = () => {
     const myAppContext = useMyAppContext()

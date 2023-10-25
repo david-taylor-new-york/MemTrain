@@ -2,6 +2,7 @@ import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
+import './styles/TrainingCardResultsPage.css' // Import styles
 
 export const TrainingCardResultsPage = () => {
 
@@ -25,7 +26,7 @@ export const TrainingCardResultsPage = () => {
                     <h3> Training Card Results (card: {trainingCardResults[0].card_id}) </h3>
                     <hr />
                     <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
-                    <table style={{ border: "1px solid black" }} >
+                    <table className="training-results-table">
                         <tbody>
                             < ResultsHeader />
                             < TrainingCardResultsList trainingResults={trainingCardResults} />
@@ -65,11 +66,10 @@ export const TrainingCardResultsPage = () => {
                     if (cardResult.is_correct) {
 
                         return (
-                            <tr key={cardResult.id} style={{ backgroundColor: 'lightgreen' }}>
-                                {/* <td style={{ textAlign: 'center' }}> {cardResult.card_id} </td> */}
+                            <tr key={cardResult.id} className="correct-answer">
                                 <td> {formattedDate} </td>
                                 <td> {cardResult.guess} </td>
-                                <td> &#10003; </td>
+                                <td> &#10003 </td>
                                 <td> {secToAnswer} </td>
                             </tr>
                         )
@@ -78,9 +78,8 @@ export const TrainingCardResultsPage = () => {
 
                         return (
                             <tr key={cardResult.id} >
-                                {/* <td style={{ textAlign: 'center' }}> {cardResult.id} </td> */}
                                 <td> {formattedDate} </td>
-                                <td style={{ backgroundColor: 'red' }}> {cardResult.guess} </td>
+                                <td className="incorrect-answer"> {cardResult.guess} </td>
                                 <td> {cardResult.answer} </td>
                                 <td> {secToAnswer} </td>
                             </tr>

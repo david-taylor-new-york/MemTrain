@@ -1,36 +1,31 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
+import './styles/LoginPage.css'
 
 export const LoginPage = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
-        <div>
+        <div className="container">
             <div>
-                <h3> Welcome to MemTrain! </h3>
-                <h4> Login: </h4>
-                <form ref={myAppContext.loginPageFormRef} >
-                    <label>
+                <h3 className="header">Welcome to MemTrain!</h3>
+                <h4>Login:</h4>
+                <form ref={myAppContext.loginPageFormRef}>
+                    <label className="form-label">
                         Username:{" "}
-                        <input type="text" autoComplete="off" name="user_name" autoFocus required minLength="1" />
+                        <input className="login-form-input" type="text" autoComplete="off" name="user_name" autoFocus required minLength="1" />
                     </label>
-                    <br />
-                    <label>
+                    <label className="form-label">
                         Password:{" "}
-                        <input type="text" autoComplete="off" name="password" required minLength="1" />
+                        <input className="login-form-input" type="password" autoComplete="off" name="password" required minLength="1" />
                     </label>
-                    <br />
-                    <button type="submit" onClick={myAppUpdateContext.handleLogin}> Login </button>
-                    <button type="submit" onClick={myAppUpdateContext.handleNewUser}> New </button>
+                    <button className="login-form-button" type="submit" onClick={myAppUpdateContext.handleLogin}>Login</button>
+                    <button className="login-form-button" type="button" onClick={myAppUpdateContext.handleNewUser}>New</button>
                 </form>
-                <hr />
             </div>
-            <div>
-                < ToastContainer />
-            </div>
-
+            <ToastContainer />
         </div>
     )
 }

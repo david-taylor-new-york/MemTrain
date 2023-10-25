@@ -1,0 +1,15 @@
+@import './../../commonStyles.css';
+
+.button-main-css {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.button-main-css:hover {
+    background-color: #0056b3;
+}
