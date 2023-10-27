@@ -1,11 +1,9 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
 import { calculateNextCardSchedule, showToast } from '../utils/utils'
-import {
-    createTrainingSession, getTrainingSession, getTrainingSessions,
+import { createTrainingSession, getTrainingSession, getTrainingSessions,
     createCardResults, getCardResultsBy, createCardSchedule, getCardSchedules,
-    updateCardSchedule
-} from '../utils/httpClient'
+    updateCardSchedule } from '../utils/httpClient'
 
 const MyTrainingContext = React.createContext()
 const MyTrainingUpdateContext = React.createContext()
@@ -23,7 +21,7 @@ export function TrainingContextProvider({ children }) {
     const myAppUpdateContext = useMyAppUpdateContext()
 
     const [cardsToReview, setCardsToReview] = useState([])
-    const [allTrainingSessions, setAllTrainingSessions] = useState([]) // DO WE NEED THIS?
+    const [allTrainingSessions, setAllTrainingSessions] = useState([])
     const [currentTrainingSession, setCurrentTrainingSession] = useState(null)
     const [cumulativeTrainingSessionTimeInSeconds, setCumulativeTrainingSessionTimeInSeconds] = useState(0)
     const [currentCardResults, setCurrentCardResults] = useState([])
@@ -61,19 +59,6 @@ export function TrainingContextProvider({ children }) {
 
         const cardsToReview = await getCardsToReview(numberOfCardsToReview)
         setCardsToReview(cardsToReview)
-
-        // const newTrainingSession = {
-        //     user_id: myAppContext.userId,
-        //     subject_id: myAppContext.subjectId,
-        //     num_correct: 0,
-        //     num_incorrect: 0,
-        //     session_start_time: new Date(),
-        //     training_time_in_seconds: null
-        // }
-        // const newTrainingSessionId = await createTrainingSession(newTrainingSession)
-        // newTrainingSession.id = newTrainingSessionId.id
-        // setCurrentTrainingSession(newTrainingSession)
-
         setProgressValue(0)
         setCurrentCardResults([])
         setCurrentCardIndex(0)
