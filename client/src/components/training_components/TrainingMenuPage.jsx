@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton, LogOutButton } from '../Components'
-import './styles/TrainingMenuPage.css' // Import styles
+import './styles/TrainingMenuPage.css'
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()

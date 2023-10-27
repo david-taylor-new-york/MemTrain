@@ -62,7 +62,7 @@ export const getTrainingSession = trainingSessionId => getResourcesBy('training_
 
 export const getTrainingSessions = subjectId => getResourcesBy('training_sessions', 'subject_id', subjectId)
 
-export const updateTrainingSession = updatedTrainingSession => updateResource('training_sessions', updatedTrainingSession)
+// export const updateTrainingSession = updatedTrainingSession => updateResource('training_sessions', updatedTrainingSession)
 
 export const createCardSchedule = cardSchedule => createResource('card_schedules', cardSchedule)
 
