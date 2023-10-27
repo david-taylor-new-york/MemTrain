@@ -3,7 +3,7 @@ import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import './styles/TrainingSetupPage.css' // Import the styles
+import './styles/TrainingSetupPage.css'
 
 export const TrainingSetupPage = () => {
 

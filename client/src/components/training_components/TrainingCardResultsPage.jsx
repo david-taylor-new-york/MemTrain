@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { BackButton } from '../Components'
-import './styles/TrainingCardResultsPage.css' // Import styles
+import './styles/TrainingCardResultsPage.css'
 
 export const TrainingCardResultsPage = () => {
 
@@ -69,7 +69,7 @@ export const TrainingCardResultsPage = () => {
                             <tr key={cardResult.id} className="correct-answer">
                                 <td> {formattedDate} </td>
                                 <td> {cardResult.guess} </td>
-                                <td> &#10003 </td>
+                                <td> &#10003; </td>
                                 <td> {secToAnswer} </td>
                             </tr>
                         )

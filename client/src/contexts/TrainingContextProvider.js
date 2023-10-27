@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
 import { calculateNextCardSchedule, showToast } from '../utils/utils'
-import { createTrainingSession, updateTrainingSession, getTrainingSession, getTrainingSessions,
-    createCardResults, getCardResultsBy, createCardSchedule, getCardSchedules, 
+import { createTrainingSession, getTrainingSession, getTrainingSessions,
+    createCardResults, getCardResultsBy, createCardSchedule, getCardSchedules,
     updateCardSchedule } from '../utils/httpClient'
 
 const MyTrainingContext = React.createContext()
@@ -59,19 +59,6 @@ export function TrainingContextProvider({ children }) {
 
         const cardsToReview = await getCardsToReview(numberOfCardsToReview)
         setCardsToReview(cardsToReview)
-
-        const newTrainingSession = {
-            user_id: myAppContext.userId,
-            subject_id: myAppContext.subjectId,
-            num_correct: 0,
-            num_incorrect: 0,
-            session_start_time: new Date(),
-            training_time_in_seconds: null
-        }
-        const newTrainingSessionId = await createTrainingSession(newTrainingSession)
-        newTrainingSession.id = newTrainingSessionId.id
-        setCurrentTrainingSession(newTrainingSession)
-
         setProgressValue(0)
         setCurrentCardResults([])
         setCurrentCardIndex(0)
@@ -105,7 +92,7 @@ export function TrainingContextProvider({ children }) {
                 next_review_date: new Date(),
                 first_reviewed: new Date()
             }
-            
+
             const cardScheduleId = await createCardSchedule(cardSchedule)
             cardSchedule.id = cardScheduleId.id
             localCardSchedules.push(cardSchedule)
@@ -121,14 +108,28 @@ export function TrainingContextProvider({ children }) {
         return cardsToReview
     }
 
-    const validateGivenAnswer = (givenAnswer) => {
+    const train = () => {
+        const currentCard = cardsToReview[currentCardIndex]
+        const givenAnswer = submitAnswerFormRef.current.answer.value
+
         if (givenAnswer === "") {
             submitAnswerFormRef.current.reset()
             return false
         }
-        return true
+
+        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 10) / 100
+        setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
+
+        let isCorrect = compareAnswers(currentCard.answer, givenAnswer)
+        updateScores(isCorrect) // (correct/incorrect totals)
+
+        const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
+        updateCardResults(cardResult)
+
+        submitAnswerFormRef.current.reset()
+        handleNextOrFinish()
     }
-    
+
     const updateScores = (isCorrect) => {
         if (isCorrect) {
             setNumberCorrect(numberCorrect + 1)
@@ -137,7 +138,7 @@ export function TrainingContextProvider({ children }) {
         }
         setNumberRemaining(numberRemaining - 1)
     }
-    
+
     const handleNextOrFinish = () => {
         if (currentCardIndex < cardsToReview.length - 1) {
             getNextCard()
@@ -146,58 +147,38 @@ export function TrainingContextProvider({ children }) {
             setProgressValue(1)
         }
     }
-    
-    const train = () => {
-        const currentCard = cardsToReview[currentCardIndex]
-        const givenAnswer = submitAnswerFormRef.current.answer.value
-    
-        // Validate answer
-        if (!validateGivenAnswer(givenAnswer)) {
-            return
+
+    const getNextCard = () => {
+        const nextCardIndex = currentCardIndex + 1
+        setCurrentCardIndex(nextCardIndex)
+        const currentProgress = nextCardIndex / cardsToReview.length
+        setProgressValue(currentProgress)
+        setStartTime(new Date())
+    }
+
+    const compareAnswers = (expectedAnswer, givenAnswer) => {
+        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
+        const givenWords = normalizeText(givenAnswer).split(' ').sort()
+
+        if (expectedWords.length !== givenWords.length) {
+            return false
         }
-    
-        // Calculate time taken for this card
-        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 10) / 100
-        setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
-    
-        // Check answer correctness
-        let isCorrect = compareAnswers(currentCard.answer, givenAnswer)
-        // let isCorrect = (currentCard.answer === givenAnswer)
-        updateScores(isCorrect)
-    
-        // Create and update card results
-        const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
-        updateCardResults(cardResult)
-    
-        // Reset form and move to next card or finish training
-        submitAnswerFormRef.current.reset()
-        handleNextOrFinish()
+
+        for (let i = 0; i < expectedWords.length; i++) {
+            if (expectedWords[i] !== givenWords[i]) {
+                return false
+            }
+        }
+
+        return true
     }
 
     const normalizeText = (text) => {
         return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
-      }
-      
-    const compareAnswers = (expectedAnswer, givenAnswer) => {
-    const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
-    const givenWords = normalizeText(givenAnswer).split(' ').sort()
-    
-    if (expectedWords.length !== givenWords.length) {
-        return false
     }
-    
-    for (let i = 0; i < expectedWords.length; i++) {
-        if (expectedWords[i] !== givenWords[i]) {
-        return false
-        }
-    }
-    
-    return true
-    }
-      
+
     const createCardResult = (card, givenAnswer, answer, isCorrect, secondsToAnswerThisCard) => {
         return {
-            training_session_id: currentTrainingSession.id,
             subject_id: card.subject_id,
             card_id: card.id,
             guess: givenAnswer,
@@ -213,29 +194,75 @@ export function TrainingContextProvider({ children }) {
         setCurrentCardResults(updatedCardResults)
     }
 
-    const getNextCard = () => {
-        const nextCardIndex = currentCardIndex + 1
-        setCurrentCardIndex(nextCardIndex)
-        const currentProgress = nextCardIndex / cardsToReview.length
-        setProgressValue(currentProgress)
-        setStartTime(new Date())
-    }
-
-    const finishTraining = () => {
+    const finishTraining = async () => {
         setProgressValue(0)
         setCurrentTrainingState("FinishedTraining")
-        const cumul = (Math.round((cumulativeTrainingSessionTimeInSeconds) * 10) / 10)
-        const updatedTrainingSession = {
-            id: currentTrainingSession.id,
-            num_correct: numberCorrect,
-            num_incorrect: numberIncorrect,
-            training_time_in_seconds: cumul
+
+        if (isFirstTrainingSessionOfTheDay()) {
+
+            const cumul = (Math.round((cumulativeTrainingSessionTimeInSeconds) * 10) / 10)
+
+            const newTrainingSession = {
+                user_id: myAppContext.userId,
+                subject_id: myAppContext.subjectId,
+                num_correct: numberCorrect,
+                num_incorrect: numberIncorrect,
+                session_start_time: startTime,
+                training_time_in_seconds: cumul
+            }
+            const trainingSessionId = await createTrainingSession(newTrainingSession)
+            newTrainingSession.id = trainingSessionId.id
+            setCurrentTrainingSession(newTrainingSession) // DELETE?
+            let updatedTrainingSessions = [...allTrainingSessions]
+            updatedTrainingSessions.push(newTrainingSession)
+            setCurrentCardResults(updatedTrainingSessions)
+
+            const nextCardResults = addTrainingSessionIdToCardResults(trainingSessionId.id)
+            setCurrentCardResults(nextCardResults)
+            createCardResults(nextCardResults)
+            
+            const cardSchedules = calculateNextCardSchedules(nextCardResults)
+            updateCardSchedules(cardSchedules)
         }
-        updateTrainingSession(updatedTrainingSession)
-        createCardResults(currentCardResults)
-        const cardSchedules = calculateNextCardSchedules(currentCardResults)
-        updateCardSchedules(cardSchedules)
+
         loadTrainingMenuPage()
+    }
+
+    const isFirstTrainingSessionOfTheDay = () => {
+
+        if (allTrainingSessions.length > 0) {
+
+            const today = new Date()
+            const lastSession = getLastTrainingSession(allTrainingSessions)
+
+            if (lastSession.getFullYear() === today.getFullYear() && 
+            lastSession.getMonth() === today.getMonth() && 
+            lastSession.getDate() === today.getDate()) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    const getLastTrainingSession = (trainingSessions) => {
+            const mostRecentSession = trainingSessions.sort((a, b) => {
+                const dateA = new Date(a.session_start_time)
+                const dateB = new Date(b.session_start_time)
+                return dateB - dateA
+            })[0]
+            return new Date(mostRecentSession.session_start_time)
+    }
+
+    const addTrainingSessionIdToCardResults = (trainingSessionId) => {
+
+        let cardResultsWithId = []
+
+        for ( let cardResult of currentCardResults ) {
+            cardResult.training_session_id = trainingSessionId
+            cardResultsWithId.push(cardResult)
+        }
+        return cardResultsWithId
     }
 
     const updateCardSchedules = async (cardSchedules) => {
@@ -259,9 +286,8 @@ export function TrainingContextProvider({ children }) {
                 const nextCardSchedule = calculateNextCardSchedule(cardSchedules[cardScheduleIndex], cardResult)
                 cardSchedules[cardScheduleIndex] = nextCardSchedule
                 modifiedCardSchedules.push(nextCardSchedule)
-
             } else {
-                throw new Error ('Element not found in the array.')
+                throw new Error('Element not found in the array.')
             }
         }
         setCurrentCardSchedules(cardSchedules)
