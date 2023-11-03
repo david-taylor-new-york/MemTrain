@@ -41,7 +41,7 @@ export const EditCardsPage = () => {
                 </label>
                 <label>
                     Card to follow:
-                    <input type="number" name="cardToFollow" defaultValue={cardToEdit.card_to_follow} minLength="1" />
+                    <input type="number" name="cardToFollow" defaultValue={cardToEdit.follows} minLength="1" />
                 </label>
                 <button type="submit" className="button" onClick={myAppUpdateContext.handleUpdateCard}>
                     Submit

@@ -23,7 +23,7 @@ CREATE TABLE cards(
    subject_id            INT       NOT NULL,
    question            VARCHAR       NOT NULL,
    answer  	VARCHAR  NOT NULL,
-   card_to_follow            INT       NULL,
+   follows            INT       NULL,
    FOREIGN KEY (subject_id) REFERENCES subjects(id));
 
 CREATE TABLE training_sessions(

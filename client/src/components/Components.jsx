@@ -50,7 +50,7 @@ const CurrentCardList = ({ cards, showAnswer }) => {
                     <td>{card.id}</td>
                     <td>{card.question}</td>
                     { showAnswer && <td>{card.answer}</td> }
-                    { showAnswer && <td>{card.card_to_follow}</td> }
+                    { showAnswer && <td>{card.follows}</td> }
                 </tr>
             ))}
         </tbody>
