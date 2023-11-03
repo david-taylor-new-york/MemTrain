@@ -1,4 +1,5 @@
 import React, { useContext, useState, useRef } from 'react'
+
 import { createUser, getUser, createSubject, getSubjectsBy, createCard, getCards, updateCard, deleteCard } from '../utils/httpClient'
 import { showToast } from '../utils/utils'
 
@@ -214,7 +215,7 @@ export function AppContextProvider({ children }) {
             subject_id: subjectId,
             question: question,
             answer: answer,
-            card_to_follow: cardToFollow,
+            follows: cardToFollow,
         }
         try {
             const card_id = await createCard(newCard)
@@ -293,7 +294,7 @@ export function AppContextProvider({ children }) {
         }
 
         // if nothing was updated, showToast:
-        if ((updatedQuestion === cardToEdit.question) && (updatedAnswer === cardToEdit.answer) && (updatedCardToFollow === cardToEdit.card_to_follow)) {
+        if ((updatedQuestion === cardToEdit.question) && (updatedAnswer === cardToEdit.answer) && (updatedCardToFollow === cardToEdit.follows)) {
             showToast("You've made no changes")
             editCardWidgetFormRef.current.reset()
             editCardWidgetFormRef.current.question.focus()
@@ -307,7 +308,7 @@ export function AppContextProvider({ children }) {
             subject_id: cardToEdit.subject_id,
             question: updatedQuestion,
             answer: updatedAnswer,
-            card_to_follow: updatedCardToFollow
+            follows: updatedCardToFollow
         }
 
         setIsLoading(true)

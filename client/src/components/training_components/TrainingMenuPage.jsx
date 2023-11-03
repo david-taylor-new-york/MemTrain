@@ -1,12 +1,13 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
-import { useMyAppContext } from '../../contexts/AppContextProvider'
+import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { BackButton, LogOutButton } from '../Components'
 import './styles/TrainingMenuPage.css'
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
     const myTrainingContext = useMyTrainingContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     const displayTrainingPageButton = myAppContext.allCards.length > 0
@@ -29,7 +30,10 @@ export const TrainingMenuPage = () => {
                 type="button" 
                 className="button-main-css" 
                 defaultValue="Training Sessions" 
-                onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage() }} 
+                // myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage")
+                // onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage() }} 
+                onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }} 
+
             />
         )
     }

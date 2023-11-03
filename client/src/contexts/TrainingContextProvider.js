@@ -157,7 +157,13 @@ export function TrainingContextProvider({ children }) {
     }
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
-        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
+        let modifiedExpectedAnswer = expectedAnswer;
+
+        if (givenAnswer.includes("*")) {
+          modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer);
+        }
+      
+        const expectedWords = normalizeText(modifiedExpectedAnswer).split(' ').sort()
         const givenWords = normalizeText(givenAnswer).split(' ').sort()
 
         if (expectedWords.length !== givenWords.length) {
@@ -172,6 +178,13 @@ export function TrainingContextProvider({ children }) {
 
         return true
     }
+
+    const extractWordsWithAsterisks = (input) => {
+        const words = input.split(" ")
+        const wordsWithAsterisks = words.filter(word => word.includes("*"))
+        const cleanedWords = wordsWithAsterisks.map(word => word.replace(/\*/g, ""))
+        return cleanedWords.join(" ")
+      }
 
     const normalizeText = (text) => {
         return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
@@ -218,10 +231,11 @@ export function TrainingContextProvider({ children }) {
             setCurrentCardResults(updatedTrainingSessions)
 
             const nextCardResults = addTrainingSessionIdToCardResults(trainingSessionId.id)
-            setCurrentCardResults(nextCardResults)
-            createCardResults(nextCardResults)
+            const sortedCardResults = nextCardResults.sort((a, b) => { return a.card_id - b.card_id })
+            setCurrentCardResults(sortedCardResults)
+            createCardResults(sortedCardResults)
             
-            const cardSchedules = calculateNextCardSchedules(nextCardResults)
+            const cardSchedules = calculateNextCardSchedules(sortedCardResults)
             updateCardSchedules(cardSchedules)
         }
 
