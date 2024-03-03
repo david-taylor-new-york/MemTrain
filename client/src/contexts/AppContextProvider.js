@@ -274,7 +274,7 @@ export function AppContextProvider({ children }) {
     }
 
     const handleCancelUpdateCard = async () => {
-        updateCurrentPageTo('CardMenuPage')
+        updateCurrentPageTo('EditCardsPage')
         setCardToEditId(null)
         setCardToEditNumber(null)
         setCardToEditIndex(null)

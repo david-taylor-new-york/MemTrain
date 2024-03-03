@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { ToastContainer } from 'react-toastify'
-import './styles/LoginPage.css'
+import '../commonStyles.css'
 
 export const LoginPage = () => {
     const myAppContext = useMyAppContext()
@@ -11,18 +11,20 @@ export const LoginPage = () => {
         <div className="container">
             <div>
                 <h3 className="header">Welcome to MemTrain!</h3>
-                <h4>Login:</h4>
+                <h3 className="page-title">Login</h3>
                 <form ref={myAppContext.loginPageFormRef}>
                     <label className="form-label">
                         Username:{" "}
-                        <input className="login-form-input" type="text" autoComplete="off" name="user_name" autoFocus required minLength="1" />
+                        <input className="form-input" type="text" autoComplete="off" name="user_name" autoFocus required minLength="1" />
                     </label>
+                    <br/>
                     <label className="form-label">
                         Password:{" "}
-                        <input className="login-form-input" type="password" autoComplete="off" name="password" required minLength="1" />
+                        <input className="form-input" type="password" autoComplete="off" name="password" required minLength="1" />
                     </label>
-                    <button className="login-form-button" type="submit" onClick={myAppUpdateContext.handleLogin}>Login</button>
-                    <button className="login-form-button" type="button" onClick={myAppUpdateContext.handleNewUser}>New</button>
+                    <br/>
+                    <button className="button" type="submit" onClick={myAppUpdateContext.handleLogin}>Login</button>
+                    <button className="button" type="button" onClick={myAppUpdateContext.handleNewUser}>New</button>
                 </form>
             </div>
             <ToastContainer />

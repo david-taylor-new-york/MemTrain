@@ -1,7 +1,0 @@
-@import './../../commonStyles.css';
-
-.button-group-top {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-}

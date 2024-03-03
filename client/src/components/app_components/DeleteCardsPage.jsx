@@ -1,8 +1,8 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { CurrentCardsTable, BackButton } from '../Components'
+import { CurrentCardsTable, BackButton, LogOutButton } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import './styles/DeleteCardsPage.css'
+import '../commonStyles.css'
 
 export const DeleteCardsPage = () => {
 
@@ -11,16 +11,13 @@ export const DeleteCardsPage = () => {
 
     const DeleteCardWidget = () => {
         return (
-            <div>
-                <h5>Subject: {myAppContext.subjectName}</h5>
-                <h3>Delete Card</h3>
-                <form className="delete-card-form" ref={myAppContext.deleteCardFormRef}>
-                    <label>
-                        Id:
-                        <input type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
-                    </label>
+            <div className="delete-card-form" >
+                <form ref={myAppContext.deleteCardFormRef}>
+                    Id:  
+                    <input type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
+                    <br/>
                     <button type="submit" className="button" onClick={myAppUpdateContext.handleDeleteCard}>
-                        Delete Card
+                    Delete Card
                     </button>
                 </form>
                 <hr />
@@ -29,11 +26,19 @@ export const DeleteCardsPage = () => {
     }
 
     return (
-        <>
-            <BackButton previousPage="CardMenuPage" />
-            <DeleteCardWidget />
-            <CurrentCardsTable />
-            <ToastContainer />
-        </>
+        <div className="container">
+            <div className="button-group-top">
+                <BackButton previousPage="CardMenuPage" />
+                <LogOutButton />
+            </div>
+            <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
+            <h3 className="page-title">Delete Card</h3>
+            <hr />
+            <div>
+                <DeleteCardWidget />
+                <CurrentCardsTable />
+                <ToastContainer />
+            </div>
+        </div>
     )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { LogOutButton } from '../Components'
-import './styles/MainMenuPage.css'
+import '../commonStyles.css'
 
 export const MainMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -12,8 +12,8 @@ export const MainMenuPage = () => {
     return (
         <div className="container">
             <LogOutButton />
-            <h5 className="sub-header">Subject: {myAppContext.subjectName}</h5>
-            <h3 className="header">Main Menu</h3>
+            <h4 className="subject-sub-header">Subject: {myAppContext.subjectName}</h4>
+            <h3 className="page-title">Main Menu</h3>
             <hr />
             <div className="button-group">
                 <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo("SubjectPage")}>Change Subject</button>

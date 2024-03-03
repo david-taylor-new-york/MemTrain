@@ -19,7 +19,7 @@ export const CurrentCardsTable = () => {
     } else {
         return (
             <div className="table-container">
-                <table className="table">
+                <table className="content-table">
                     <ResultsHeader showAnswer={showAnswer} />
                     <CurrentCardList cards={cards} showAnswer={showAnswer} />
                 </table>
@@ -32,10 +32,10 @@ const ResultsHeader = ({ showAnswer }) => {
     return (
         <thead>
             <tr>
-                <th>Card</th>
-                <th>Question</th>
-                { showAnswer && <th>Answer</th> }
-                { showAnswer && <th>Follows</th> }
+                <th>CARD</th>
+                <th>QUESTION</th>
+                { showAnswer && <th>ANSWER</th> }
+                { showAnswer && <th id="right_header">FOLLOWS</th> }
             </tr>
         </thead>
     )
@@ -45,12 +45,13 @@ const CurrentCardList = ({ cards, showAnswer }) => {
 
     return (
         <tbody>
-            {cards.map((card) => (
+            {cards.sort((a, b) => a.id > b.id ? 1 : -1)
+            .map((card) => (
                 <tr key={card.id}>
-                    <td>{card.id}</td>
-                    <td>{card.question}</td>
-                    { showAnswer && <td>{card.answer}</td> }
-                    { showAnswer && <td>{card.follows}</td> }
+                    <td id="left_header">{card.id}</td>
+                    <td id="second_header">{card.question}</td>
+                    { showAnswer && <td id="third_header">{card.answer}</td> }
+                    { showAnswer && <td id="right_header">{card.follows}</td> }
                 </tr>
             ))}
         </tbody>

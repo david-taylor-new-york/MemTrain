@@ -3,44 +3,208 @@
     background-color: #F5F5F5;
     margin: 2rem;
     padding: 2rem;
-    width: 300px;
+    width: auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   /* Header styles */
-  .header, .sub-header {
+  .header, .subject-sub-header {
     color: #4A90E2;
     margin-bottom: 1rem;
   }
   
+  .subject-container {
+    background-color: #F5F5F5;
+    margin: 2rem;
+    padding: 2rem;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .subject-dropdown {
+    /* padding: 0.5rem 1rem; */
+    border: none;
+    margin: 5px 5px 10px 0px;    
+    /* border: 1px solid #050e14; */
+  }
+
+  .page-title {
+    color: #060c13;
+    margin-bottom: 1rem;
+  }
+
   /* Label styles */
-  .label {
+  /* .label {
     display: block;
     margin-bottom: 0.5rem;
     color: #333;
-  }
+  } */
   
-  /* Input and select styles */
-  .input, .select {
-    width: 100%;
+  .form-input {
+    width: 500px;
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
-  
+  .button-group-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    display: inline;
+    width: 100px;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
   /* Button styles */
   .button {
     background-color: #4A90E2;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
+    margin: 5px 5px 5px 0px;    
     border-radius: 4px;
     cursor: pointer;
+    border: 1px solid #050e14;
   }
   
+  .submit-button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+  }
+
   .button:hover {
     background-color: #357ABD;
   }
   
+  .create-card-form input {
+    margin: 5px 0px;
+    width: 100%;
+  }
+
+  .create-card-form button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin: 5px 5px 5px 0px;    
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+  }
+
+
+  .edit-card-form label {
+      display: block;
+      margin-top: 1rem;
+  }
+
+  .edit-card-form input {
+    margin: 5px 0px;
+    width: 100%;
+  }
+
+  .edit-card-form button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin: 5px 5px 5px 0px;    
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+  }
+
+  .delete-card-form input {
+    margin: 5px 5px;
+    width: 40px;
+  }
+
+  .delete-card-form button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin: 5px 5px 5px 0px;    
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+  }
+
+  .table-container {
+    overflow-y: scroll;
+    height: 600px;
+  }
+
+  .content-table {
+    border-collapse: collapse;
+    margin: 25px, 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    border: 2px solid #000000;
+  }
+
+  .content-table thead th{
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    padding: 4px;
+  }
+
+  .content-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+    border: 2px solid #009879;
+  }
+
+  .content-table td {
+    padding: 4px;
+  }
+
+  .content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .content-table tbody tr:nth-of-type(even) {
+    background-color: #dddddd;
+  }
+
+  #card_id {
+    margin: 5px 5px;
+    width: 40px;
+  }
+
+  #right_header {
+    text-align: right;
+    padding-right: 10px;
+    }
+
+  #add-button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.2rem 1rem;
+    border: none;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+    font-size: 12px;
+  }
