@@ -1,7 +1,8 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { CurrentCardsTable, BackButton } from '../Components'
-import './styles/CreateCardsPage.css'
+import { CurrentCardsTable, BackButton, LogOutButton } from '../Components'
+import { ToastContainer } from 'react-toastify'
+import '../commonStyles.css'
 
 export const CreateCardsPage = () => {
     const myAppUpdateContext = useMyAppUpdateContext()
@@ -9,23 +10,15 @@ export const CreateCardsPage = () => {
 
     const CreateCardWidget = () => {
         return (
-            <div className="create-card-container">
-                <h5>Subject: {myAppContext.subjectName}</h5>
-                <h3>Create Card</h3>
-                <hr />
-                <form className="create-card-form" ref={myAppContext.createCardFormRef} onSubmit={myAppUpdateContext.handleCreateCard}>
-                    <label>
-                        Question:
-                        <input type="text" autoComplete="off" name="question" autoFocus required minLength="1" />
-                    </label>
-                    <label>
-                        Answer:
-                        <input type="text" autoComplete="off" name="answer" required minLength="1" />
-                    </label>
-                    <label>
-                        Always Follow Card (number):
-                        <input type="number" name="cardToFollow" minLength="1" />
-                    </label>
+            <div className="create-card-form" >
+                <form ref={myAppContext.createCardFormRef} onSubmit={myAppUpdateContext.handleCreateCard}>
+                    Question:
+                    <input type="text" autoComplete="off" name="question" autoFocus required minLength="1" />
+                    Answer:
+                    <input type="text" autoComplete="off" name="answer" required minLength="1" />
+                    Card (Id) To Follow:
+                    <input id="card_id" type="number" name="cardToFollow" minLength="1" />
+                    <br/>
                     <button type="submit" className="button">Create Card</button>
                 </form>
                 <hr />
@@ -34,10 +27,19 @@ export const CreateCardsPage = () => {
     }
 
     return (
-        <>
-            <BackButton previousPage="CardMenuPage" />
-            <CreateCardWidget />
-            <CurrentCardsTable />
-        </>
+        <div className="container">
+            <div className="button-group-top">
+                <BackButton previousPage="CardMenuPage" />
+                <LogOutButton />
+            </div>
+            <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
+            <h3 className="page-title">Create Card</h3>
+            <hr />
+            <div>
+                <CreateCardWidget />
+                <CurrentCardsTable />
+                <ToastContainer />
+            </div>
+        </div>
     )
 }

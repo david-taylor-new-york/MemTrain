@@ -1,7 +1,7 @@
 import React from 'react'
 import { CurrentCardsTable, BackButton, LogOutButton } from '../Components'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import './styles/CardMenuPage.css'
+import '../commonStyles.css'
 
 export const CardMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -13,8 +13,8 @@ export const CardMenuPage = () => {
                 <BackButton previousPage="MainMenuPage" />
                 <LogOutButton />
             </div>
-            <h5 className="sub-header">Subject: {myAppContext.subjectName}</h5>
-            <h3 className="header">Card Menu</h3>
+            <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
+            <h3 className="page-title">Card Menu</h3>
             <hr />
             <div className="button-group">
                 <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo("CreateCardsPage")}>Create</button>

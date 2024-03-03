@@ -3,7 +3,7 @@ import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContex
 import { LogOutButton, BackButton } from '../Components'
 import { getSubjectsBy } from '../../utils/httpClient'
 import { ToastContainer } from 'react-toastify'
-import './styles/SubjectPage.css'
+import '../commonStyles.css'
 
 export const SubjectPage = () => {
     const myAppContext = useMyAppContext()
@@ -72,7 +72,7 @@ export const SubjectPage = () => {
         }, [myAppContext.userId])
 
         return (
-            <div>
+            <div className="subject-dropdown">
                 <label>
                     <select value={defaultValue} onChange={myAppUpdateContext.handleSubjectChange}>
                         {subjects.map((subject) => (
@@ -89,8 +89,8 @@ export const SubjectPage = () => {
         if (myAppContext.subjectName !== 'unselected') {
 
             return (
-                <div>
-                    <button type="button" onClick={() => { myAppUpdateContext.updateCurrentPageTo("MainMenuPage") }}> Submit </button>
+                <div >
+                    <button className="button" type="button" onClick={() => { myAppUpdateContext.updateCurrentPageTo("MainMenuPage") }}> Select </button>
                 </div>
             )
         }
@@ -104,19 +104,19 @@ export const SubjectPage = () => {
                     or create new:{" "}
                     <input type="text" autoComplete="off" ref={myAppContext.newSubjectNameFormRef} id="newSubjectName" name="newSubjectName" autoFocus required minLength="1" />
                 </label>
-                <button type="text" onClick={myAppUpdateContext.handleCreateSubject} > Add </button>
+                <button id="add-button" type="text" onClick={myAppUpdateContext.handleCreateSubject} > Add </button>
             </form>
         )
     }
 
     return (
-        <div className="subject-container">
-            <div className="subject-header">
+        <div className="container">
+            <div>
                 < Header />
-                <h5 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h5>
+                <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
             </div>
             <div>
-                <h3 className="subject-header">Select Subject</h3>
+                <h3 className="page-title">Select Subject</h3>
                 < ChooseSubjectForm />
             </div>
             < SubmitButton />

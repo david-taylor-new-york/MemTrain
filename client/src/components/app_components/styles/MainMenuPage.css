@@ -1,7 +1,0 @@
-@import './../../commonStyles.css';
-
-.button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
