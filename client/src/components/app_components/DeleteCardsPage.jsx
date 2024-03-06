@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { CurrentCardsTable, BackButton, LogOutButton } from '../Components'
+import { PageHeader, CurrentCardsTable } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
 
@@ -25,20 +25,20 @@ export const DeleteCardsPage = () => {
         )
     }
 
-    return (
-        <div className="container">
-            <div className="button-group-top">
-                <BackButton previousPage="CardMenuPage" />
-                <LogOutButton />
-            </div>
-            <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
-            <h3 className="page-title">Delete Card</h3>
-            <hr />
-            <div>
+    const PageBody = () => {
+        return (
+            <div className="container">
                 <DeleteCardWidget />
                 <CurrentCardsTable />
                 <ToastContainer />
             </div>
+        );
+    }
+
+    return (
+        <div>
+            <PageHeader pageTitle="Delete Card" previousPage="CardMenuPage" />
+            <PageBody />
         </div>
     )
 }
