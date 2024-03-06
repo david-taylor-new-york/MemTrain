@@ -58,22 +58,21 @@ const CurrentCardList = ({ cards, showAnswer }) => {
     )
 }
 
-export const LogOutButton = () => {
+export const PageHeader = ({ pageTitle, previousPage }) => {
+    const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
-    return (
-        <button className="button" onClick={myAppUpdateContext.handleLogout}>
-            Logout
-        </button>
-    )
-}
+        const showBackButton = (myAppContext.subjectName !== "unselected")
 
-export const BackButton = ({ previousPage }) => {
-    const myAppUpdateContext = useMyAppUpdateContext()
-
-    return (
-        <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo(previousPage)}>
-            Back
-        </button>
-    )
-}
+        return (
+            <div className="container">
+                <div className="button-group-top">
+                    { showBackButton && <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo(previousPage)}>Back</button> }
+                    <button className="button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
+                </div>
+                <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
+                <h3 className="page-title">{pageTitle}</h3>
+                <hr />
+            </div>
+        );
+    }

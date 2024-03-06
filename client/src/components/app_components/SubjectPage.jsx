@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { LogOutButton, BackButton } from '../Components'
+import { PageHeader } from '../Components'
 import { getSubjectsBy } from '../../utils/httpClient'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
@@ -8,25 +8,6 @@ import '../commonStyles.css'
 export const SubjectPage = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
-
-    const Header = () => {
-        const myAppContext = useMyAppContext()
-
-        if (myAppContext.subjectName === "unselected") {
-            return (
-                <>
-                    < LogOutButton />
-                </>
-            )
-        } else {
-            return (
-                <>
-                    < BackButton previousPage="MainMenuPage" />
-                    < LogOutButton />
-                </>
-            )
-        }
-    }
 
     const ChooseSubjectForm = () => {
 
@@ -96,6 +77,18 @@ export const SubjectPage = () => {
         }
     }
 
+    const PageBody = () => {
+        return (
+            <div className="container">
+                < ChooseSubjectForm />
+                < SubmitButton />
+                <hr />
+                < CreateSubject />
+                < ToastContainer />
+            </div>
+        );
+    }
+
     function CreateSubject() {
 
         return (
@@ -110,19 +103,10 @@ export const SubjectPage = () => {
     }
 
     return (
-        <div className="container">
-            <div>
-                < Header />
-                <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
-            </div>
-            <div>
-                <h3 className="page-title">Select Subject</h3>
-                < ChooseSubjectForm />
-            </div>
-            < SubmitButton />
-            <hr />
-            < CreateSubject />
-            < ToastContainer />
+
+        <div >
+            <PageHeader pageTitle="Select Subject" previousPage="MainMenuPage" />
+            <PageBody />
         </div>
     )
 }

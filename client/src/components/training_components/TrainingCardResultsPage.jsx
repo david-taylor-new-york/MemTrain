@@ -1,12 +1,10 @@
 import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
-import { useMyAppContext } from '../../contexts/AppContextProvider'
-import { BackButton } from '../Components'
-import './styles/TrainingCardResultsPage.css'
+import { PageHeader } from '../Components'
+import '../commonStyles.css'
 
 export const TrainingCardResultsPage = () => {
 
-    const myAppContext = useMyAppContext()
     const myTrainingContext = useMyTrainingContext()
 
     const TrainingCardResultsTable = () => {
@@ -21,9 +19,7 @@ export const TrainingCardResultsPage = () => {
             )
         } else {
             return (
-                <>
-                    <h5> Subject: {myAppContext.subjectName} </h5>
-                    <h3> Training Card Results (card: {trainingCardResults[0].card_id}) </h3>
+                <div>
                     <hr />
                     <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
                     <table className="training-results-table">
@@ -33,7 +29,7 @@ export const TrainingCardResultsPage = () => {
                         </tbody>
                     </table>
                     <hr />
-                </>
+                </div>
             )
         }
 
@@ -91,12 +87,19 @@ export const TrainingCardResultsPage = () => {
         )
     }
 
-    return (
-        <>
-            <div>
-                < BackButton previousPage="TrainingSessionPage" />
-                < TrainingCardResultsTable />
+    const PageBody = () => {
+        return (
+            <div className="container">
+ {/*             <h3> Training Card Results (card: {trainingCardResults[0].card_id}) </h3> */}
+                 < TrainingCardResultsTable />
             </div>
-        </>
+        );
+    }
+
+    return (
+        <div>
+            <PageHeader pageTitle="Training Card Results" previousPage="TrainingSessionPage" />
+            <PageBody />
+        </div>
     )
 }

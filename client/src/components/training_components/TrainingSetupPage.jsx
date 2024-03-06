@@ -1,9 +1,9 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext } from '../../contexts/AppContextProvider'
-import { BackButton } from '../Components'
+import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import './styles/TrainingSetupPage.css'
+import '../commonStyles.css'
 
 export const TrainingSetupPage = () => {
 
@@ -11,22 +11,11 @@ export const TrainingSetupPage = () => {
     const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
-    const Header = () => {
-        return (
-            <div>
-                <BackButton className="widget-container" previousPage="TrainingMenuPage" />
-                <h5>Subject: {myAppContext.subjectName}</h5>
-                <h3>Training Setup</h3>
-                <hr />
-            </div>
-        )
-    }
-
     const StatsWidget = () => {
         return (
-            <div className="widget-container">
-                <h5> Total Questions: {myAppContext.allCards.length} </h5>
-                <h5> Questions reviewed so far: {myTrainingContext.cardsToReview.length} </h5>
+            <div >
+                <h3> Total Questions: {myAppContext.allCards.length} </h3>
+                <h3> Questions reviewed so far: {myTrainingContext.cardsToReview.length} </h3>
                 {/* <h5> Percentage Correct: { myAppContext.subjectName } </h5> */}
                 {/* <h5> Trend: Positive/Negative </h5> */}
             </div>
@@ -35,12 +24,10 @@ export const TrainingSetupPage = () => {
 
     const NumberOfQuestionsToReviewInput = () => {
         return (
-            <div className="widget-container">
+            <div>
                 <form ref={myTrainingContext.trainingSettingsFormRef} >
-                    <label>
-                        Number of Questions to review:{" "}
-                        <input type="number" autoComplete="off" name="numberOfCardsToReview" autoFocus required minLength="1" />
-                    </label>
+                    Number of Questions to review:{" "}
+                    <input id="card_id" type="number" autoComplete="off" name="numberOfCardsToReview" autoFocus required minLength="1" />
                 </form>
             </div>
         )
@@ -48,19 +35,27 @@ export const TrainingSetupPage = () => {
 
     const StartTrainingButton = () => {
         return (
-            <div className="widget-container">
-                <input type="button" className="button-main-css" order="4" defaultValue="Train" progress="10" onClick={() => { myTrainingUpdateContext.startTraining() }} />
+            <div >
+                <input className="button" type="button" order="4" defaultValue="Train" progress="10" onClick={() => { myTrainingUpdateContext.startTraining() }} />
             </div>
         )
     }
 
+    const PageBody = () => {
+        return (
+            <div className="container">
+                < StatsWidget />
+                < NumberOfQuestionsToReviewInput />
+                < StartTrainingButton />
+                < ToastContainer />
+            </div>
+        );
+    }
+
     return (
-        <>
-            < Header />
-            < StatsWidget />
-            < NumberOfQuestionsToReviewInput />
-            < StartTrainingButton />
-            < ToastContainer />
-        </>
+        <div>
+            <PageHeader pageTitle="Training Setup Page" previousPage="TrainingMenuPage" />
+            <PageBody />
+        </div>
     )
 }

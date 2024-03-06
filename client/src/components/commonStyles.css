@@ -1,8 +1,8 @@
 /* Container styles */
 .container {
     background-color: #F5F5F5;
-    margin: 2rem;
-    padding: 2rem;
+    margin: 1rem;
+    padding: 1rem;
     width: auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -11,16 +11,6 @@
   /* Header styles */
   .header, .subject-sub-header {
     color: #4A90E2;
-    margin-bottom: 1rem;
-  }
-  
-  .subject-container {
-    background-color: #F5F5F5;
-    margin: 2rem;
-    padding: 2rem;
-    width: 300px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .subject-dropdown {
@@ -35,13 +25,6 @@
     margin-bottom: 1rem;
   }
 
-  /* Label styles */
-  /* .label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
-  } */
-  
   .form-input {
     width: 500px;
     padding: 0.5rem;
@@ -49,10 +32,10 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+
   .button-group-top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
   }
 
   .button-group {
@@ -183,14 +166,27 @@
     border-bottom: 1px solid #dddddd;
   }
 
-  .content-table tbody tr:nth-of-type(even) {
+    .content-table tbody tr:nth-of-type(even) {
     background-color: #dddddd;
-  }
+    }
 
-  #card_id {
-    margin: 5px 5px;
-    width: 40px;
-  }
+    .progress-bar {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .center-align {
+        text-align: center;
+    }
+
+    .hidden-input {
+        visibility: hidden;
+    }
+
+    #card_id {
+        margin: 5px 5px;
+        width: 40px;
+    }
 
   #right_header {
     text-align: right;
@@ -208,3 +204,45 @@
     border: 1px solid #050e14;
     font-size: 12px;
   }
+
+
+.table-wrapper {
+    border: 1px solid black;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.correct-row {
+    background-color: lightgreen;
+}
+
+.incorrect-guess {
+    background-color: red;
+}
+
+.input-label {
+    margin-right: 10px;
+}
+
+
+.training-results-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.training-results-table th,
+.training-results-table td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.training-results-table tr.correct-answer {
+    background-color: lightgreen;
+}
+
+.training-results-table td.incorrect-answer {
+    background-color: red;
+}

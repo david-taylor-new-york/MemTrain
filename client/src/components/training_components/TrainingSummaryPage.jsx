@@ -1,22 +1,23 @@
 import React from 'react'
-import { useMyAppContext } from '../../contexts/AppContextProvider'
-import { BackButton, LogOutButton } from '../Components'
+import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
+import '../commonStyles.css'
 
 export const TrainingSummaryPage = () => {
-    const myAppContext = useMyAppContext()
 
-    return (
-        <>
-            <div>
-                < BackButton previousPage="TrainingSessionsPage" />
-                < LogOutButton />
-                <h5> Subject: {myAppContext.subjectName} </h5>
-                <h3> Training Summary </h3>
-                <hr />
+    const PageBody = () => {
+        return (
+            <div className="container">
                 <br />
                 < ToastContainer />
             </div>
-        </>
+        );
+    }
+
+    return (
+        <div>
+            <PageHeader pageTitle="Training Summary Page" previousPage="TrainingSessionsPage" />
+            <PageBody />
+        </div>
     )
 }

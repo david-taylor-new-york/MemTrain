@@ -1,13 +1,12 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
-import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { BackButton } from '../Components'
+import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import './styles/TrainingSessionsPage.css'
+import '../commonStyles.css'
 
 export const TrainingSessionsPage = () => {
 
-    const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
     const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
@@ -15,18 +14,7 @@ export const TrainingSessionsPage = () => {
     const TrainingSummaryButton = () => {
 
         return (
-            <input type="button" defaultValue="Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSummaryPage") }} />
-        )
-    }
-
-    const TrainingSessionsHeader = () => {
-
-        return (
-            <>
-                <h5> Subject: {myAppContext.subjectName} </h5>
-                <h3> Training Sessions </h3>
-                <hr />
-            </>
+            <input className="button" type="button" defaultValue="Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSummaryPage") }} />
         )
     }
 
@@ -41,12 +29,14 @@ export const TrainingSessionsPage = () => {
             )
         } else {
             return (
-                <table className="table-wrapper">
-                <tbody>
+                <div >
+                    <table className="content-table">
+                        <tbody>
                         < TrainingSessionsTableHeader />
                         < TrainingSessionsList trainingSessions={trainingSessions} />
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             )
         }
     }
@@ -55,12 +45,13 @@ export const TrainingSessionsPage = () => {
 
         return (
             <tr>
-                <th>Id</th>
+                <th>Session</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Correct</th>
                 <th>Incorrect</th>
-                {/* <th>%</th> */}
+                <th>First Pass %</th>
+                <th>Rounds to Complete</th>
             </tr>
         )
     }
@@ -85,7 +76,8 @@ export const TrainingSessionsPage = () => {
                         <td className="center-align">{session_start_timee.getHours() + ":" + session_start_timee.getMinutes()}</td>
                         <td className="center-align">{trainingSession.num_correct}</td>
                         <td className="center-align">{trainingSession.num_incorrect}</td>
-                        <td>{percentCorrect}</td>
+                        <td className="center-align">{percentCorrect}</td>
+                        <td className="center-align">NA</td>
                     </tr>
                     )
                 })
@@ -95,32 +87,39 @@ export const TrainingSessionsPage = () => {
     const ViewTrainingSessionById = () => {
 
         return (
-            <>
+            <div>
                 <form ref={myTrainingContext.trainingSessionsFormRef} >
-                <label className="input-label">
-                        Session Id:{" "}
-                        <input type="number" name="sessionId" autoFocus required minLength="1" />
+                    <label >
+                        Session:{" "}
+                        <input id="card_id" type="number" name="sessionId" autoFocus required minLength="1" />
                     </label>
                     <br />
-                    <button type="submit" className="input-button" onClick={myTrainingUpdateContext.loadTrainingSessionPage}>
+                    <button className="button" type="submit" onClick={myTrainingUpdateContext.loadTrainingSessionPage}>
                         View Session
                     </button>
                 </form>
                 <hr />
-            </>
+            </div>
         )
     }
 
+    const PageBody = () => {
+        return (
+            <div className="container">
+                 < TrainingSummaryButton />
+                 <hr />
+                 < TrainingSessionsTable />
+                 <hr />
+                 < ViewTrainingSessionById />
+                 < ToastContainer />
+            </div>
+        );
+    }
+
     return (
-        <>
-            < BackButton previousPage="TrainingMenuPage" />
-            < TrainingSessionsHeader />
-            < TrainingSummaryButton />
-            <hr />
-            < TrainingSessionsTable />
-            <hr />
-            < ViewTrainingSessionById />
-            < ToastContainer />
-        </>
+        <div>
+            <PageHeader pageTitle="Training Sessions" previousPage="TrainingMenuPage" />
+            <PageBody />
+        </div>
     )
 }

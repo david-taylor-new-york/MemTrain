@@ -1,8 +1,8 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { BackButton, LogOutButton } from '../Components'
-import './styles/TrainingMenuPage.css'
+import { PageHeader } from '../Components'
+import '../commonStyles.css'
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -14,43 +14,35 @@ export const TrainingMenuPage = () => {
     const displayTrainingSessionsButton = myTrainingContext.allTrainingSessions.length > 0
 
     const TrainingPageButton = () => {
-        return (
-            <input 
-                type="button" 
-                className="button-main-css" 
-                defaultValue="Train" 
-                onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage() }} 
-            />
-        )
+        if (displayTrainingPageButton) {
+            return (
+                <input type="button" className="button" defaultValue="Train" onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage() }} />
+            )
+        }
     }
     
     const TrainingSessionsPageButton = () => {
-        return (
-            <input 
-                type="button" 
-                className="button-main-css" 
-                defaultValue="Training Sessions" 
-                // myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage")
-                // onClick={() => { myTrainingUpdateContext.loadTrainingSessionsPage() }} 
-                onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }} 
+        if (displayTrainingSessionsButton) {
+            return (
+                <input type="button" className="button" defaultValue="Training Sessions" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }}  />
+            )
+        }
+    }
 
-            />
-        )
+    const PageBody = () => {
+        return (
+            <div className="container">
+                <TrainingPageButton />
+                <TrainingSessionsPageButton />
+                { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
+            </div>
+        );
     }
 
     return (
-        <>
-            <BackButton previousPage="MainMenuPage" />
-            <LogOutButton />
-            <h5> Subject: { myAppContext.subjectName } </h5>
-            <h3> Training Menu </h3>
-            <hr />
-            <br />
-            <div>
-                { displayTrainingPageButton && <TrainingPageButton /> }
-                { displayTrainingSessionsButton && <TrainingSessionsPageButton /> }
-                { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
-            </div>
-        </>
+        <div>
+            <PageHeader pageTitle="Training Menu" previousPage="MainMenuPage"/>
+            <PageBody />
+        </div>
     )
 }

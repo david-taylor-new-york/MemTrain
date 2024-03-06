@@ -1,15 +1,38 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
-import { useMyAppContext } from '../../contexts/AppContextProvider'
-import { BackButton } from '../Components'
+import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import './styles/TrainingSessionPage.css'
+import '../commonStyles.css'
 
 export const TrainingSessionPage = () => {
 
-    const myAppContext = useMyAppContext()
     const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
+
+    const PageBody = () => {
+        const trainingSessionCardResults = myTrainingContext.currentCardResults
+
+        return (
+            <div className="container">
+                <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
+                <table className="content-table">
+                    <tbody>
+                        < ResultsHeader />
+                        < TrainingSessionCardResultsList trainingResults={trainingSessionCardResults} />
+                    </tbody>
+                </table>
+                <hr />
+
+                <form ref={myTrainingContext.trainingSessionFormRef}>
+                    view all Answers for Card:{" "}
+                    <input id="card_id" type="number" name="cardId" autoFocus required minLength="1" />
+                    <button className="button" id="add-button" type="submit" onClick={myTrainingUpdateContext.loadTrainingCardResultsPage}>
+                        View
+                    </button>
+                </form>
+            </div>
+        );
+    }
 
     const TrainingSessionTable = () => {
         const trainingSessionCardResults = myTrainingContext.currentCardResults
@@ -25,42 +48,21 @@ export const TrainingSessionPage = () => {
         } else {
 
             return (
-                <>
-                    <h5> Subject: {myAppContext.subjectName} </h5>
-                    <h3> Training Session Results ({myTrainingContext.currentTrainingSession.session_start_time.toLocaleDateString()}) </h3>
-
-                    <hr />
-                    <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
-                    <table className="table-wrapper">
-                        <tbody>
-                            < ResultsHeader />
-                            < TrainingSessionCardResultsList trainingResults={trainingSessionCardResults} />
-                        </tbody>
-                    </table>
-                    <hr />
-
-                    <form ref={myTrainingContext.trainingSessionFormRef}>
-                        <label className="input-label">
-                            Card Id:{" "}
-                            <input type="number" name="cardId" autoFocus required minLength="1" />
-                        </label>
-                        <br />
-                        <button type="submit" className="input-button" onClick={myTrainingUpdateContext.loadTrainingCardResultsPage}>
-                            View All Answers
-                        </button>
-                    </form>
-                </>
+                <div>
+                    <PageHeader pageTitle="Training Session Results" previousPage="TrainingSessionsPage" />
+                    <PageBody />
+                </div>
             )
         }
-
     }
 
     const ResultsHeader = () => {
         return (
             <tr>
                 <th> Card </th>
-                <th> Answer </th>
-                <th> Correct </th>
+                <th> Question </th>
+                <th> Given Answer </th>
+                <th> Correct Answer</th>
                 <th> Sec </th>
             </tr>
         )
@@ -78,7 +80,8 @@ export const TrainingSessionPage = () => {
 
                         return (
                             <tr key={result.id} className="correct-row">
-                                <td style={{ textAlign: 'center' }}> {result.card_id} </td>
+                                <td> {result.card_id} </td>
+                                <td> {result.question} </td>
                                 <td> {result.guess} </td>
                                 <td> &#10003; </td>
                                 <td> {secToAnswer} </td>
@@ -89,7 +92,8 @@ export const TrainingSessionPage = () => {
 
                         return (
                             <tr key={result.id} >
-                                <td style={{ textAlign: 'center' }}> {result.card_id} </td>
+                                <td> {result.card_id} </td>
+                                <td> {result.question} </td>
                                 <td className="incorrect-guess">{result.guess}</td>
                                 <td> {result.answer} </td>
                                 <td> {secToAnswer} </td>
@@ -97,17 +101,14 @@ export const TrainingSessionPage = () => {
                         )
                     }
                 }
-                )
+            )
         )
     }
 
     return (
-        <>
-            <div>
-                < BackButton previousPage="TrainingSessionsPage" />
-                < TrainingSessionTable />
-                < ToastContainer />
-            </div>
-        </>
+        <div>
+            < TrainingSessionTable />
+            < ToastContainer />
+        </div>
     )
 }

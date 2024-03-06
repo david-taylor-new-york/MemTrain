@@ -2,7 +2,7 @@ export const ActionTypes = {
     // Define your action types here
   }
   
-  export const ErrorMessages = {
+export const ErrorMessages = {
     // Define your error messages here
   }
 
