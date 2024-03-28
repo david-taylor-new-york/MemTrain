@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { PageHeader } from '../Components'
-import '../commonStyles.css'
+import './trainingStyles.css'
 
 export const TrainingCardResultsPage = () => {
 
@@ -98,8 +98,8 @@ export const TrainingCardResultsPage = () => {
 
     return (
         <div>
-            <PageHeader pageTitle="Training Card Results" previousPage="TrainingSessionPage" />
-            <PageBody />
+            < PageHeader pageTitle="Training Card Results" />
+            < PageBody />
         </div>
     )
 }

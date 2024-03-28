@@ -3,7 +3,7 @@ import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts
 import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import '../commonStyles.css'
+import './trainingStyles.css'
 
 export const TrainingPage = () => {
 
@@ -105,8 +105,8 @@ export const TrainingPage = () => {
 
     return (
         <div>
-            <PageHeader pageTitle="Train" previousPage="TrainingSetupPage" />
-            <PageBody />
+            < PageHeader pageTitle="Train" />
+            < PageBody />
         </div>
     )
 }

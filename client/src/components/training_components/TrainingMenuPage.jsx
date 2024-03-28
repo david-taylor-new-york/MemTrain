@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader } from '../Components'
-import '../commonStyles.css'
+import './trainingStyles.css'
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
@@ -32,8 +32,8 @@ export const TrainingMenuPage = () => {
     const PageBody = () => {
         return (
             <div className="container">
-                <TrainingPageButton />
-                <TrainingSessionsPageButton />
+                < TrainingPageButton />
+                < TrainingSessionsPageButton />
                 { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
             </div>
         );
@@ -41,8 +41,8 @@ export const TrainingMenuPage = () => {
 
     return (
         <div>
-            <PageHeader pageTitle="Training Menu" previousPage="MainMenuPage"/>
-            <PageBody />
+            < PageHeader pageTitle="Training Menu" />
+            < PageBody />
         </div>
     )
 }

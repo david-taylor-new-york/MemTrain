@@ -1,7 +1,7 @@
 import React from 'react'
 import { PageHeader } from '../Components'
 import { ToastContainer } from 'react-toastify'
-import '../commonStyles.css'
+import './trainingStyles.css'
 
 export const TrainingSummaryPage = () => {
 
@@ -16,8 +16,8 @@ export const TrainingSummaryPage = () => {
 
     return (
         <div>
-            <PageHeader pageTitle="Training Summary Page" previousPage="TrainingSessionsPage" />
-            <PageBody />
+            < PageHeader pageTitle="Training Summary Page" />
+            < PageBody />
         </div>
     )
 }

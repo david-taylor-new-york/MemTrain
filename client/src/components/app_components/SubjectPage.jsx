@@ -1,24 +1,28 @@
 import { React, useState, useEffect } from 'react'
+import { PageHeader } from '../Components';
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { PageHeader } from '../Components'
 import { getSubjectsBy } from '../../utils/httpClient'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
 
-export const SubjectPage = () => {
+<ToastContainer id="toast_container" />
+
+const SubjectPageBody = () => {
+
+    // {/*         < ChooseSubjectForm /> */}
+    // {/*         < SubmitButton /> */}
+    // {/*         <hr /> */}
+    // {/*         < CreateSubjectForm /> */}
+    // {/*         < ToastContainer /> */}
+
+    const myAppUpdateContext = useMyAppUpdateContext(); // Use the app context hook directly
     const myAppContext = useMyAppContext()
-    const myAppUpdateContext = useMyAppUpdateContext()
 
     const ChooseSubjectForm = () => {
-
         if (myAppContext.subjectName === "unselected") {
-            return (
-                SubjectsDropdown('Select a subject')
-            )
+            return ( SubjectsDropdown('Select a subject') )
         } else {
-            return (
-                SubjectsDropdown(myAppContext.subjectName)
-            )
+            return ( SubjectsDropdown(myAppContext.subjectName) )
         }
     }
 
@@ -65,32 +69,15 @@ export const SubjectPage = () => {
         )
     }
 
-    function SubmitButton() {
-
+    const SubmitButton = () => {
         if (myAppContext.subjectName !== 'unselected') {
-
             return (
-                <div >
-                    <button className="button" type="button" onClick={() => { myAppUpdateContext.updateCurrentPageTo("MainMenuPage") }}> Select </button>
-                </div>
+                <div > <button className="menu-button" type="button" onClick={() => { myAppUpdateContext.updateCurrentPageTo("MainMenuPage") }}> Select </button> </div>
             )
         }
     }
 
-    const PageBody = () => {
-        return (
-            <div className="container">
-                < ChooseSubjectForm />
-                < SubmitButton />
-                <hr />
-                < CreateSubject />
-                < ToastContainer />
-            </div>
-        );
-    }
-
-    function CreateSubject() {
-
+    const CreateSubjectForm = () => {
         return (
             <form >
                 <label>
@@ -101,12 +88,24 @@ export const SubjectPage = () => {
             </form>
         )
     }
-
     return (
-
-        <div >
-            <PageHeader pageTitle="Select Subject" previousPage="MainMenuPage" />
-            <PageBody />
+        <div className="container">
+            < ChooseSubjectForm />
+            < SubmitButton />
+            <hr />
+            < CreateSubjectForm />
+            < ToastContainer />
         </div>
-    )
+    );
+
 }
+
+export const SubjectPage = () => {
+    return (
+        <div>
+            < PageHeader pageTitle="Choose Subject" />
+            < SubjectPageBody />
+        </div>
+    );
+
+};

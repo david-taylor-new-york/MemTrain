@@ -40,6 +40,9 @@ export const AppController = () => {
     case "MainMenuPage":
       return (< MainMenuPage />)
 
+    case "LoginPage":
+      return (< LoginPage />)
+
     case "SubjectPage":
       return (< SubjectPage />)
 

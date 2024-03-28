@@ -4,19 +4,18 @@ import { PageHeader, CurrentCardsTable } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
 
-export const DeleteCardsPage = () => {
-
+const DeleteCardsPageBody = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
     const DeleteCardWidget = () => {
         return (
-            <div className="delete-card-form" >
+            <div >
                 <form ref={myAppContext.deleteCardFormRef}>
                     Id:  
-                    <input type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
+                    <input id="card_id" type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
                     <br/>
-                    <button type="submit" className="button" onClick={myAppUpdateContext.handleDeleteCard}>
+                    <button className="button" type="submit" onClick={myAppUpdateContext.handleDeleteCard}>
                     Delete Card
                     </button>
                 </form>
@@ -24,21 +23,20 @@ export const DeleteCardsPage = () => {
             </div>
         )
     }
+    return (
+        <div className="container">
+            < DeleteCardWidget />
+            < CurrentCardsTable />
+            < ToastContainer />
+        </div>
+    );
+}
 
-    const PageBody = () => {
-        return (
-            <div className="container">
-                <DeleteCardWidget />
-                <CurrentCardsTable />
-                <ToastContainer />
-            </div>
-        );
-    }
-
+export const DeleteCardsPage = () => {
     return (
         <div>
-            <PageHeader pageTitle="Delete Card" previousPage="CardMenuPage" />
-            <PageBody />
+            < PageHeader pageTitle="Delete Card" />
+            < DeleteCardsPageBody />
         </div>
-    )
-}
+    );
+};

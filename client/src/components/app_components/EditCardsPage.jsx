@@ -4,7 +4,7 @@ import { PageHeader, CurrentCardsTable } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
 
-export const EditCardsPage = () => {
+const EditCardsPageBody = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
@@ -31,9 +31,8 @@ export const EditCardsPage = () => {
 
     const EditCardWidget = () => {
         const cardToEdit = myAppContext.allCards[myAppContext.cardToEditIndex]
-
         return (
-            <div className="create-card-form" >
+            <div className="card-form" >
                 <form ref={myAppContext.editCardWidgetFormRef}>
                     Question:
                     <input type="text" autoComplete="off" name="question" defaultValue={cardToEdit.question} required minLength="1" />
@@ -42,7 +41,7 @@ export const EditCardsPage = () => {
                     Card (Id) To Follow:
                     <input id="card_id" type="number" name="cardToFollow" defaultValue={cardToEdit.follows} minLength="1" />
                     <br/>
-                    <button type="submit" className="button" onClick={myAppUpdateContext.handleUpdateCard}>
+                    <button type="submit" onClick={myAppUpdateContext.handleUpdateCard}>
                     Update
                     </button>
                     <button type="button" className="button" onClick={myAppUpdateContext.handleCancelUpdateCard}>
@@ -53,20 +52,21 @@ export const EditCardsPage = () => {
         )
     }
 
-    const PageBody = () => {
-        return (
-            <div className="container">
-                <EditPageWidget />
-                <CurrentCardsTable />
-                <ToastContainer />
-            </div>
-        );
-    }
+    return (
+        <div className="container">
+            < EditPageWidget />
+            < CurrentCardsTable />
+            < ToastContainer />
+        </div>
+    );
+}
 
+export const EditCardsPage = () => {
     return (
         <div>
-            <PageHeader pageTitle="Edit Card" previousPage="CardMenuPage" />
-            <PageBody />
+            < PageHeader pageTitle="Edit Card" />
+            < EditCardsPageBody />
         </div>
-    )
-}
+    );
+};
+
