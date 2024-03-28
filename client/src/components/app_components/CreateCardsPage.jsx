@@ -4,13 +4,13 @@ import { PageHeader, CurrentCardsTable } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
 
-export const CreateCardsPage = () => {
+const CreateCardsPageBody = () => {
     const myAppUpdateContext = useMyAppUpdateContext()
     const myAppContext = useMyAppContext()
 
     const CreateCardWidget = () => {
         return (
-            <div className="create-card-form" >
+            <div className="card-form" >
                 <form ref={myAppContext.createCardFormRef} onSubmit={myAppUpdateContext.handleCreateCard}>
                     Question:
                     <input type="text" autoComplete="off" name="question" autoFocus required minLength="1" />
@@ -19,27 +19,25 @@ export const CreateCardsPage = () => {
                     Card (Id) To Follow:
                     <input id="card_id" type="number" name="cardToFollow" minLength="1" />
                     <br/>
-                    <button type="submit" className="button">Create Card</button>
+                    <button type="submit" >Create Card</button>
                 </form>
-                <hr />
             </div>
         )
     }
+    return (
+        <div className="container">
+            < CreateCardWidget />
+            < CurrentCardsTable />
+            < ToastContainer />
+        </div>
+    );
+}
 
-    const PageBody = () => {
-        return (
-            <div className="container">
-                <CreateCardWidget />
-                <CurrentCardsTable />
-                <ToastContainer />
-            </div>
-        );
-    }
-
+export const CreateCardsPage = () => {
     return (
         <div>
-            <PageHeader pageTitle="Create Card" previousPage="CardMenuPage" />
-            <PageBody />
+            < PageHeader pageTitle="Create Card" />
+            < CreateCardsPageBody />
         </div>
-    )
-}
+    );
+};

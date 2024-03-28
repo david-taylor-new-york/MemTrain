@@ -28,6 +28,7 @@ export function AppContextProvider({ children }) {
     // const [userId, setUserId] = useState(1)
 
     const [currentPage, setCurrentPageTo] = useState("LoginPage")
+    const [previousPage, setPreviousPageTo] = useState(null)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     // const [userName, setUserName] = useState(null)
     const [userId, setUserId] = useState(null)
@@ -55,9 +56,15 @@ export function AppContextProvider({ children }) {
         setIsLoading(loading)
     }
     const updateCurrentPageTo = (pageName) => {
+        console.log("CurrentPage= " + pageName)
+        console.log("previousPage: " + currentPage)
+        if (pageName === "CardMenuPage") {
+            setPreviousPageTo("MainMenuPage")
+        } else {
+            setPreviousPageTo(currentPage)
+        }
         setCurrentPageTo(pageName)
     }
-
     const handleNewUser = async (e) => {
         e.preventDefault() // this is only for handleSubmit!! <== DO WE NEED THIS???
 
@@ -69,6 +76,7 @@ export function AppContextProvider({ children }) {
             setIsLoggedIn(false)
             setUserId(null)
             setCurrentPageTo("LoginPage")
+            setPreviousPageTo(null)
             return
         }
         try {
@@ -77,12 +85,14 @@ export function AppContextProvider({ children }) {
             setIsLoggedIn(true)
             setUserId(user_id.id)
             setCurrentPageTo("SubjectPage")
+            setPreviousPageTo("LoginPage")
         } catch (error) {
             console.log(error)
             showToast(`User ${userName} already exists!`)
             loginPageFormRef.current.reset()
             loginPageFormRef.current.user_name.focus()
             setCurrentPageTo("LoginPage")
+            setPreviousPageTo(null)
         }
     }
 
@@ -110,8 +120,11 @@ export function AppContextProvider({ children }) {
                     setIsLoggedIn(true)
                     setUserId(userData.id)
                     setCurrentPageTo("SubjectPage")
+                    setPreviousPageTo("LoginPage")
                 } else {
-                    showToast(`Wrong password!`)
+//                    const notifyA = () => toast('Wow so easy !', {containerId: 'A'});
+//                    showToast(`Wrong password!`, {containerId: 'toast_container'});
+                    showToast(`Wrong password!`);
                     setIsLoggedIn(false)
                     setUserId(null)
                 }
@@ -134,10 +147,11 @@ export function AppContextProvider({ children }) {
         setSubjectId(null)
         setSubjectName("unselected")
         setCurrentPageTo("LoginPage")
+        setPreviousPageTo(null)
     }
 
     const handleCreateSubject = async (e) => {
-        e.preventDefault() // this is only for handleSubmit!! <== DO WE NEED THIS???
+        e.preventDefault() // YES WE DO <== DO WE NEED THIS???
 
         const newSubjectName = newSubjectNameFormRef.current.value
         if (newSubjectName === "") {
@@ -148,6 +162,7 @@ export function AppContextProvider({ children }) {
         try {
             const newSubjectId = await createSubject({ subject_name: newSubjectName, user_id: userId })
             setCurrentPageTo("MainMenuPage")
+            setPreviousPageTo("SubjectPage")
             setSubjectName(newSubjectName)
             setSubjectId(newSubjectId.id)
             setAllCards([])
@@ -186,12 +201,15 @@ export function AppContextProvider({ children }) {
 
                 setAllCards(cardsBySubjectId)
                 setCurrentPageTo("MainMenuPage")
+                setPreviousPageTo("SubjectPage")
                 setIsLoading(false)
             } else {
                 showToast(`Subject: ${subjectId} not found!`)
                 setIsLoggedIn(false)
                 setUserId(null)
                 setCurrentPageTo("LoginPage")
+                setPreviousPageTo("LoginPage")
+
             }
 
         } catch (error) {
@@ -231,6 +249,7 @@ export function AppContextProvider({ children }) {
             console.log(error)
             showToast(`Could not create card!`)
             setCurrentPageTo("CreateCardPage")
+            setPreviousPageTo("CreateCardPage")
         }
 
         createCardFormRef.current.reset()
@@ -388,6 +407,7 @@ export function AppContextProvider({ children }) {
         subjectName,
         allCards,
         currentPage,
+        previousPage,
         cardToEditIndex,
         cardToEditId,
         cardToEditNumber,

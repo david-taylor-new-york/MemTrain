@@ -20,8 +20,8 @@ export const CurrentCardsTable = () => {
         return (
             <div className="table-container">
                 <table className="content-table">
-                    <ResultsHeader showAnswer={showAnswer} />
-                    <CurrentCardList cards={cards} showAnswer={showAnswer} />
+                    < ResultsHeader showAnswer={showAnswer} />
+                    < CurrentCardList cards={cards} showAnswer={showAnswer} />
                 </table>
             </div>
         )
@@ -45,34 +45,45 @@ const CurrentCardList = ({ cards, showAnswer }) => {
 
     return (
         <tbody>
-            {cards.sort((a, b) => a.id > b.id ? 1 : -1)
-            .map((card) => (
-                <tr key={card.id}>
-                    <td id="left_header">{card.id}</td>
-                    <td id="second_header">{card.question}</td>
-                    { showAnswer && <td id="third_header">{card.answer}</td> }
-                    { showAnswer && <td id="right_header">{card.follows}</td> }
-                </tr>
-            ))}
+            {cards
+                .sort((a, b) => a.id - b.id)
+                .map((card) => (
+                    <tr key={card.id}>
+                        <td id="left_header">{card.id}</td>
+                        <td id="second_header">{card.question}</td>
+                        {showAnswer && <td id="third_header">{card.answer}</td>}
+                        {showAnswer && <td id="right_header">{card.follows}</td>}
+                    </tr>
+                ))}
         </tbody>
     )
 }
 
-export const PageHeader = ({ pageTitle, previousPage }) => {
+export const PageHeader = ({ pageTitle }) => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
         const showBackButton = (myAppContext.subjectName !== "unselected")
+        console.log(" writing header: previousPage= " + myAppContext.previousPage)
+        console.log(" writing header: currentPage= " + myAppContext.currentPage)
 
         return (
             <div className="container">
                 <div className="button-group-top">
-                    { showBackButton && <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo(previousPage)}>Back</button> }
+                    { showBackButton && <button className="button" onClick={() => myAppUpdateContext.updateCurrentPageTo(myAppContext.previousPage)}>Back</button> }
                     <button className="button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
                 </div>
-                <h4 className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
-                <h3 className="page-title">{pageTitle}</h3>
+                <h4 id="page-subject" className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
+                <h3 id="page-title" className="page-title">{pageTitle}</h3>
                 <hr />
             </div>
         );
     }
+
+export const MenuButton = ({ onClick, children }) => {
+  return (
+    <button className="menu-button" onClick={onClick}>
+      {children}
+    </button>
+  );
+};

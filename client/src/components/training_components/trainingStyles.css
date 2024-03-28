@@ -1,0 +1,30 @@
+import ../commonStyles.css
+
+/* Training Results Table */
+.training-results-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.training-results-table th,
+.training-results-table td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.training-results-table tr.correct-answer {
+    background-color: lightgreen;
+}
+
+.training-results-table td.incorrect-answer {
+    background-color: red;
+}
+
+.correct-row {
+    background-color: lightgreen;
+}
+
+.incorrect-guess {
+    background-color: red;
+}
