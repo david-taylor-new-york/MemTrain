@@ -6,11 +6,11 @@ import './trainingStyles.css'
 
 export const TrainingMenuPage = () => {
     const myAppContext = useMyAppContext()
-    const myTrainingContext = useMyTrainingContext()
     const myAppUpdateContext = useMyAppUpdateContext()
+    const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
-    const displayTrainingPageButton = myAppContext.allCards.length > 0
+    const displayTrainingPageButton = myAppContext.allCardsBySubject.length > 0
     const displayTrainingSessionsButton = myTrainingContext.allTrainingSessions.length > 0
 
     const TrainingPageButton = () => {
@@ -20,29 +20,29 @@ export const TrainingMenuPage = () => {
             )
         }
     }
-    
+
     const TrainingSessionsPageButton = () => {
         if (displayTrainingSessionsButton) {
             return (
-                <input type="button" className="button" defaultValue="Training Sessions" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }}  />
+                <input type="button" className="button" defaultValue="Training Sessions" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }} />
             )
         }
     }
 
-    const PageBody = () => {
+    const TrainingMenuPageBody = () => {
         return (
             <div className="container">
                 < TrainingPageButton />
                 < TrainingSessionsPageButton />
-                { !displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!" }
+                {!displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!"}
             </div>
-        );
+        )
     }
 
     return (
         <div>
             < PageHeader pageTitle="Training Menu" />
-            < PageBody />
+            < TrainingMenuPageBody />
         </div>
     )
 }

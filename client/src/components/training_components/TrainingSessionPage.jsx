@@ -9,20 +9,23 @@ export const TrainingSessionPage = () => {
     const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
-    const PageBody = () => {
+    const TrainingSessionPageBody = () => {
         const trainingSessionCardResults = myTrainingContext.currentCardResults
+
+        const ResultsHeader = () => {
+            return (
+                <tr>
+                    <th> Card </th>
+                    <th> Question </th>
+                    <th> Given Answer </th>
+                    <th> Correct Answer</th>
+                    <th> Sec </th>
+                </tr>
+            )
+        }
 
         return (
             <div className="container">
-                <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
-                <table className="content-table">
-                    <tbody>
-                        < ResultsHeader />
-                        < TrainingSessionCardResultsList trainingResults={trainingSessionCardResults} />
-                    </tbody>
-                </table>
-                <hr />
-
                 <form ref={myTrainingContext.trainingSessionFormRef}>
                     view all Answers for Card:{" "}
                     <input id="card_id" type="number" name="cardId" autoFocus required minLength="1" />
@@ -30,41 +33,15 @@ export const TrainingSessionPage = () => {
                         View
                     </button>
                 </form>
+                <hr />
+                <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
+                <table className="content-table">
+                    <tbody>
+                        < ResultsHeader />
+                        < TrainingSessionCardResultsList trainingResults={trainingSessionCardResults} />
+                    </tbody>
+                </table>
             </div>
-        );
-    }
-
-    const TrainingSessionTable = () => {
-        const trainingSessionCardResults = myTrainingContext.currentCardResults
-
-        if ((trainingSessionCardResults === null) || (trainingSessionCardResults.length === 0)) {
-
-            return (
-                <div>
-                    No card results exist!
-                </div>
-            )
-
-        } else {
-
-            return (
-                <div>
-                    < PageHeader pageTitle="Training Session Results" />
-                    < PageBody />
-                </div>
-            )
-        }
-    }
-
-    const ResultsHeader = () => {
-        return (
-            <tr>
-                <th> Card </th>
-                <th> Question </th>
-                <th> Given Answer </th>
-                <th> Correct Answer</th>
-                <th> Sec </th>
-            </tr>
         )
     }
 
@@ -101,13 +78,14 @@ export const TrainingSessionPage = () => {
                         )
                     }
                 }
-            )
+                )
         )
     }
 
     return (
         <div>
-            < TrainingSessionTable />
+            < PageHeader pageTitle="Training Session Results" />
+            < TrainingSessionPageBody />
             < ToastContainer />
         </div>
     )

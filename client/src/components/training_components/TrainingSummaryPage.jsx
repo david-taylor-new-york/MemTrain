@@ -5,19 +5,19 @@ import './trainingStyles.css'
 
 export const TrainingSummaryPage = () => {
 
-    const PageBody = () => {
+    const TrainingSummaryPageBody = () => {
         return (
             <div className="container">
                 <br />
                 < ToastContainer />
             </div>
-        );
+        )
     }
 
     return (
         <div>
             < PageHeader pageTitle="Training Summary Page" />
-            < PageBody />
+            < TrainingSummaryPageBody />
         </div>
     )
 }

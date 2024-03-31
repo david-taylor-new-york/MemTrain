@@ -7,32 +7,22 @@ export const TrainingCardResultsPage = () => {
 
     const myTrainingContext = useMyTrainingContext()
 
-    const TrainingCardResultsTable = () => {
+    const TrainingCardResultsPageBody = () => {
 
         const trainingCardResults = myTrainingContext.currentCardResults
 
-        if ((trainingCardResults === null) || (trainingCardResults.length === 0)) {
-            return (
-                <div>
-                    No card results exist!
-                </div>
-            )
-        } else {
-            return (
-                <div>
-                    <hr />
-                    <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
-                    <table className="training-results-table">
-                        <tbody>
-                            < ResultsHeader />
-                            < TrainingCardResultsList trainingResults={trainingCardResults} />
-                        </tbody>
-                    </table>
-                    <hr />
-                </div>
-            )
-        }
-
+        return (
+            <div className="container">
+                <hr />
+                <h4> Correct: {myTrainingContext.numberCorrect} - Incorrect: {myTrainingContext.numberIncorrect} </h4>
+                <table className="training-results-table">
+                    <tbody>
+                        < ResultsHeader />
+                        < TrainingCardResultsList trainingResults={trainingCardResults} />
+                    </tbody>
+                </table>
+            </div>
+        )
     }
 
     const ResultsHeader = () => {
@@ -80,26 +70,17 @@ export const TrainingCardResultsPage = () => {
                                 <td> {secToAnswer} </td>
                             </tr>
                         )
-                        
+
                     }
                 }
                 )
         )
     }
 
-    const PageBody = () => {
-        return (
-            <div className="container">
- {/*             <h3> Training Card Results (card: {trainingCardResults[0].card_id}) </h3> */}
-                 < TrainingCardResultsTable />
-            </div>
-        );
-    }
-
     return (
         <div>
             < PageHeader pageTitle="Training Card Results" />
-            < PageBody />
+            < TrainingCardResultsPageBody />
         </div>
     )
 }

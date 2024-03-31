@@ -1,10 +1,10 @@
 
-DROP TABLE IF EXISTS card_results;
-DROP TABLE IF EXISTS training_sessions;
-DROP TABLE IF EXISTS cards;
-DROP TABLE IF EXISTS subjects;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS card_schedules;
+DROP TABLE IF EXISTS card_results CASCADE;
+DROP TABLE IF EXISTS training_sessions CASCADE;
+DROP TABLE IF EXISTS cards CASCADE;
+DROP TABLE IF EXISTS subjects CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS card_schedules CASCADE;
 
 CREATE TABLE users(
    id  SERIAL PRIMARY KEY,
@@ -24,35 +24,29 @@ CREATE TABLE cards(
    question            VARCHAR       NOT NULL,
    answer  	VARCHAR  NOT NULL,
    follows            INT       NULL,
+   buoyancy            INT       DEFAULT 1,
+   trend            INT       DEFAULT 0,
    FOREIGN KEY (subject_id) REFERENCES subjects(id));
 
 CREATE TABLE training_sessions(
    id  		SERIAL PRIMARY KEY,
-   user_id            INT       NOT NULL,
    subject_id            INT       NOT NULL,
-   num_correct            INT       NULL,
-   num_incorrect            INT       NULL,
+   first_pass_correct            INT       NULL,
+   first_pass_incorrect            INT       NULL,
    session_start_time  	TIMESTAMPTZ  NOT NULL,
-   training_time_in_seconds            FLOAT       NULL,
-   FOREIGN KEY (user_id) REFERENCES users(id), 
-   FOREIGN KEY (subject_id) REFERENCES subjects(id));
+   training_time_in_seconds            INT       NULL,
+   FOREIGN KEY (subject_id) REFERENCES subjects(id)
+   );
 
 
 CREATE TABLE card_results(
    id  		SERIAL PRIMARY KEY,
    training_session_id            INT       NOT NULL,
-   subject_id            INT       NOT NULL,
    card_id            INT       NOT NULL,
    guess            VARCHAR       NOT NULL,
    answer            VARCHAR       NOT NULL,
    is_correct  	boolean  NOT NULL,
-   seconds_to_answer            FLOAT       NOT NULL);
-
-
-CREATE TABLE card_schedules(
-   id  		SERIAL PRIMARY KEY,
-   subject_id            INT       NOT NULL,
-   card_id            INT       NOT NULL,
-   buoyancy            FLOAT       DEFAULT 0.0,
-   next_review_date            DATE       NULL,
-   first_reviewed  	TIMESTAMPTZ  NOT NULL);
+   seconds_to_answer            INT       NOT NULL,
+   FOREIGN KEY (training_session_id) REFERENCES training_sessions(id),
+   FOREIGN KEY (card_id) REFERENCES cards(id)
+   );
