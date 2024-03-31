@@ -14,7 +14,7 @@ async function performHttp(operationType, endpoint, data) {
         console.log("   response: ")
         console.log(response.data)
         console.log(" ")
-            return response.data
+        return response.data
     } catch (error) {
         throw new Error(`Could not perform ${operationType} operation on ${endpoint}! Error: ${error.message}`)
     }
@@ -28,9 +28,9 @@ function getResourcesBy(table_name, param_name, param_value) {
     return performHttp('get', 'get', { table_name, param_name, [param_name]: param_value })
 }
 
-function getResourcesByTodayOrLater(table_name, param_name, param_value) {
-    return performHttp('get', 'get_today_or_earlier', { table_name, param_name, [param_name]: param_value })
-}
+//function getResourcesByTodayOrLater(table_name, param_name, param_value) {
+//    return performHttp('get', 'get_today_or_earlier', { table_name, param_name, [param_name]: param_value })
+//}
 
 function updateResource(tableName, updatedData) {
     return performHttp('put', 'update', { tableName, data: updatedData })
@@ -61,9 +61,3 @@ export const createTrainingSession = trainingSession => createResource('training
 export const getTrainingSession = trainingSessionId => getResourcesBy('training_sessions', 'id', trainingSessionId)
 
 export const getTrainingSessions = subjectId => getResourcesBy('training_sessions', 'subject_id', subjectId)
-
-export const createCardSchedule = cardSchedule => createResource('card_schedules', cardSchedule)
-
-export const getCardSchedules = subjectId => getResourcesByTodayOrLater('card_schedules', 'subject_id', subjectId)
-
-export const updateCardSchedule = updatedCardSchedule => updateResource('card_schedules', updatedCardSchedule)

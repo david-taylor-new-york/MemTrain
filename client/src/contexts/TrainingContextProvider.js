@@ -1,9 +1,8 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
-import { calculateNextCardSchedule, showToast } from '../utils/utils'
+import { showToast } from '../utils/utils'
 import { createTrainingSession, getTrainingSession, getTrainingSessions,
-    createCardResults, getCardResultsBy, createCardSchedule, getCardSchedules,
-    updateCardSchedule } from '../utils/httpClient'
+    createCardResults, getCardResultsBy } from '../utils/httpClient'
 
 const MyTrainingContext = React.createContext()
 const MyTrainingUpdateContext = React.createContext()
@@ -20,12 +19,13 @@ export function TrainingContextProvider({ children }) {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
-    const [cardsToReview, setCardsToReview] = useState([])
+    const [trainingCards, setTrainingCards] = useState([])
+    const [failedCards, setFailedCards] = useState([])
     const [allTrainingSessions, setAllTrainingSessions] = useState([])
     const [currentTrainingSession, setCurrentTrainingSession] = useState(null)
+    const [trainingType, setTrainingType] = useState("practice")
     const [cumulativeTrainingSessionTimeInSeconds, setCumulativeTrainingSessionTimeInSeconds] = useState(0)
     const [currentCardResults, setCurrentCardResults] = useState([])
-    const [currentCardSchedules, setCurrentCardSchedules] = useState([])
     const [currentTrainingState, setCurrentTrainingState] = useState("NotStarted")
     const [currentCardIndex, setCurrentCardIndex] = useState(-1)
     const [startTime, setStartTime] = useState(null)
@@ -41,75 +41,30 @@ export function TrainingContextProvider({ children }) {
     }
 
     const loadTrainingSetupPage = async () => {
-        const currentCardSchedules = await getCardSchedules(myAppContext.subjectId)
-        setCurrentCardSchedules(currentCardSchedules)
         myAppUpdateContext.updateCurrentPageTo("TrainingSetupPage")
     }
 
     const startTraining = async () => {
         setCurrentTrainingState("Training")
-        const numberOfCardsToReview = trainingSettingsFormRef.current.numberOfCardsToReview.value
+        setTrainingType(trainingSettingsFormRef.current.trainingType.value)
+        console.log("trainingType = " + trainingType)
+        const initialCards = getInitialTrainingCards(trainingType)
+        setTrainingCards(initialCards)
 
-        if (numberOfCardsToReview === "") {
-            showToast("Enter number of Cards to review")
-            trainingSettingsFormRef.current.reset()
-            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
-            return
-        }
-
-        const cardsToReview = await getCardsToReview(numberOfCardsToReview)
-        setCardsToReview(cardsToReview)
         setProgressValue(0)
         setCurrentCardResults([])
+        setFailedCards([])
         setCurrentCardIndex(0)
         setNumberCorrect(0)
         setNumberIncorrect(0)
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
-        setNumberRemaining(cardsToReview.length)
+        setNumberRemaining(trainingCards.length)
         myAppUpdateContext.updateCurrentPageTo("TrainingPage")
     }
 
-    const getCardsToReview = async (numberOfCardsToReview) => {
-        const cardsToReview = []
-        const localAllCards = [...myAppContext.allCards]
-        const localCardSchedules = [...currentCardSchedules]
-
-        let cardScheduleIndex = 0
-        while (cardsToReview.length < numberOfCardsToReview && cardScheduleIndex < localCardSchedules.length) {
-            const currentCardSchedule = localCardSchedules[cardScheduleIndex]
-            const cardIndex = localAllCards.findIndex(card => card.id === currentCardSchedule.card_id)
-            cardsToReview.push(localAllCards[cardIndex])
-            cardScheduleIndex++
-        }
-
-        let allCardsIndex = 0
-        while (cardsToReview.length < numberOfCardsToReview && allCardsIndex < localAllCards.length) {
-            const cardSchedule = {
-                subject_id: localAllCards[allCardsIndex].subject_id,
-                card_id: localAllCards[allCardsIndex].id,
-                buoyancy: 0.0,
-                next_review_date: new Date(),
-                first_reviewed: new Date()
-            }
-
-            const cardScheduleId = await createCardSchedule(cardSchedule)
-            cardSchedule.id = cardScheduleId.id
-            localCardSchedules.push(cardSchedule)
-            cardsToReview.push(localAllCards[allCardsIndex])
-            allCardsIndex++
-        }
-        setCurrentCardSchedules(localCardSchedules)
-        cardsToReview.sort((a, b) => a.id - b.id)
-
-        if (cardsToReview.length < numberOfCardsToReview) {
-            showToast("Not enough cards to review")
-        }
-        return cardsToReview
-    }
-
-    const train = () => {
-        const currentCard = cardsToReview[currentCardIndex]
+    const answerQuestion = () => {
+        const currentCard = trainingCards[currentCardIndex]
         const givenAnswer = submitAnswerFormRef.current.answer.value
 
         if (givenAnswer === "") {
@@ -126,8 +81,91 @@ export function TrainingContextProvider({ children }) {
         const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
         updateCardResults(cardResult)
 
+        if (!isCorrect) {
+            console.log("INCORRECT ANSWER!")
+            updateFailedCards(currentCard)
+        }
+
         submitAnswerFormRef.current.reset()
         handleNextOrFinish()
+    }
+
+    const handleNextOrFinish = () => {
+        if (currentCardIndex < trainingCards.length - 1) {
+            getNextCard()
+        } else {
+            setTrainingCards(failedCards)
+            setCurrentTrainingState("FinishedTrainingRound")
+            setProgressValue(1)
+        }
+    }
+
+    const finishTrainingRound = async () => {
+        if (trainingType === "actual") {
+            const cumul = (Math.round((cumulativeTrainingSessionTimeInSeconds) * 10) / 10)
+            const newTrainingSession = {
+                subject_id: myAppContext.subjectId,
+                first_pass_correct: numberCorrect,
+                first_pass_incorrect: numberIncorrect,
+                session_start_time: startTime,
+                training_time_in_seconds: cumul
+            }
+            const trainingSessionId = await createTrainingSession(newTrainingSession)
+            newTrainingSession.id = trainingSessionId.id
+            setCurrentTrainingSession(newTrainingSession) // DELETE?
+            let updatedTrainingSessions = [...allTrainingSessions]
+            updatedTrainingSessions.push(newTrainingSession)
+            setCurrentCardResults(updatedTrainingSessions)
+
+            const nextCardResults = addTrainingSessionIdToCardResults(trainingSessionId.id)
+            const sortedCardResults = nextCardResults.sort((a, b) => { return a.card_id - b.card_id })
+            setCurrentCardResults(sortedCardResults)
+            createCardResults(sortedCardResults)
+        }
+        if (failedCards.length > 0) {
+            setTrainingCards(failedCards)
+            setProgressValue(0)
+            setCurrentCardResults([])
+            setFailedCards([])
+            setCurrentCardIndex(0)
+            setNumberCorrect(0)
+            setNumberIncorrect(0)
+            setCumulativeTrainingSessionTimeInSeconds(0)
+            setStartTime(new Date())
+            setNumberRemaining(trainingCards.length)
+            setCurrentTrainingState("Training")
+        } else {
+            setCurrentTrainingState("FinishedTraining")
+        }
+    }
+
+    const finishTraining = async () => {
+        console.log("finishTraining():")
+        loadTrainingMenuPage()
+    }
+
+    const updateFailedCards = (card) => {
+        const updatedFailedCards = [...failedCards]
+        updatedFailedCards.push(card)
+        setFailedCards(updatedFailedCards)
+    }
+
+    const getInitialTrainingCards = (trainingType) => {
+        const trainingCards = []
+        const allCardsBySubject = [...myAppContext.allCardsBySubject]
+
+        if (trainingType === "actual") {
+//            for (let card of allCardsBySubject) {
+//                if (card.trend < 0) {
+//                    trainingCards.add(card)
+//                } else if (card.buoyancy > 0) {
+//                    }
+//                console.log(card.id)
+//            }
+            return trainingCards
+        } else {
+            return allCardsBySubject
+        }
     }
 
     const updateScores = (isCorrect) => {
@@ -139,19 +177,10 @@ export function TrainingContextProvider({ children }) {
         setNumberRemaining(numberRemaining - 1)
     }
 
-    const handleNextOrFinish = () => {
-        if (currentCardIndex < cardsToReview.length - 1) {
-            getNextCard()
-        } else {
-            setCurrentTrainingState("FinishedTraining")
-            setProgressValue(1)
-        }
-    }
-
     const getNextCard = () => {
         const nextCardIndex = currentCardIndex + 1
         setCurrentCardIndex(nextCardIndex)
-        const currentProgress = nextCardIndex / cardsToReview.length
+        const currentProgress = nextCardIndex / trainingCards.length
         setProgressValue(currentProgress)
         setStartTime(new Date())
     }
@@ -160,9 +189,9 @@ export function TrainingContextProvider({ children }) {
         let modifiedExpectedAnswer = expectedAnswer;
 
         if (givenAnswer.includes("*")) {
-          modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer);
+            modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer);
         }
-      
+
         const expectedWords = normalizeText(modifiedExpectedAnswer).split(' ').sort()
         const givenWords = normalizeText(givenAnswer).split(' ').sort()
 
@@ -184,7 +213,7 @@ export function TrainingContextProvider({ children }) {
         const wordsWithAsterisks = words.filter(word => word.includes("*"))
         const cleanedWords = wordsWithAsterisks.map(word => word.replace(/\*/g, ""))
         return cleanedWords.join(" ")
-      }
+    }
 
     const normalizeText = (text) => {
         return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
@@ -207,105 +236,24 @@ export function TrainingContextProvider({ children }) {
         setCurrentCardResults(updatedCardResults)
     }
 
-    const finishTraining = async () => {
-        setProgressValue(0)
-        setCurrentTrainingState("FinishedTraining")
-
-        if (isFirstTrainingSessionOfTheDay()) {
-
-            const cumul = (Math.round((cumulativeTrainingSessionTimeInSeconds) * 10) / 10)
-
-            const newTrainingSession = {
-                user_id: myAppContext.userId,
-                subject_id: myAppContext.subjectId,
-                num_correct: numberCorrect,
-                num_incorrect: numberIncorrect,
-                session_start_time: startTime,
-                training_time_in_seconds: cumul
-            }
-            const trainingSessionId = await createTrainingSession(newTrainingSession)
-            newTrainingSession.id = trainingSessionId.id
-            setCurrentTrainingSession(newTrainingSession) // DELETE?
-            let updatedTrainingSessions = [...allTrainingSessions]
-            updatedTrainingSessions.push(newTrainingSession)
-            setCurrentCardResults(updatedTrainingSessions)
-
-            const nextCardResults = addTrainingSessionIdToCardResults(trainingSessionId.id)
-            const sortedCardResults = nextCardResults.sort((a, b) => { return a.card_id - b.card_id })
-            setCurrentCardResults(sortedCardResults)
-            createCardResults(sortedCardResults)
-            
-            const cardSchedules = calculateNextCardSchedules(sortedCardResults)
-            updateCardSchedules(cardSchedules)
-        }
-
-        loadTrainingMenuPage()
-    }
-
-    const isFirstTrainingSessionOfTheDay = () => {
-
-        if (allTrainingSessions.length > 0) {
-
-            const today = new Date()
-            const lastSession = getLastTrainingSession(allTrainingSessions)
-
-            if (lastSession.getFullYear() === today.getFullYear() && 
-            lastSession.getMonth() === today.getMonth() && 
-            lastSession.getDate() === today.getDate()) {
-                return false
-            }
-        }
-
-        return true
-    }
-
-    const getLastTrainingSession = (trainingSessions) => {
-            const mostRecentSession = trainingSessions.sort((a, b) => {
-                const dateA = new Date(a.session_start_time)
-                const dateB = new Date(b.session_start_time)
-                return dateB - dateA
-            })[0]
-            return new Date(mostRecentSession.session_start_time)
-    }
+//    const getLastTrainingSession = (trainingSessions) => {
+//        const mostRecentSession = trainingSessions.sort((a, b) => {
+//            const dateA = new Date(a.session_start_time)
+//            const dateB = new Date(b.session_start_time)
+//            return dateB - dateA
+//        })[0]
+//        return new Date(mostRecentSession.session_start_time)
+//    }
 
     const addTrainingSessionIdToCardResults = (trainingSessionId) => {
 
         let cardResultsWithId = []
 
-        for ( let cardResult of currentCardResults ) {
+        for (let cardResult of currentCardResults) {
             cardResult.training_session_id = trainingSessionId
             cardResultsWithId.push(cardResult)
         }
         return cardResultsWithId
-    }
-
-    const updateCardSchedules = async (cardSchedules) => {
-        for (let cardSchedule of cardSchedules) {
-            const cardScheduleUpdate = {
-                id: cardSchedule.id,
-                buoyancy: cardSchedule.buoyancy,
-                next_review_date: cardSchedule.next_review_date,
-            }
-            await updateCardSchedule(cardScheduleUpdate)
-        }
-    }
-
-    const calculateNextCardSchedules = (currentCardResults) => {
-        let modifiedCardSchedules = []
-        let cardSchedules = [...currentCardSchedules]
-
-        for (let cardResult of currentCardResults) {
-            const cardScheduleIndex = cardSchedules.findIndex(cardSched => cardSched.card_id === cardResult.card_id)
-            if (cardScheduleIndex !== -1) {
-                const nextCardSchedule = calculateNextCardSchedule(cardSchedules[cardScheduleIndex], cardResult)
-                cardSchedules[cardScheduleIndex] = nextCardSchedule
-                modifiedCardSchedules.push(nextCardSchedule)
-            } else {
-                throw new Error('Element not found in the array.')
-            }
-        }
-        setCurrentCardSchedules(cardSchedules)
-        return modifiedCardSchedules
     }
 
     const loadTrainingSessionsPage = async () => {
@@ -315,8 +263,8 @@ export function TrainingContextProvider({ children }) {
     }
 
     const loadTrainingSessionPage = async () => {
+        const trainingSessionId = trainingSessionsFormRef.current.cardNumber.value
         myAppUpdateContext.updateCurrentPageTo("TrainingSessionPage")
-        const trainingSessionId = trainingSessionsFormRef.current.sessionId.value
         if (trainingSessionId === "") {
             showToast("Enter TrainingSession Id!")
             return
@@ -370,7 +318,7 @@ export function TrainingContextProvider({ children }) {
     const allContexts = {
         allTrainingSessions,
         currentCardResults,
-        cardsToReview,
+        trainingCards,
         currentTrainingState,
         currentCardIndex,
         numberCorrect,
@@ -388,7 +336,8 @@ export function TrainingContextProvider({ children }) {
     const allContextUpdates = {
         startTraining,
         loadTrainingSetupPage,
-        train,
+        answerQuestion,
+        finishTrainingRound,
         finishTraining,
         loadTrainingMenuPage,
         loadTrainingSessionPage,

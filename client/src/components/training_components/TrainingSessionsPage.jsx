@@ -1,7 +1,7 @@
 import React from 'react'
-import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
+import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { PageHeader } from '../Components'
+import { PageHeader, ChooseIdWidget } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import './trainingStyles.css'
 
@@ -9,7 +9,6 @@ export const TrainingSessionsPage = () => {
 
     const myAppUpdateContext = useMyAppUpdateContext()
     const myTrainingContext = useMyTrainingContext()
-    const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     const TrainingSummaryButton = () => {
 
@@ -32,8 +31,8 @@ export const TrainingSessionsPage = () => {
                 <div >
                     <table className="content-table">
                         <tbody>
-                        < TrainingSessionsTableHeader />
-                        < TrainingSessionsList trainingSessions={trainingSessions} />
+                            < TrainingSessionsTableHeader />
+                            < TrainingSessionsList trainingSessions={trainingSessions} />
                         </tbody>
                     </table>
                 </div>
@@ -67,59 +66,40 @@ export const TrainingSessionsPage = () => {
                         percentCorrect = Math.trunc(trainingSession.num_correct / (trainingSession.num_correct + trainingSession.num_incorrect) * 100)
                     }
                     percentCorrect = "(" + percentCorrect.toString() + "%)"
-                    let session_start_timee = new Date(trainingSession.session_start_time)
+                    const session_start_time = new Date(trainingSession.session_start_time)
+                    const session_month = session_start_time.getMonth() + 1
 
                     return (
                         <tr key={trainingSession.id}>
-                        <td className="center-align">{trainingSession.id}</td>
-                        <td className="center-align">{session_start_timee.getMonth() + "/" + session_start_timee.getDate()}</td>
-                        <td className="center-align">{session_start_timee.getHours() + ":" + session_start_timee.getMinutes()}</td>
-                        <td className="center-align">{trainingSession.num_correct}</td>
-                        <td className="center-align">{trainingSession.num_incorrect}</td>
-                        <td className="center-align">{percentCorrect}</td>
-                        <td className="center-align">NA</td>
-                    </tr>
+                            <td className="center-align">{trainingSession.id}</td>
+                            <td className="center-align">{session_month + "/" + session_start_time.getDate()}</td>
+                            <td className="center-align">{session_start_time.getHours() + ":" + session_start_time.getMinutes()}</td>
+                            <td className="center-align">{trainingSession.num_correct}</td>
+                            <td className="center-align">{trainingSession.num_incorrect}</td>
+                            <td className="center-align">{percentCorrect}</td>
+                            <td className="center-align">NA</td>
+                        </tr>
                     )
                 })
         )
     }
 
-    const ViewTrainingSessionById = () => {
-
-        return (
-            <div>
-                <form ref={myTrainingContext.trainingSessionsFormRef} >
-                    <label >
-                        Session:{" "}
-                        <input id="card_id" type="number" name="sessionId" autoFocus required minLength="1" />
-                    </label>
-                    <br />
-                    <button className="button" type="submit" onClick={myTrainingUpdateContext.loadTrainingSessionPage}>
-                        View Session
-                    </button>
-                </form>
-                <hr />
-            </div>
-        )
-    }
-
-    const PageBody = () => {
+    const TrainingSessionsPageBody = () => {
         return (
             <div className="container">
-                 < TrainingSummaryButton />
-                 <hr />
-                 < TrainingSessionsTable />
-                 <hr />
-                 < ViewTrainingSessionById />
-                 < ToastContainer />
+                < ChooseIdWidget formType="training_session" />
+                < TrainingSessionsTable />
+                <hr />
+                < TrainingSummaryButton />
+                < ToastContainer />
             </div>
-        );
+        )
     }
 
     return (
         <div>
             < PageHeader pageTitle="Training Sessions" />
-            < PageBody />
+            < TrainingSessionsPageBody />
         </div>
     )
 }

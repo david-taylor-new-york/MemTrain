@@ -1,65 +1,8 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { PageHeader, CurrentCardsTable } from '../Components'
+import { PageHeader, CurrentCardsTable, ChooseIdWidget } from '../Components'
 import { ToastContainer } from 'react-toastify'
 import '../commonStyles.css'
-
-const EditCardsPageBody = () => {
-    const myAppContext = useMyAppContext()
-    const myAppUpdateContext = useMyAppUpdateContext()
-
-    const EditPageWidget = () => {
-        return myAppContext.cardToEditIndex === null ? <EditCardHeader /> : <EditCardWidget />
-    }
-
-    const EditCardHeader = () => {
-        return (
-            <div className="create-card-form" >
-                <form ref={myAppContext.editCardFormRef}>
-                    <label>
-                        Id:
-                        <input id="card_id" type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
-                    </label>
-                    <br/>
-                    <button type="submit" className="button" onClick={myAppUpdateContext.handleSetCardToEditId}>
-                        Edit Card
-                    </button>
-                </form>
-            </div>
-        )
-    }
-
-    const EditCardWidget = () => {
-        const cardToEdit = myAppContext.allCards[myAppContext.cardToEditIndex]
-        return (
-            <div className="card-form" >
-                <form ref={myAppContext.editCardWidgetFormRef}>
-                    Question:
-                    <input type="text" autoComplete="off" name="question" defaultValue={cardToEdit.question} required minLength="1" />
-                    Answer:
-                    <input type="text" autoComplete="off" name="answer" defaultValue={cardToEdit.answer} required minLength="1" />
-                    Card (Id) To Follow:
-                    <input id="card_id" type="number" name="cardToFollow" defaultValue={cardToEdit.follows} minLength="1" />
-                    <br/>
-                    <button type="submit" onClick={myAppUpdateContext.handleUpdateCard}>
-                    Update
-                    </button>
-                    <button type="button" className="button" onClick={myAppUpdateContext.handleCancelUpdateCard}>
-                    Cancel
-                    </button>
-                </form>
-            </div>
-        )
-    }
-
-    return (
-        <div className="container">
-            < EditPageWidget />
-            < CurrentCardsTable />
-            < ToastContainer />
-        </div>
-    );
-}
 
 export const EditCardsPage = () => {
     return (
@@ -67,6 +10,47 @@ export const EditCardsPage = () => {
             < PageHeader pageTitle="Edit Card" />
             < EditCardsPageBody />
         </div>
-    );
-};
+    )
+}
 
+const EditCardsPageBody = () => {
+    return (
+        <div className="container">
+            < EditPageWidget />
+            < CurrentCardsTable />
+            < ToastContainer />
+        </div>
+    )
+}
+
+const EditPageWidget = () => {
+    const myAppContext = useMyAppContext()
+
+    if (myAppContext.cardToEditIndex === null) {
+        return (< ChooseIdWidget formType="edit" />)
+    } else {
+        return (< EditCardWidget />)
+    }
+}
+
+const EditCardWidget = () => {
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
+    const cardToEdit = myAppContext.allCardsBySubject[myAppContext.cardToEditIndex]
+
+    return (
+        <div className="card-form" >
+            <form ref={myAppContext.editCardWidgetFormRef} onSubmit={myAppUpdateContext.handleUpdateCard}>
+                Question:
+                <input type="text" autoComplete="off" name="question" defaultValue={cardToEdit.question} required minLength="1" />
+                Answer:
+                <input type="text" autoComplete="off" name="answer" defaultValue={cardToEdit.answer} required minLength="1" />
+                Card (Id) To Follow:
+                <input id="card_id" type="number" name="cardToFollow" defaultValue={cardToEdit.follows} minLength="1" />
+                <br />
+                <button type="submit" > Update Card </button>
+                <button type="button" onClick={myAppUpdateContext.handleCancelUpdateCard}> Cancel </button>
+            </form>
+        </div>
+    )
+}

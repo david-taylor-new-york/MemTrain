@@ -33,10 +33,10 @@
 
 /* Forms */
 .login-form-input {
-  width: 50%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    width: 50%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .card-form input {
@@ -47,20 +47,33 @@
 }
 
 .card-form button,
-.submit-button,
-.menu-button,
 .button {
     background-color: #4A90E2;
     color: white;
     padding: 0.5rem 1rem;
-    border: none;
-    margin: 0px 5px;
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid #050e14;
 }
 
+.header-button {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    color: grey;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
+.submit-button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 8px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14
+}
 
 
 /* Buttons */
@@ -69,9 +82,21 @@
     justify-content: space-between;
 }
 
-.button-group {
-    display: inline;
-    width: 100px;
+.main-menu-button-group {
+    display: flex;
+    width: 340px;
+    justify-content: space-between;
+}
+
+.card-menu-button-group {
+    display: flex;
+    width: 210px;
+    justify-content: space-between;
+}
+
+.login-button-group {
+    width: 130px;
+    display: flex;
     justify-content: space-between;
 }
 

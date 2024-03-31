@@ -15,7 +15,7 @@ export function useMyAppUpdateContext() {
 }
 
 export function AppContextProvider({ children }) {
-    
+
     /**
      * 
      * Configure Already LOGGED IN vvvv
@@ -39,12 +39,10 @@ export function AppContextProvider({ children }) {
      * 
      */
 
-
-
     // const [subjects, setSubjects] = useState([])
     const [subjectName, setSubjectName] = useState("unselected")
     const [subjectId, setSubjectId] = useState(null) // use this to create cards
-    const [allCards, setAllCards] = useState([])
+    const [allCardsBySubject, setAllCardsBySubject] = useState([])
 
     // set three of these, for convenience, views, remove later if we can
     const [cardToEditId, setCardToEditId] = useState(null)
@@ -56,14 +54,22 @@ export function AppContextProvider({ children }) {
         setIsLoading(loading)
     }
     const updateCurrentPageTo = (pageName) => {
-        console.log("CurrentPage= " + pageName)
-        console.log("previousPage: " + currentPage)
+        setPreviousPageTo(currentPage)
         if (pageName === "CardMenuPage") {
             setPreviousPageTo("MainMenuPage")
-        } else {
-            setPreviousPageTo(currentPage)
         }
-        setCurrentPageTo(pageName)
+        if (pageName === "EditCardsPage") {
+            setPreviousPageTo("CardMenuPage")
+        }
+        if (pageName === "TrainingSessionsPage") {
+            setPreviousPageTo("TrainingMenuPage")
+        }
+        if (pageName === "TrainingMenuPage") {
+            setPreviousPageTo("MainMenuPage")
+        }
+        if (pageName === "TrainingSessionPage") {
+            setPreviousPageTo("TrainingSessionsPage")
+        } setCurrentPageTo(pageName)
     }
     const handleNewUser = async (e) => {
         e.preventDefault() // this is only for handleSubmit!! <== DO WE NEED THIS???
@@ -120,10 +126,9 @@ export function AppContextProvider({ children }) {
                     setIsLoggedIn(true)
                     setUserId(userData.id)
                     setCurrentPageTo("SubjectPage")
-                    setPreviousPageTo("LoginPage")
                 } else {
-//                    const notifyA = () => toast('Wow so easy !', {containerId: 'A'});
-//                    showToast(`Wrong password!`, {containerId: 'toast_container'});
+                    //                    const notifyA = () => toast('Wow so easy !', {containerId: 'A'});
+                    //                    showToast(`Wrong password!`, {containerId: 'toast_container'});
                     showToast(`Wrong password!`);
                     setIsLoggedIn(false)
                     setUserId(null)
@@ -160,12 +165,23 @@ export function AppContextProvider({ children }) {
             return
         }
         try {
+            const allSubjects = await getSubjectsBy("user_id", userId)
+            for (let subject of allSubjects) {
+                if (subject.subject_name === newSubjectName) {
+                    newSubjectNameFormRef.current.value = ""
+                    newSubjectNameFormRef.current.focus()
+                    showToast(`Subject ${newSubjectName} already exists!`)
+                    return
+                }
+            }
             const newSubjectId = await createSubject({ subject_name: newSubjectName, user_id: userId })
+            console.log("created duplicate subject id= " + newSubjectId)
+            showToast(`Subject added!`)
             setCurrentPageTo("MainMenuPage")
             setPreviousPageTo("SubjectPage")
             setSubjectName(newSubjectName)
             setSubjectId(newSubjectId.id)
-            setAllCards([])
+            setAllCardsBySubject([])
         } catch (error) {
             console.log(error)
             newSubjectNameFormRef.current.value = ""
@@ -192,14 +208,14 @@ export function AppContextProvider({ children }) {
 
                 const cardsBySubjectId = await getCards(dropDownSubjectId[0].id)
 
-                
-                
+
+
                 // getCardResults/card_schedules  here eventually also - do it once then only CRUD
 
 
 
 
-                setAllCards(cardsBySubjectId)
+                setAllCardsBySubject(cardsBySubjectId)
                 setCurrentPageTo("MainMenuPage")
                 setPreviousPageTo("SubjectPage")
                 setIsLoading(false)
@@ -238,12 +254,12 @@ export function AppContextProvider({ children }) {
         try {
             const card_id = await createCard(newCard)
 
-            // if successful, push newCard to {allCards}
+            // if successful, push newCard to {allCardsBySubject}
             newCard.id = card_id.id
             let updatedCards = []
-            updatedCards = [...allCards]
+            updatedCards = [...allCardsBySubject]
             updatedCards.push(newCard)
-            setAllCards(updatedCards)
+            setAllCardsBySubject(updatedCards)
 
         } catch (error) {
             console.log(error)
@@ -267,13 +283,13 @@ export function AppContextProvider({ children }) {
             return
         }
 
-        let cardToEditIndex = allCards.findIndex(card => card.id.toString() === cardId)
+        let cardToEditIndex = allCardsBySubject.findIndex(card => card.id.toString() === cardId)
 
         if (cardToEditIndex > -1) {
             setCardToEditNumber(cardId)
             setCardToEditIndex(cardToEditIndex)
 
-            let tempCardToEditId = allCards[cardToEditIndex].id
+            let tempCardToEditId = allCardsBySubject[cardToEditIndex].id
 
             editCardFormRef.current.reset()
             editCardFormRef.current.cardNumber.focus()
@@ -302,8 +318,8 @@ export function AppContextProvider({ children }) {
     const handleUpdateCard = async (e) => {
         e.preventDefault() // this is only for handleSubmit!!
 
-        let updatedCards = [...allCards]
-        const cardToEdit = allCards[cardToEditIndex]
+        let updatedCards = [...allCardsBySubject]
+        const cardToEdit = allCardsBySubject[cardToEditIndex]
         const updatedQuestion = editCardWidgetFormRef.current.question.value
         const updatedAnswer = editCardWidgetFormRef.current.answer.value
 
@@ -335,10 +351,11 @@ export function AppContextProvider({ children }) {
         try {
             const response = await updateCard(updatedCard)
             if (response === 'success') {
+                showToast(`CARD UPDATED`)
                 updatedCards.push(updatedCard)
-                setAllCards(updatedCards)
+                setAllCardsBySubject(updatedCards)
             } else {
-                throw new Error ('Could not UPDATE Card!')
+                throw new Error('Could not UPDATE Card!')
             }
         } catch {
             showToast(`IN CATCH - Could not UPDATE Card!`)
@@ -352,7 +369,7 @@ export function AppContextProvider({ children }) {
     }
 
     const handleDeleteCard = async (e) => {
-        e.preventDefault() // this is only for handleSubmit!!
+        //        e.preventDefault() // this is only for handleSubmit!!
 
         const cardToDeleteNumber = deleteCardFormRef.current.cardNumber.value
 
@@ -363,28 +380,29 @@ export function AppContextProvider({ children }) {
             return
         }
 
-        let updatedCards = [...allCards]
+        let updatedCards = [...allCardsBySubject]
         const cardToDeleteIndex = updatedCards.findIndex(card => card.id.toString() === cardToDeleteNumber.toString())
 
         if (cardToDeleteIndex > -1) {
             updatedCards.splice(cardToDeleteIndex, 1)
-            setAllCards(updatedCards)
+            setAllCardsBySubject(updatedCards)
         } else {
             showToast("DID NOT find card to delete: " + cardToDeleteNumber)
             deleteCardFormRef.current.reset()
             deleteCardFormRef.current.cardNumber.focus()
             return
         }
-        
-        const cardToDeleteId = allCards[cardToDeleteIndex].id
+
+        const cardToDeleteId = allCardsBySubject[cardToDeleteIndex].id
         setIsLoading(true)
 
         try {
             const response = await deleteCard(cardToDeleteId)
             if (response === 'success') {
+                showToast(`CARD DELETED!`)
                 deleteCardFormRef.current.reset()
                 deleteCardFormRef.current.cardNumber.focus()
-                }
+            }
 
         } catch {
             showToast(`IN CATCH - Could not DELETE card!`)
@@ -405,7 +423,7 @@ export function AppContextProvider({ children }) {
         userId,
         subjectId,
         subjectName,
-        allCards,
+        allCardsBySubject,
         currentPage,
         previousPage,
         cardToEditIndex,
