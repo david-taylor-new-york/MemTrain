@@ -1,17 +1,222 @@
-/* Layout */
-.container {
-    background-color: #F5F5F5;
-    margin: 1rem;
+.select {
+    height: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    max-width: 100%;
+    /* Ensure the input field does not extend beyond the container */
+    box-sizing: border-box;
+    /* Include padding and border in width calculation */
+}
+
+
+.radio-tray {
+    display: inline-flex;
+    flex-direction: column;
+    /* Align radio buttons vertically */
+    margin-bottom: 10px;
+    /* Add margin at the bottom of the tray */
+}
+
+.radio-label {
+    display: flex;
+    align-items: left;
+    /* Align the text vertically with the radio buttons */
+}
+
+.radio-label input[type="radio"] {
+    width: 16px;
+    /* Set the width of the radio buttons */
+    height: 16px;
+    /* Set the height of the radio buttons */
+
+    margin-right: 10px;
+    /* Add spacing between the radio button and text */
+    margin-left: 0;
+    /* Align radio buttons all the way to the left */
+    align-self: flex-start;
+    /* Align radio button to the left within the label */
+}
+
+
+
+
+
+.page-container {
     padding: 0.5rem;
+}
+
+.page-section-container {
+    background-color: #F5F5F5;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    margin-top: 0.4rem;
+    overflow-y: auto;
+}
+
+.page-section-container input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     overflow-y: scroll;
 }
 
-.table-container {
-    overflow-y: scroll;
+/* Tables */
+
+.content-table {
+    margin-top: 0.6rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    min-width: 400px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border: 2px solid #000000;
 }
 
+.content-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    padding: 4px;
+}
+
+.content-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+    border: 2px solid #009879;
+}
+
+.content-table td,
+.content-table th {
+    padding: 4px;
+    text-align: left;
+}
+
+.content-table tbody td {
+    padding: 4px;
+    text-align: left;
+    width: auto;
+    /* Allow columns to size themselves based on content */
+}
+
+.content-table tbody td:last-child {
+    text-align: right;
+    /* Right-align content in the last column of tbody */
+}
+
+.content-table thead th:last-child {
+    text-align: right;
+    /* Right-align the right-most header cell */
+    padding-right: 10px;
+}
+
+/* Forms */
+.login-form-input {
+    width: 500px !important;
+    /* Override the parent container's width */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 6px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14;
+    margin-right: 5px;
+}
+
+.button:hover {
+    background-color: #357ABD;
+}
+
+.header-button {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    color: grey;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.submit-button {
+    background-color: #4A90E2;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 6px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #050e14
+}
+
+.button-group-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-menu-button-group {
+    display: flex;
+    justify-content: left;
+}
+
+.login-button-group {
+    width: 130px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.view-sessions-button-group {
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Miscellaneous */
+.progress-bar {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.hidden-input {
+    visibility: hidden;
+}
+
+.training-results-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.training-results-table th,
+.training-results-table td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.correct-row {
+    background-color: #90EE90;
+}
+
+.incorrect-guess {
+    background-color: red;
+}
 
 
 
@@ -31,154 +236,18 @@
 }
 
 
-/* Forms */
-.login-form-input {
-    width: 50%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.card-form input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.card-form button,
-.button {
-    background-color: #4A90E2;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid #050e14;
-}
-
-.header-button {
-    background: none !important;
-    border: none;
-    padding: 0 !important;
-    color: grey;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.submit-button {
-    background-color: #4A90E2;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin: 8px 0px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid #050e14
-}
-
-
-/* Buttons */
-.button-group-top {
-    display: flex;
-    justify-content: space-between;
-}
-
-.main-menu-button-group {
-    display: flex;
-    width: 340px;
-    justify-content: space-between;
-}
-
-.card-menu-button-group {
-    display: flex;
-    width: 210px;
-    justify-content: space-between;
-}
-
-.login-button-group {
-    width: 130px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.button:hover {
-    background-color: #357ABD;
-}
-
-
-
-
-/* Tables */
-.content-table {
-    border-collapse: collapse;
-    margin: 15px 0;
-    font-size: 0.9em;
-    min-width: 400px;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    border: 2px solid #000000;
-}
-
-.content-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 0;
-    padding: 4px;
-}
-
-.content-table thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: left;
-    font-weight: bold;
-    border: 2px solid #009879;
-}
-
-.content-table td {
-    padding: 4px;
-}
-
-.content-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
-
-.content-table tbody tr:nth-of-type(even) {
-    background-color: #dddddd;
-}
-
-/* Miscellaneous */
-.progress-bar {
-    width: 100%;
-    margin: 10px 0;
-}
-
-.center-align {
-    text-align: center;
-}
-
-.hidden-input {
-    visibility: hidden;
-}
-
-#right_header {
-    text-align: right;
-    padding-right: 10px;
-}
-
-#card_id {
+#id_input_field {
     margin: 5px 5px;
     width: 40px;
 }
 
-#add-button {
-    background-color: #4A90E2;
-    color: white;
-    padding: 0.2rem 1rem;
-    border: none;
-    margin: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid #050e14;
-    font-size: 12px;
+.custom-h4 {
+    font-size: 1rem;
+    /* Adjust the font size as needed */
+    margin: 0;
+    /* Remove margin */
+    padding: .25rem;
+    /* Remove padding */
+    line-height: 1;
+    /* Adjust line height if needed */
 }

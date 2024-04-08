@@ -1,105 +1,102 @@
 import React from 'react'
-import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
+import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
-import { ToastContainer } from 'react-toastify'
-import './trainingStyles.css'
+import '../commonStyles.css'
 
 export const TrainingSessionsPage = () => {
 
-    const myAppUpdateContext = useMyAppUpdateContext()
-    const myTrainingContext = useMyTrainingContext()
-
-    const TrainingSummaryButton = () => {
-
-        return (
-            <input className="button" type="button" defaultValue="Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSummaryPage") }} />
-        )
-    }
-
-    const TrainingSessionsTable = () => {
-        const trainingSessions = myTrainingContext.allTrainingSessions
-
-        if ((trainingSessions === null) || (trainingSessions.length === 0)) {
-            return (
-                <tr>
-                    <td> No training sessions exist </td>
-                </tr>
-            )
-        } else {
-            return (
-                <div >
-                    <table className="content-table">
-                        <tbody>
-                            < TrainingSessionsTableHeader />
-                            < TrainingSessionsList trainingSessions={trainingSessions} />
-                        </tbody>
-                    </table>
-                </div>
-            )
-        }
-    }
-
-    const TrainingSessionsTableHeader = () => {
-
-        return (
-            <tr>
-                <th>Session</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Correct</th>
-                <th>Incorrect</th>
-                <th>First Pass %</th>
-                <th>Rounds to Complete</th>
-            </tr>
-        )
-    }
-
-    const TrainingSessionsList = (props) => {
-        let localTrainingSessions = props.trainingSessions
-
-        return (
-            localTrainingSessions.sort((a, b) => a.id - b.id)
-                .map((trainingSession) => {
-                    let percentCorrect = 100
-                    if (trainingSession.num_incorrect !== 0) {
-                        percentCorrect = Math.trunc(trainingSession.num_correct / (trainingSession.num_correct + trainingSession.num_incorrect) * 100)
-                    }
-                    percentCorrect = "(" + percentCorrect.toString() + "%)"
-                    const session_start_time = new Date(trainingSession.session_start_time)
-                    const session_month = session_start_time.getMonth() + 1
-
-                    return (
-                        <tr key={trainingSession.id}>
-                            <td className="center-align">{trainingSession.id}</td>
-                            <td className="center-align">{session_month + "/" + session_start_time.getDate()}</td>
-                            <td className="center-align">{session_start_time.getHours() + ":" + session_start_time.getMinutes()}</td>
-                            <td className="center-align">{trainingSession.num_correct}</td>
-                            <td className="center-align">{trainingSession.num_incorrect}</td>
-                            <td className="center-align">{percentCorrect}</td>
-                            <td className="center-align">NA</td>
-                        </tr>
-                    )
-                })
-        )
-    }
-
-    const TrainingSessionsPageBody = () => {
-        return (
-            <div className="container">
-                < ChooseIdWidget formType="training_session" />
-                < TrainingSessionsTable />
-                <hr />
-                < TrainingSummaryButton />
-                < ToastContainer />
-            </div>
-        )
-    }
-
     return (
-        <div>
+        <div className="page-container">
             < PageHeader pageTitle="Training Sessions" />
             < TrainingSessionsPageBody />
         </div>
     )
 }
+
+const TrainingSessionsPageBody = () => {
+    const myTrainingContext = useMyTrainingContext()
+    const myTrainingUpdateContext = useMyTrainingUpdateContext()
+
+    return (
+        <div className="page-section-container">
+            < ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} />
+            < TrainingSummaryButton />
+            < TrainingSessionsTable />
+        </div>
+    )
+}
+
+const TrainingSessionsTable = () => {
+    const myTrainingContext = useMyTrainingContext()
+    const trainingSessions = myTrainingContext.allTrainingSessions
+
+    return (
+        <div >
+            <table className="content-table">
+                < TrainingSessionsTableHeader />
+                < TrainingSessionsList trainingSessions={trainingSessions} />
+            </table>
+        </div>
+    )
+}
+
+const TrainingSessionsTableHeader = () => {
+    return (
+        <thead >
+            <tr>
+                <th>ID</th>
+                <th>DATE</th>
+                <th>TIME</th>
+                <th>CORRECT</th>
+                <th>INCORRECT</th>
+                <th>1ST PASS %</th>
+                <th>ROUNDS</th>
+            </tr>
+        </thead>
+    )
+}
+
+const TrainingSessionsList = (props) => {
+    let localTrainingSessions = props.trainingSessions
+
+    return (
+        localTrainingSessions.sort((a, b) => a.id - b.id)
+            .map((trainingSession) => {
+                let percentCorrect = 100
+                if (trainingSession.first_pass_incorrect !== 0) {
+                    percentCorrect = Math.trunc(trainingSession.first_pass_correct / (trainingSession.first_pass_correct + trainingSession.first_pass_incorrect) * 100)
+                }
+                percentCorrect = "(" + percentCorrect.toString() + "%)"
+                const session_start_time = new Date(trainingSession.session_start_time)
+                const session_month = session_start_time.getMonth() + 1
+
+                return (
+                    <tbody>
+                        <tr key={trainingSession.id}>
+                            <td className="center-align">{trainingSession.id}</td>
+                            <td className="center-align">{session_month + "/" + session_start_time.getDate() + "/" + session_start_time.getFullYear().toString().slice(-2)}</td>
+                            <td className="center-align">{session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')}</td>
+                            <td className="center-align">{trainingSession.first_pass_correct}</td>
+                            <td className="center-align">{trainingSession.first_pass_incorrect}</td>
+                            <td className="center-align">{percentCorrect}</td>
+                            <td className="center-align">{trainingSession.rounds_to_finish}</td>
+                        </tr>
+                    </tbody>
+                )
+            })
+    )
+}
+
+const TrainingSummaryButton = () => {
+    const myAppUpdateContext = useMyAppUpdateContext()
+
+    return (
+        <div className="page-section-container">
+            <div className="view-sessions-button-group">
+                <input className="submit-button" type="button" defaultValue="View Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSummaryPage") }} />
+            </div>
+        </div>
+    )
+}
+

@@ -7,26 +7,35 @@ import '../commonStyles.css'
 export const CardMenuPage = () => {
 
     return (
-        <div>
-            < PageHeader pageTitle="Card Menu" />
-            < CardMenuPageBody />
+        <div className="page-container">
+            <div className="page-section-container">
+                < PageHeader pageTitle="Card Menu" />
+                < CardMenuPageBody />
+            </div>
         </div>
     )
 }
 
 const CardMenuPageBody = () => {
+    return (
+        <div className="page-section-container">
+            < MenuButtons />
+            < CurrentCardsTable />
+        </div>
+    )
+}
+
+const MenuButtons = () => {
     const myAppUpdateContext = useMyAppUpdateContext()
     const myAppContext = useMyAppContext()
     const cardsExist = myAppContext.allCardsBySubject.length > 0
 
     return (
-        <div className="container">
-            <div className="card-menu-button-group">
-                <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CreateCardsPage")}> Create </SubmitButton>
-                <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.updateCurrentPageTo("EditCardsPage")}> Edit </SubmitButton>
-                <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.updateCurrentPageTo("DeleteCardsPage")}> Delete </SubmitButton>
-            </div>
-            < CurrentCardsTable />
+        <div className="main-menu-button-group">
+            <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CreateCardsPage")}> Create </SubmitButton>
+            <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.handleLoadEditCardPage()}> Edit </SubmitButton>
+            <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.updateCurrentPageTo("DeleteCardsPage")}> Delete </SubmitButton>
+            <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Cancel </SubmitButton>
         </div>
     )
 }

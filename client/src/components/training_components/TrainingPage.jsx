@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
-// import { useMyAppContext } from '../../contexts/AppContextProvider'
-import { PageHeader } from '../Components'
-import { ToastContainer } from 'react-toastify'
-import './trainingStyles.css'
+import { PageHeader, SubmitButton } from '../Components'
+import '../commonStyles.css'
 
 export const TrainingPage = () => {
 
@@ -48,7 +46,6 @@ export const TrainingPage = () => {
     }
 
     const AnswerCardWidget = () => {
-
         const card = myTrainingContext.trainingCards[myTrainingContext.currentCardIndex]
         return (
             <div >
@@ -70,6 +67,7 @@ export const TrainingPage = () => {
                 {/* <h4> Time To Answer: { Math.round( myTrainingContext.secondsToAnswerCurrentCard * 10 ) / 10 } seconds </h4> */}
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Remaining: {myTrainingContext.numberRemaining} </h4>
+                < SubmitButton onClick={() => myTrainingUpdateContext.cancelTraining()}> Cancel </SubmitButton>
             </div>
         )
     }
@@ -83,7 +81,7 @@ export const TrainingPage = () => {
 
         return (
             <div >
-                <h2> DONE with Round! </h2>
+                <h2> DONE with Round {myTrainingContext.trainingRounds}! </h2>
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Total Time: {Math.round(myTrainingContext.cumulativeTrainingSessionTimeInSeconds * 10) / 10} seconds </h4>
                 <h4> [ Enter ] to Continue </h4>
@@ -102,8 +100,8 @@ export const TrainingPage = () => {
         return (
             <div >
                 <h2> DONE with TRAINING! </h2>
-{/*                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4> */}
-{/*                 <h4> Total Time: {Math.round(myTrainingContext.cumulativeTrainingSessionTimeInSeconds * 10) / 10} seconds </h4> */}
+                <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
+                <h4> Total Rounds: {myTrainingContext.trainingRounds} </h4>
                 <h4> [ Enter ] to Continue </h4>
                 <input type="text" autoComplete="off" hidden />
             </div>
@@ -112,15 +110,14 @@ export const TrainingPage = () => {
 
     const TrainingPageBody = () => {
         return (
-            <div className="container">
+            <div className="page-container">
                 <div>
                     Progress:
                     <progress className="progress-bar" value={myTrainingContext.progressValue} />
                 </div>
                 < TrainingWidget />
-                < ToastContainer />
             </div>
-        );
+        )
     }
 
     return (

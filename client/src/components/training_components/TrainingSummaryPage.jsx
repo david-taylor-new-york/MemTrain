@@ -1,15 +1,13 @@
 import React from 'react'
 import { PageHeader } from '../Components'
-import { ToastContainer } from 'react-toastify'
-import './trainingStyles.css'
+import '../commonStyles.css'
 
 export const TrainingSummaryPage = () => {
 
     const TrainingSummaryPageBody = () => {
         return (
-            <div className="container">
+            <div className="page-container">
                 <br />
-                < ToastContainer />
             </div>
         )
     }
