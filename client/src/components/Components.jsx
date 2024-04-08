@@ -90,9 +90,9 @@ export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall }) => {
     const myAppUpdateContext = useMyAppUpdateContext()
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        submitCall();
-    };
+        e.preventDefault()
+        submitCall()
+    }
 
     return (
         <div className="page-section-container">
@@ -107,8 +107,8 @@ export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall }) => {
             </form>
             <hr />
         </div>
-    );
-};
+    )
+}
 
 export const CardForm = ({ formRef, onSubmit, defaultValue }) => {
     const myAppUpdateContext = useMyAppUpdateContext()
@@ -128,5 +128,5 @@ export const CardForm = ({ formRef, onSubmit, defaultValue }) => {
                 </div>
             </form>
         </div>
-    );
+    )
 }
