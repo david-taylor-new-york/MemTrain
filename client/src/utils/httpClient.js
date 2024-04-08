@@ -16,6 +16,9 @@ async function performHttp(operationType, endpoint, data) {
         console.log(" ")
         return response.data
     } catch (error) {
+        console.log("   error: ")
+        console.log(error)
+        console.log(" ")
         throw new Error(`Could not perform ${operationType} operation on ${endpoint}! Error: ${error.message}`)
     }
 }
@@ -46,7 +49,7 @@ export const getSubjectsBy = (param_name, param_value) => getResourcesBy('subjec
 
 export const createCard = card => createResource('cards', card)
 
-export const getCards = subjectId => getResourcesBy('cards', 'subject_id', subjectId)
+export const getCards = currentSubjectId => getResourcesBy('cards', 'subject_id', currentSubjectId)
 
 export const updateCard = updatedCard => updateResource('cards', updatedCard)
 
@@ -58,6 +61,8 @@ export const getCardResultsBy = (param_name, param_value) => getResourcesBy('car
 
 export const createTrainingSession = trainingSession => createResource('training_sessions', trainingSession)
 
+export const updateTrainingSession = updatedTrainingSession => updateResource('training_sessions', updatedTrainingSession)
+
 export const getTrainingSession = trainingSessionId => getResourcesBy('training_sessions', 'id', trainingSessionId)
 
-export const getTrainingSessions = subjectId => getResourcesBy('training_sessions', 'subject_id', subjectId)
+export const getTrainingSessions = currentSubjectId => getResourcesBy('training_sessions', 'subject_id', currentSubjectId)

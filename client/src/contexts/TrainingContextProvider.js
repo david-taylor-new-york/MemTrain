@@ -1,8 +1,10 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
 import { showToast } from '../utils/utils'
-import { createTrainingSession, getTrainingSession, getTrainingSessions,
-    createCardResults, getCardResultsBy } from '../utils/httpClient'
+import {
+    createTrainingSession, getTrainingSession, getTrainingSessions,
+    updateTrainingSession, createCardResults, getCardResultsBy
+} from '../utils/httpClient'
 
 const MyTrainingContext = React.createContext()
 const MyTrainingUpdateContext = React.createContext()
@@ -24,7 +26,9 @@ export function TrainingContextProvider({ children }) {
     const [allTrainingSessions, setAllTrainingSessions] = useState([])
     const [currentTrainingSession, setCurrentTrainingSession] = useState(null)
     const [trainingType, setTrainingType] = useState("practice")
+    const [trainingRounds, setTrainingRounds] = useState(0)
     const [cumulativeTrainingSessionTimeInSeconds, setCumulativeTrainingSessionTimeInSeconds] = useState(0)
+    const [currentSessionResults, setCurrentSessionResults] = useState([])
     const [currentCardResults, setCurrentCardResults] = useState([])
     const [currentTrainingState, setCurrentTrainingState] = useState("NotStarted")
     const [currentCardIndex, setCurrentCardIndex] = useState(-1)
@@ -35,22 +39,22 @@ export function TrainingContextProvider({ children }) {
     const [progressValue, setProgressValue] = useState(0)
 
     const loadTrainingMenuPage = async () => {
-        const trainingSessions = await getTrainingSessions(myAppContext.subjectId)
+        const trainingSessions = await getTrainingSessions(myAppContext.currentSubjectId)
         setAllTrainingSessions(trainingSessions)
         myAppUpdateContext.updateCurrentPageTo("TrainingMenuPage")
     }
 
-    const loadTrainingSetupPage = async () => {
+    const loadTrainingSetupPage = () => {
         myAppUpdateContext.updateCurrentPageTo("TrainingSetupPage")
     }
 
-    const startTraining = async () => {
+    const startTraining = () => {
         setCurrentTrainingState("Training")
         setTrainingType(trainingSettingsFormRef.current.trainingType.value)
-        console.log("trainingType = " + trainingType)
-        const initialCards = getInitialTrainingCards(trainingType)
-        setTrainingCards(initialCards)
+        const initialCards = getTrainingCards(trainingType)
 
+        setTrainingCards(initialCards)
+        setTrainingRounds(0)
         setProgressValue(0)
         setCurrentCardResults([])
         setFailedCards([])
@@ -59,7 +63,7 @@ export function TrainingContextProvider({ children }) {
         setNumberIncorrect(0)
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
-        setNumberRemaining(trainingCards.length)
+        setNumberRemaining(initialCards.length)
         myAppUpdateContext.updateCurrentPageTo("TrainingPage")
     }
 
@@ -72,22 +76,34 @@ export function TrainingContextProvider({ children }) {
             return false
         }
 
-        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 10) / 100
+        const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 1000)
         setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
 
         let isCorrect = compareAnswers(currentCard.answer, givenAnswer)
-        updateScores(isCorrect) // (correct/incorrect totals)
+        updateScores(isCorrect, currentCard)
 
-        const cardResult = createCardResult(currentCard, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
+        const cardResult = createCardResult(currentCard.id, currentCard.question, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
         updateCardResults(cardResult)
-
-        if (!isCorrect) {
-            console.log("INCORRECT ANSWER!")
-            updateFailedCards(currentCard)
-        }
 
         submitAnswerFormRef.current.reset()
         handleNextOrFinish()
+    }
+
+    const updateFailedCards = (card) => {
+        const updatedFailedCards = [...failedCards]
+        updatedFailedCards.push(card)
+        setFailedCards(updatedFailedCards)
+    }
+
+    const updateScores = (isCorrect, card) => {
+        if (isCorrect) {
+            setNumberCorrect(numberCorrect + 1)
+        } else {
+            showToast("NO:  " + card.answer)
+            setNumberIncorrect(numberIncorrect + 1)
+            updateFailedCards(card)
+        }
+        setNumberRemaining(numberRemaining - 1)
     }
 
     const handleNextOrFinish = () => {
@@ -95,27 +111,28 @@ export function TrainingContextProvider({ children }) {
             getNextCard()
         } else {
             setTrainingCards(failedCards)
+            setTrainingRounds(trainingRounds + 1)
             setCurrentTrainingState("FinishedTrainingRound")
             setProgressValue(1)
         }
     }
 
     const finishTrainingRound = async () => {
-        if (trainingType === "actual") {
-            const cumul = (Math.round((cumulativeTrainingSessionTimeInSeconds) * 10) / 10)
+        if ((trainingType === "recorded") && (trainingRounds === 1)) {
             const newTrainingSession = {
-                subject_id: myAppContext.subjectId,
+                subject_id: myAppContext.currentSubjectId,
                 first_pass_correct: numberCorrect,
                 first_pass_incorrect: numberIncorrect,
+                rounds_to_finish: trainingRounds,
                 session_start_time: startTime,
-                training_time_in_seconds: cumul
+                training_time_in_seconds: cumulativeTrainingSessionTimeInSeconds
             }
             const trainingSessionId = await createTrainingSession(newTrainingSession)
             newTrainingSession.id = trainingSessionId.id
-            setCurrentTrainingSession(newTrainingSession) // DELETE?
+            setCurrentTrainingSession(newTrainingSession)
             let updatedTrainingSessions = [...allTrainingSessions]
             updatedTrainingSessions.push(newTrainingSession)
-            setCurrentCardResults(updatedTrainingSessions)
+            setAllTrainingSessions(updatedTrainingSessions)
 
             const nextCardResults = addTrainingSessionIdToCardResults(trainingSessionId.id)
             const sortedCardResults = nextCardResults.sort((a, b) => { return a.card_id - b.card_id })
@@ -132,7 +149,7 @@ export function TrainingContextProvider({ children }) {
             setNumberIncorrect(0)
             setCumulativeTrainingSessionTimeInSeconds(0)
             setStartTime(new Date())
-            setNumberRemaining(trainingCards.length)
+            setNumberRemaining(failedCards.length)
             setCurrentTrainingState("Training")
         } else {
             setCurrentTrainingState("FinishedTraining")
@@ -140,41 +157,69 @@ export function TrainingContextProvider({ children }) {
     }
 
     const finishTraining = async () => {
-        console.log("finishTraining():")
+        if ((trainingType === "recorded")) {
+            localUpdateTrainingSession()
+            const trainingSessions = await getTrainingSessions(myAppContext.currentSubjectId)
+            setAllTrainingSessions(trainingSessions)
+        }
         loadTrainingMenuPage()
     }
 
-    const updateFailedCards = (card) => {
-        const updatedFailedCards = [...failedCards]
-        updatedFailedCards.push(card)
-        setFailedCards(updatedFailedCards)
+    const cancelTraining = () => {
+        setTrainingCards([])
+        setProgressValue(0)
+        setCurrentCardResults([])
+        setFailedCards([])
+        setCurrentCardIndex(0)
+        setNumberCorrect(0)
+        setNumberIncorrect(0)
+        setCumulativeTrainingSessionTimeInSeconds(0)
+        setStartTime(new Date())
+        setNumberRemaining(failedCards.length)
+        setCurrentTrainingState("NotStarted")
+        myAppUpdateContext.updateCurrentPageTo("TrainingMenuPage")
     }
 
-    const getInitialTrainingCards = (trainingType) => {
-        const trainingCards = []
+    const localUpdateTrainingSession = async () => {
+        const updatedTrainingSession = {
+            id: currentTrainingSession.id,
+            subject_id: currentTrainingSession.subject_id,
+            first_pass_correct: currentTrainingSession.first_pass_correct,
+            first_pass_incorrect: currentTrainingSession.first_pass_incorrect,
+            rounds_to_finish: trainingRounds,
+            session_start_time: currentTrainingSession.session_start_time,
+            training_time_in_seconds: currentTrainingSession.training_time_in_seconds
+        }
+
+        try {
+            const response = await updateTrainingSession(updatedTrainingSession)
+            if (response === 'success') {
+                setCurrentTrainingSession(updatedTrainingSession)
+            } else {
+                throw new Error('Could not UPDATE TrainingSession!')
+            }
+        } catch {
+            throw new Error('Could not UPDATE TrainingSession!')
+        }
+    }
+
+    const getTrainingCards = (trainingType) => {
+        let trainingCards = []
         const allCardsBySubject = [...myAppContext.allCardsBySubject]
 
-        if (trainingType === "actual") {
-//            for (let card of allCardsBySubject) {
-//                if (card.trend < 0) {
-//                    trainingCards.add(card)
-//                } else if (card.buoyancy > 0) {
-//                    }
-//                console.log(card.id)
-//            }
+        if (trainingType === "recorded") {
+            trainingCards = allCardsBySubject
+            //            for (let card of allCardsBySubject) {
+            //                if (card.trend < 0) {
+            //                    trainingCards.add(card)
+            //                } else if (card.buoyancy > 0) {
+            //                    }
+            //                console.log(card.id)
+            //            }
             return trainingCards
         } else {
             return allCardsBySubject
         }
-    }
-
-    const updateScores = (isCorrect) => {
-        if (isCorrect) {
-            setNumberCorrect(numberCorrect + 1)
-        } else {
-            setNumberIncorrect(numberIncorrect + 1)
-        }
-        setNumberRemaining(numberRemaining - 1)
     }
 
     const getNextCard = () => {
@@ -186,10 +231,10 @@ export function TrainingContextProvider({ children }) {
     }
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
-        let modifiedExpectedAnswer = expectedAnswer;
+        let modifiedExpectedAnswer = expectedAnswer
 
         if (givenAnswer.includes("*")) {
-            modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer);
+            modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer)
         }
 
         const expectedWords = normalizeText(modifiedExpectedAnswer).split(' ').sort()
@@ -215,14 +260,13 @@ export function TrainingContextProvider({ children }) {
         return cleanedWords.join(" ")
     }
 
-    const normalizeText = (text) => {
-        return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
-    }
+    const normalizeText = (text) => { return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '') }
 
-    const createCardResult = (card, givenAnswer, answer, isCorrect, secondsToAnswerThisCard) => {
+    const createCardResult = (cardId, question, givenAnswer, answer, isCorrect, secondsToAnswerThisCard) => {
         return {
-            subject_id: card.subject_id,
-            card_id: card.id,
+            training_session_id: null,
+            card_id: cardId,
+            question: question,
             guess: givenAnswer,
             answer: answer,
             is_correct: isCorrect,
@@ -236,15 +280,6 @@ export function TrainingContextProvider({ children }) {
         setCurrentCardResults(updatedCardResults)
     }
 
-//    const getLastTrainingSession = (trainingSessions) => {
-//        const mostRecentSession = trainingSessions.sort((a, b) => {
-//            const dateA = new Date(a.session_start_time)
-//            const dateB = new Date(b.session_start_time)
-//            return dateB - dateA
-//        })[0]
-//        return new Date(mostRecentSession.session_start_time)
-//    }
-
     const addTrainingSessionIdToCardResults = (trainingSessionId) => {
 
         let cardResultsWithId = []
@@ -256,46 +291,37 @@ export function TrainingContextProvider({ children }) {
         return cardResultsWithId
     }
 
-    const loadTrainingSessionsPage = async () => {
-        const trainingSessions = await getTrainingSessions(myAppContext.subjectId)
-        setAllTrainingSessions(trainingSessions)
-        myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage")
-    }
-
     const loadTrainingSessionPage = async () => {
-        const trainingSessionId = trainingSessionsFormRef.current.cardNumber.value
-        myAppUpdateContext.updateCurrentPageTo("TrainingSessionPage")
-        if (trainingSessionId === "") {
-            showToast("Enter TrainingSession Id!")
+        const trainingSessionId = trainingSessionsFormRef.current.idInputField.value
+        const trainingSessionArray = await getTrainingSession(trainingSessionId)
+
+        if (trainingSessionArray.length === 0) {
+            showToast("Training session " + trainingSessionId + " not found!")
+            trainingSessionsFormRef.current.reset()
+            trainingSessionsFormRef.current.idInputField.focus()
             return
         }
-        myAppUpdateContext.updateIsLoading(true)
 
-        const trainingSessionArray = await getTrainingSession(trainingSessionId)
-        let trainingSession = trainingSessionArray[0]
-        trainingSession.session_start_time = new Date(trainingSession.session_start_time)
+        setCurrentTrainingSession(trainingSessionArray[0])
+        myAppUpdateContext.updateCurrentPageTo("TrainingSessionPage")
 
-        setCurrentTrainingSession(trainingSession)
-        setNumberCorrect(trainingSession.num_correct)
-        setNumberCorrect(trainingSession.num_incorrect)
-
-        const cardResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSessionId)
-
-        setCurrentCardResults(cardResultsByTrainingSessionId)
-        myAppUpdateContext.updateIsLoading(false)
+        const sessionResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSessionId)
+        setCurrentSessionResults(sessionResultsByTrainingSessionId)
     }
 
     const loadTrainingCardResultsPage = async () => {
-        myAppUpdateContext.updateCurrentPageTo("TrainingCardResultsPage")
-        const cardId = trainingSessionFormRef.current.cardId.value
-        if (cardId === "") {
-            showToast("Enter Card Id!")
-            return
-        }
+        const cardId = trainingSessionFormRef.current.idInputField.value
         myAppUpdateContext.updateIsLoading(true)
-
         const cardResultsByCardId = await getCardResultsBy('card_id', cardId)
 
+        if (cardResultsByCardId.length === 0) {
+            showToast("Results not found for card: " + cardId)
+            trainingSessionFormRef.current.reset()
+            trainingSessionFormRef.current.idInputField.focus()
+            return
+        }
+
+        myAppUpdateContext.updateCurrentPageTo("TrainingCardResultsPage")
         setCurrentCardResults(cardResultsByCardId)
         const correct = countCorrect(cardResultsByCardId)
         const incorrect = cardResultsByCardId.length - correct
@@ -317,8 +343,10 @@ export function TrainingContextProvider({ children }) {
 
     const allContexts = {
         allTrainingSessions,
+        currentSessionResults,
         currentCardResults,
         trainingCards,
+        trainingRounds,
         currentTrainingState,
         currentCardIndex,
         numberCorrect,
@@ -339,9 +367,9 @@ export function TrainingContextProvider({ children }) {
         answerQuestion,
         finishTrainingRound,
         finishTraining,
+        cancelTraining,
         loadTrainingMenuPage,
         loadTrainingSessionPage,
-        loadTrainingSessionsPage,
         loadTrainingCardResultsPage
     }
 

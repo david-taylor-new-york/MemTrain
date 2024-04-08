@@ -1,5 +1,11 @@
 import { toast } from 'react-toastify'
 
+export const showToast = (msg) => {
+  toast.info(msg, { autoClose: 1000 })
+}
+
+// IMPLEMENT?:
+
 //const fibonacciRecursive = (n) => {
 //    if (n <= 0) {
 //        return 0
@@ -8,15 +14,6 @@ import { toast } from 'react-toastify'
 //    } else {
 //        return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2)
 //    }
-//}
-//
-//const addDaysToNextReview = (daysToAddToNextReview) => {
-//    const today = new Date()
-//    let nextReviewDate = new Date()
-//    nextReviewDate.setDate(today.getDate() + daysToAddToNextReview)
-//    console.log(nextReviewDate)
-//
-//    return nextReviewDate
 //}
 //
 //const calculateBuoyancy = (existingBuoyancy, cardResult) => {
@@ -32,6 +29,3 @@ import { toast } from 'react-toastify'
 //    return newBuoyancy
 //}
 
-export const showToast = (msg) => {
-    toast.info(msg)
-  }

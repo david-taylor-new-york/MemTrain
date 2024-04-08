@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS training_sessions CASCADE;
 DROP TABLE IF EXISTS cards CASCADE;
 DROP TABLE IF EXISTS subjects CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS card_schedules CASCADE;
 
 CREATE TABLE users(
    id  SERIAL PRIMARY KEY,
@@ -33,16 +32,17 @@ CREATE TABLE training_sessions(
    subject_id            INT       NOT NULL,
    first_pass_correct            INT       NULL,
    first_pass_incorrect            INT       NULL,
+   rounds_to_finish            INT       NULL,
    session_start_time  	TIMESTAMPTZ  NOT NULL,
    training_time_in_seconds            INT       NULL,
-   FOREIGN KEY (subject_id) REFERENCES subjects(id)
-   );
+   FOREIGN KEY (subject_id) REFERENCES subjects(id));
 
 
 CREATE TABLE card_results(
    id  		SERIAL PRIMARY KEY,
    training_session_id            INT       NOT NULL,
    card_id            INT       NOT NULL,
+   question            VARCHAR       NOT NULL,
    guess            VARCHAR       NOT NULL,
    answer            VARCHAR       NOT NULL,
    is_correct  	boolean  NOT NULL,

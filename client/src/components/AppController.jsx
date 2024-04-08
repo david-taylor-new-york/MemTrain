@@ -68,6 +68,6 @@ export const AppController = () => {
       return (< TrainingSummaryPage />)
 
     default:
-      (console.log("PAGE NOT RECOGNIZED: " + myAppContext.currentPage))
+      throw new Error("PAGE NOT RECOGNIZED: " + myAppContext.currentPage)
   }
 }

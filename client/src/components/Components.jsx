@@ -1,7 +1,26 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../contexts/AppContextProvider'
-import { useMyTrainingContext, useMyTrainingUpdateContext } from '../contexts/TrainingContextProvider'
 import './commonStyles.css'
+
+
+export const PageHeader = ({ pageTitle }) => {
+    const myAppContext = useMyAppContext()
+    const myAppUpdateContext = useMyAppUpdateContext()
+
+    const showBackButton = (myAppContext.currentSubjectName !== "unselected")
+
+    return (
+        <div className="page-section-container">
+            <div className="button-group-top">
+                {showBackButton && <button className="header-button" onClick={() => myAppUpdateContext.updateCurrentPageTo(myAppContext.previousPage)}>Back</button>}
+                <button className="header-button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
+            </div>
+            <h4 id="page-subject" className="subject-sub-header"> Subject: {myAppContext.currentSubjectName}</h4>
+            <h3 id="page-title" className="page-title">{pageTitle}</h3>
+            <hr />
+        </div>
+    )
+}
 
 export const CurrentCardsTable = () => {
     const myAppContext = useMyAppContext()
@@ -19,9 +38,9 @@ export const CurrentCardsTable = () => {
         }
     } else {
         return (
-            <div className="table-container">
+            <div>
                 <table className="content-table">
-                    < ResultsHeader showAnswer={showAnswer} />
+                    < CurrentCardsTableHeader showAnswer={showAnswer} />
                     < CurrentCardList cards={cards} showAnswer={showAnswer} />
                 </table>
             </div>
@@ -29,53 +48,33 @@ export const CurrentCardsTable = () => {
     }
 }
 
-const ResultsHeader = ({ showAnswer }) => {
+const CurrentCardsTableHeader = ({ showAnswer }) => {
     return (
-        <thead>
+        <thead >
             <tr>
                 <th>CARD</th>
                 <th>QUESTION</th>
                 {showAnswer && <th>ANSWER</th>}
-                {showAnswer && <th id="right_header">FOLLOWS</th>}
+                {showAnswer && <th>FOLLOWS</th>}
             </tr>
         </thead>
     )
 }
 
 const CurrentCardList = ({ cards, showAnswer }) => {
-
     return (
         <tbody>
             {cards
                 .sort((a, b) => a.id - b.id)
                 .map((card) => (
                     <tr key={card.id}>
-                        <td id="left_header">{card.id}</td>
-                        <td id="second_header">{card.question}</td>
-                        {showAnswer && <td id="third_header">{card.answer}</td>}
-                        {showAnswer && <td id="right_header">{card.follows}</td>}
+                        <td >{card.id}</td>
+                        <td >{card.question}</td>
+                        {showAnswer && <td>{card.answer}</td>}
+                        {showAnswer && <td>{card.follows}</td>}
                     </tr>
                 ))}
         </tbody>
-    )
-}
-
-export const PageHeader = ({ pageTitle }) => {
-    const myAppContext = useMyAppContext()
-    const myAppUpdateContext = useMyAppUpdateContext()
-
-    const showBackButton = (myAppContext.subjectName !== "unselected")
-
-    return (
-        <div className="container">
-            <div className="button-group-top">
-                {showBackButton && <button className="header-button" onClick={() => myAppUpdateContext.updateCurrentPageTo(myAppContext.previousPage)}>Back</button>}
-                <button className="header-button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
-            </div>
-            <h4 id="page-subject" className="subject-sub-header"> Subject: {myAppContext.subjectName}</h4>
-            <h3 id="page-title" className="page-title">{pageTitle}</h3>
-            <hr />
-        </div>
     )
 }
 
@@ -87,35 +86,8 @@ export const SubmitButton = ({ showButton = true, onClick, children }) => {
     )
 }
 
-export const ChooseIdWidget = ({ formType }) => {
-    const myAppContext = useMyAppContext()
+export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall }) => {
     const myAppUpdateContext = useMyAppUpdateContext()
-    const myTrainingContext = useMyTrainingContext()
-    const myTrainingUpdateContext = useMyTrainingUpdateContext()
-
-    let formRef = null
-    let buttonLabel = null
-    let submitCall = null
-
-    switch (formType) {
-        case 'edit':
-            formRef = myAppContext.editCardFormRef
-            buttonLabel = 'Edit Card'
-            submitCall = myAppUpdateContext.handleSetCardToEditId
-            break
-        case 'delete':
-            formRef = myAppContext.deleteCardFormRef
-            buttonLabel = 'Delete Card'
-            submitCall = myAppUpdateContext.handleDeleteCard
-            break
-        case 'training_session':
-            formRef = myTrainingContext.trainingSessionsFormRef
-            buttonLabel = 'View Session'
-            submitCall = myTrainingUpdateContext.loadTrainingSessionPage
-            break
-        default:
-            break
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -123,66 +95,38 @@ export const ChooseIdWidget = ({ formType }) => {
     }
 
     return (
-        <div className="card-widget">
+        <div className="page-section-container">
             <form ref={formRef} onSubmit={handleSubmit}>
                 <label>
                     Id:
-                    <input id="card_id" type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
+                    <input id="id_input_field" type="text" autoComplete="off" name="idInputField" autoFocus required minLength="1" />
                 </label>
                 <br />
-                <button className="button" type="submit">
-                    {buttonLabel}
-                </button>
+                <button className="button" type="submit"> {buttonLabel} </button>
+                <button className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
             </form>
             <hr />
         </div>
     )
 }
 
-
-// export const ChooseIdWidget = ({ formType }) => {
-//     const myAppContext = useMyAppContext()
-//     const myAppUpdateContext = useMyAppUpdateContext()
-//     const myTrainingContext = useMyTrainingContext()
-//     const myTrainingUpdateContext = useMyTrainingUpdateContext()
-//
-//     let formRef = null
-//     let buttonLabel = null
-//
-//     if (formType === 'edit') {
-//         formRef = myAppContext.editCardFormRef
-//         buttonLabel = "Edit Card"
-//     } else if (formType === 'delete') {
-//         formRef = myAppContext.deleteCardFormRef
-//         buttonLabel = 'Delete Card'
-//     } else if (formType === 'training_session') {
-//         formRef = myTrainingContext.trainingSessionsFormRef
-//         buttonLabel = 'View Session'
-//         console.log('IN HERE!!')
-// //         {formType === 'edit' ? 'Edit Card' : 'Delete Card'}
-//         }
-//     const handleSubmit = (e) => {
-//         e.preventDefault()
-//         if (formType === 'edit') {
-//             myAppUpdateContext.handleSetCardToEditId()
-//         } else if (formType === 'delete') {
-//             myAppUpdateContext.handleDeleteCard()
-//         } else if (formType === 'training_session') {
-//             myTrainingUpdateContext.loadTrainingSessionPage()
-//         }
-//     }
-//
-//     return (
-//         <div>
-//             <form ref={formRef} onSubmit={handleSubmit}>
-//                 <label>
-//                     Id:
-//                     <input id="card_id" type="text" autoComplete="off" name="cardNumber" autoFocus required minLength="1" />
-//                 </label>
-//                 <br/>
-//                 <button className="button" type="submit"> {buttonLabel} </button>
-//             </form>
-//             <hr />
-//         </div>
-//     )
-// }
+export const CardForm = ({ formRef, onSubmit, defaultValue }) => {
+    const myAppUpdateContext = useMyAppUpdateContext()
+    return (
+        <div className="page-section-container">
+            <form ref={formRef} onSubmit={onSubmit}>
+                Question:
+                <input type="text" autoComplete="off" name="question" defaultValue={defaultValue ? defaultValue.question : ''} autoFocus required minLength="1" />
+                Answer:
+                <input type="text" autoComplete="off" name="answer" defaultValue={defaultValue ? defaultValue.answer : ''} required minLength="1" />
+                Card (Id) To Follow:
+                <input id="id_input_field" type="number" name="cardToFollow" defaultValue={defaultValue ? defaultValue.follows : ''} minLength="1" />
+                <br />
+                <div className="main-menu-button-group">
+                    <button className="button" type="submit" >{defaultValue ? 'Update Card' : 'Create Card'}</button>
+                    <button className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
+                </div>
+            </form>
+        </div>
+    )
+}

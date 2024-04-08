@@ -1,48 +1,39 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { PageHeader } from '../Components'
-import './trainingStyles.css'
+import { PageHeader, SubmitButton } from '../Components'
+import '../commonStyles.css'
 
 export const TrainingMenuPage = () => {
+    return (
+        <div className="page-container">
+            <div className="page-section-container">
+                < PageHeader pageTitle="Training Menu" />
+                < TrainingMenuPageBody />
+            </div>
+        </div>
+    )
+}
+
+const TrainingMenuPageBody = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
-    const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
+    const myTrainingContext = useMyTrainingContext()
 
     const displayTrainingPageButton = myAppContext.allCardsBySubject.length > 0
     const displayTrainingSessionsButton = myTrainingContext.allTrainingSessions.length > 0
 
-    const TrainingPageButton = () => {
-        if (displayTrainingPageButton) {
-            return (
-                <input type="button" className="button" defaultValue="Train" onClick={() => { myTrainingUpdateContext.loadTrainingSetupPage() }} />
-            )
-        }
-    }
-
-    const TrainingSessionsPageButton = () => {
-        if (displayTrainingSessionsButton) {
-            return (
-                <input type="button" className="button" defaultValue="Training Sessions" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage") }} />
-            )
-        }
-    }
-
-    const TrainingMenuPageBody = () => {
-        return (
-            <div className="container">
-                < TrainingPageButton />
-                < TrainingSessionsPageButton />
-                {!displayTrainingPageButton && !displayTrainingSessionsButton && "Create some cards!"}
-            </div>
-        )
-    }
-
     return (
         <div>
-            < PageHeader pageTitle="Training Menu" />
-            < TrainingMenuPageBody />
+            <div className="page-section-container">
+                <div className="main-menu-button-group">
+                    <SubmitButton showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
+                    <SubmitButton showButton={displayTrainingSessionsButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage")}> Training Sessions </SubmitButton>
+                    {!displayTrainingPageButton && !displayTrainingSessionsButton && <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Create some cards! </SubmitButton>}
+                    < SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Cancel </SubmitButton>
+                </div>
+            </div>
         </div>
     )
 }

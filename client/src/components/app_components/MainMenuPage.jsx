@@ -6,9 +6,11 @@ import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvid
 export const MainMenuPage = () => {
 
     return (
-        <div>
-            < PageHeader pageTitle="Main Menu" />
-            < MainMenuPageBody />
+        <div className="page-container">
+            <div className="page-section-container">
+                < PageHeader pageTitle="Main Menu" />
+                < MainMenuPageBody />
+            </div>
         </div>
     )
 }
@@ -18,11 +20,13 @@ const MainMenuPageBody = () => {
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     return (
-        <div className="container">
-            <div className="main-menu-button-group">
-                <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("SubjectPage")}>Change Subject</SubmitButton>
-                <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CardMenuPage")}>Update Cards</SubmitButton>
-                <SubmitButton onClick={() => myTrainingUpdateContext.loadTrainingMenuPage()}>Training</SubmitButton>
+        <div>
+            <div className="page-section-container">
+                <div className="main-menu-button-group">
+                    <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("SubjectPage")}>Change Subject</SubmitButton>
+                    <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CardMenuPage")}>Update Cards</SubmitButton>
+                    <SubmitButton onClick={() => myTrainingUpdateContext.loadTrainingMenuPage()}>Training</SubmitButton>
+                </div>
             </div>
         </div>
     )
