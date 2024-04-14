@@ -7,8 +7,9 @@ export const CreateCardsPage = () => {
 
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Create Card" />
+            <div id="create-cards-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < CreateCardsPageBody />
             </div>
         </div>

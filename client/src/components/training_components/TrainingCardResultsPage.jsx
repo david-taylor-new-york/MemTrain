@@ -8,7 +8,8 @@ export const TrainingCardResultsPage = () => {
 
     return (
         <div className="page-container">
-            < PageHeader pageTitle="Training Card Results" />
+            <div id="training-card-results-page-id" style={{ display: 'none' }}> </div>
+            < PageHeader />
             < TrainingCardResultsPageBody />
         </div>
     )
@@ -19,10 +20,10 @@ const TrainingCardResultsPageBody = () => {
     const myTrainingContext = useMyTrainingContext()
 
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             < TrainingSessionsSummary />
-            <button className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
-            <table className="content-table">
+            <button id="cancel-button" className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
+            <table className="table-container">
                 < TrainingCardResultsTableHeader />
                 < TrainingCardResultsList trainingResults={myTrainingContext.currentCardResults} />
             </table>
@@ -34,11 +35,11 @@ const TrainingSessionsSummary = () => {
     const myTrainingContext = useMyTrainingContext()
 
     return (
-        <div className="page-section-container">
-            <h4 class="custom-h4"> Card Id: {myTrainingContext.currentCardResults[0].card_id} </h4>
-            <h4 class="custom-h4"> Question: {myTrainingContext.currentCardResults[0].question} </h4>
-            <h4 class="custom-h4"> Correct Answer: {myTrainingContext.currentCardResults[0].answer} </h4>
-            <h4 class="custom-h4"> Correct ({myTrainingContext.numberCorrect})   Incorrect ({myTrainingContext.numberIncorrect}) </h4>
+        <div className="section-container">
+            <h4 class="results-header"> Card Id: {myTrainingContext.currentCardResults[0].card_id} </h4>
+            <h4 class="results-header"> Question: {myTrainingContext.currentCardResults[0].question} </h4>
+            <h4 class="results-header"> Correct Answer: {myTrainingContext.currentCardResults[0].answer} </h4>
+            <h4 class="results-header"> Correct ({myTrainingContext.numberCorrect})   Incorrect ({myTrainingContext.numberIncorrect}) </h4>
         </div>
     )
 }

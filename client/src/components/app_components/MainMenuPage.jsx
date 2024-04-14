@@ -1,14 +1,15 @@
 import React from 'react'
 import { SubmitButton, PageHeader } from '../Components'
-import { useMyAppUpdateContext } from '../../contexts/AppContextProvider' // Import the app context hook
-import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider' // Import the training context hook
+import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
+import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 
 export const MainMenuPage = () => {
 
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Main Menu" />
+            <div id="main-menu-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < MainMenuPageBody />
             </div>
         </div>
@@ -21,11 +22,11 @@ const MainMenuPageBody = () => {
 
     return (
         <div>
-            <div className="page-section-container">
+            <div className="section-container">
                 <div className="main-menu-button-group">
-                    <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("SubjectPage")}>Change Subject</SubmitButton>
-                    <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CardMenuPage")}>Update Cards</SubmitButton>
-                    <SubmitButton onClick={() => myTrainingUpdateContext.loadTrainingMenuPage()}>Training</SubmitButton>
+                    <SubmitButton id="change-subject-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Subject")}>Change Subject</SubmitButton>
+                    <SubmitButton id="update-cards-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Card Menu")}>Update Cards</SubmitButton>
+                    <SubmitButton id="training-menu-button" onClick={() => myTrainingUpdateContext.loadTrainingMenuPage()}>Training</SubmitButton>
                 </div>
             </div>
         </div>

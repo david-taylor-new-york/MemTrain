@@ -7,8 +7,9 @@ import '../commonStyles.css'
 export const TrainingMenuPage = () => {
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Training Menu" />
+            <div id="training-menu-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < TrainingMenuPageBody />
             </div>
         </div>
@@ -26,12 +27,12 @@ const TrainingMenuPageBody = () => {
 
     return (
         <div>
-            <div className="page-section-container">
+            <div className="section-container">
                 <div className="main-menu-button-group">
-                    <SubmitButton showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
-                    <SubmitButton showButton={displayTrainingSessionsButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("TrainingSessionsPage")}> Training Sessions </SubmitButton>
-                    {!displayTrainingPageButton && !displayTrainingSessionsButton && <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Create some cards! </SubmitButton>}
-                    < SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Cancel </SubmitButton>
+                    <SubmitButton id="train-button" showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
+                    <SubmitButton id="training-sessions-button" showButton={displayTrainingSessionsButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Training Sessions")}> Training Sessions </SubmitButton>
+                    {!displayTrainingPageButton && !displayTrainingSessionsButton && <SubmitButton id="create-some-cards-text" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Create some cards! </SubmitButton>}
+                    < SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Cancel </SubmitButton>
                 </div>
             </div>
         </div>

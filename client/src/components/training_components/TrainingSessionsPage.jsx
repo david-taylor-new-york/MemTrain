@@ -8,7 +8,8 @@ export const TrainingSessionsPage = () => {
 
     return (
         <div className="page-container">
-            < PageHeader pageTitle="Training Sessions" />
+            <div id="training-sessions-page-id" style={{ display: 'none' }}> </div>
+            < PageHeader />
             < TrainingSessionsPageBody />
         </div>
     )
@@ -19,7 +20,7 @@ const TrainingSessionsPageBody = () => {
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             < ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} />
             < TrainingSummaryButton />
             < TrainingSessionsTable />
@@ -33,7 +34,7 @@ const TrainingSessionsTable = () => {
 
     return (
         <div >
-            <table className="content-table">
+            <table className="table-container">
                 < TrainingSessionsTableHeader />
                 < TrainingSessionsList trainingSessions={trainingSessions} />
             </table>
@@ -92,9 +93,9 @@ const TrainingSummaryButton = () => {
     const myAppUpdateContext = useMyAppUpdateContext()
 
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             <div className="view-sessions-button-group">
-                <input className="submit-button" type="button" defaultValue="View Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("TrainingSummaryPage") }} />
+                <input className="button" type="button" defaultValue="View Training Summary" onClick={() => { myAppUpdateContext.updateCurrentPageTo("Training Summary") }} />
             </div>
         </div>
     )

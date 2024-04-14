@@ -6,8 +6,9 @@ import '../commonStyles.css'
 export const EditCardsPage = () => {
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Edit Card" />
+            <div id="edit-cards-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < EditCardsPageBody />
             </div>
         </div>

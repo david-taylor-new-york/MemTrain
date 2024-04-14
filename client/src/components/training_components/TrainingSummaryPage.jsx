@@ -14,7 +14,8 @@ export const TrainingSummaryPage = () => {
 
     return (
         <div>
-            < PageHeader pageTitle="Training Summary Page" />
+            <div id="training-summary-page-id" style={{ display: 'none' }}> </div>
+            < PageHeader />
             < TrainingSummaryPageBody />
         </div>
     )
