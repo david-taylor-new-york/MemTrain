@@ -7,7 +7,8 @@ export const TrainingSessionPage = () => {
 
     return (
         <div className="page-container">
-            < PageHeader pageTitle="Training Session" />
+            <div id="training-session-page-id" style={{ display: 'none' }}> </div>
+            < PageHeader />
             < TrainingSessionPageBody />
         </div>
     )
@@ -18,7 +19,7 @@ const TrainingSessionPageBody = () => {
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             < TrainingSessionSummary />
             < ChooseIdWidget formRef={myTrainingContext.trainingSessionFormRef} buttonLabel={'View All Answers'} submitCall={myTrainingUpdateContext.loadTrainingCardResultsPage} />
             < TrainingSessionTable />
@@ -33,11 +34,11 @@ const TrainingSessionSummary = () => {
     const session_month = session_start_time.getMonth() + 1
 
     return (
-        <div className="page-section-container">
-            <h4 class="custom-h4"> Date: {session_month + "/" + session_start_time.getDate()} </h4>
-            <h4 class="custom-h4"> Time: {session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')} </h4>
-            <h4 class="custom-h4"> First Round: Correct ({myTrainingContext.currentTrainingSession.first_pass_correct}) Incorrect ({myTrainingContext.currentTrainingSession.first_pass_incorrect}) </h4>
-            <h4 class="custom-h4"> Rounds to Complete: ({myTrainingContext.currentTrainingSession.rounds_to_finish}) </h4>
+        <div className="section-container">
+            <h4 class="results-header"> Date: {session_month + "/" + session_start_time.getDate()} </h4>
+            <h4 class="results-header"> Time: {session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')} </h4>
+            <h4 class="results-header"> First Round: Correct ({myTrainingContext.currentTrainingSession.first_pass_correct}) Incorrect ({myTrainingContext.currentTrainingSession.first_pass_incorrect}) </h4>
+            <h4 class="results-header"> Rounds to Complete: ({myTrainingContext.currentTrainingSession.rounds_to_finish}) </h4>
         </div>
     )
 }
@@ -46,7 +47,7 @@ const TrainingSessionTable = () => {
     const myTrainingContext = useMyTrainingContext()
     return (
         <div >
-            <table className="content-table">
+            <table className="table-container">
                 < TrainingSessionTableHeader />
                 < TrainingSessionList trainingResults={myTrainingContext.currentSessionResults} />
             </table>

@@ -7,7 +7,8 @@ import '../commonStyles.css'
 export const TrainingSetupPage = () => {
     return (
         <div className="page-container">
-            < PageHeader pageTitle="Training Setup Page" />
+            <div id="training-setup-page-id" style={{ display: 'none' }}> </div>
+            < PageHeader />
             < TrainingSetupPageBody />
         </div>
     )
@@ -17,7 +18,7 @@ const TrainingSetupPageBody = () => {
     const myAppContext = useMyAppContext()
 
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             <h3> Total Questions: {myAppContext.allCardsBySubject.length} </h3>
             < PracticeOrRecordedRadioButtons />
             < ButtonGroup />
@@ -31,11 +32,11 @@ const PracticeOrRecordedRadioButtons = () => {
         <div className="radio-tray">
             <form ref={myTrainingContext.trainingSettingsFormRef}>
                 <label className="radio-label">
-                    <input type="radio" name="trainingType" value="practice" defaultChecked />
+                    <input id="practice-radiobutton" type="radio" name="trainingType" value="practice" defaultChecked />
                     Practice
                 </label>
                 <label className="radio-label">
-                    <input type="radio" name="trainingType" value="recorded" />
+                    <input id="recorded-radiobutton" type="radio" name="trainingType" value="recorded" />
                     Recorded
                 </label>
             </form>
@@ -48,8 +49,8 @@ const ButtonGroup = () => {
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
     return (
         <div className="main-menu-button-group">
-            < SubmitButton onClick={() => myTrainingUpdateContext.startTraining()}> Train </SubmitButton>
-            < SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("TrainingMenuPage")}> Cancel </SubmitButton>
+            < SubmitButton id="train-button" onClick={() => myTrainingUpdateContext.startTraining()}> Train </SubmitButton>
+            < SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Training Menu")}> Cancel </SubmitButton>
         </div>
     )
 }

@@ -1,54 +1,10 @@
-.select {
-    height: 30px;
-    font-size: 14px;
-    font-weight: bold;
-}
 
-input[type="text"] {
-    max-width: 100%;
-    /* Ensure the input field does not extend beyond the container */
-    box-sizing: border-box;
-    /* Include padding and border in width calculation */
-}
-
-
-.radio-tray {
-    display: inline-flex;
-    flex-direction: column;
-    /* Align radio buttons vertically */
-    margin-bottom: 10px;
-    /* Add margin at the bottom of the tray */
-}
-
-.radio-label {
-    display: flex;
-    align-items: left;
-    /* Align the text vertically with the radio buttons */
-}
-
-.radio-label input[type="radio"] {
-    width: 16px;
-    /* Set the width of the radio buttons */
-    height: 16px;
-    /* Set the height of the radio buttons */
-
-    margin-right: 10px;
-    /* Add spacing between the radio button and text */
-    margin-left: 0;
-    /* Align radio buttons all the way to the left */
-    align-self: flex-start;
-    /* Align radio button to the left within the label */
-}
-
-
-
-
-
+/* Containers */
 .page-container {
     padding: 0.5rem;
 }
 
-.page-section-container {
+.section-container {
     background-color: #F5F5F5;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -57,7 +13,7 @@ input[type="text"] {
     overflow-y: auto;
 }
 
-.page-section-container input {
+.section-container input {
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ccc;
@@ -66,8 +22,7 @@ input[type="text"] {
 }
 
 /* Tables */
-
-.content-table {
+.table-container {
     margin-top: 0.6rem;
     width: 100%;
     border-collapse: collapse;
@@ -79,14 +34,14 @@ input[type="text"] {
     border: 2px solid #000000;
 }
 
-.content-table thead th {
+.table-container thead th {
     position: sticky;
     top: 0;
     z-index: 0;
     padding: 4px;
 }
 
-.content-table thead tr {
+.table-container thead tr {
     background-color: #009879;
     color: #ffffff;
     text-align: left;
@@ -94,38 +49,68 @@ input[type="text"] {
     border: 2px solid #009879;
 }
 
-.content-table td,
-.content-table th {
+.table-container td,
+.table-container th {
     padding: 4px;
     text-align: left;
 }
 
-.content-table tbody td {
+.table-container tbody td {
     padding: 4px;
     text-align: left;
     width: auto;
-    /* Allow columns to size themselves based on content */
 }
 
-.content-table tbody td:last-child {
+.table-container tbody td:last-child {
     text-align: right;
-    /* Right-align content in the last column of tbody */
 }
 
-.content-table thead th:last-child {
+.table-container thead th:last-child {
     text-align: right;
-    /* Right-align the right-most header cell */
     padding-right: 10px;
 }
 
 /* Forms */
 .login-form-input {
     width: 500px !important;
-    /* Override the parent container's width */
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.select {
+    height: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    max-width: 100%;
+    /* Include padding and border in width calculation */
+    box-sizing: border-box;
+}
+
+
+.radio-tray {
+    display: inline-flex;
+    /* Align radio buttons vertically */
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: left;
+}
+
+.input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    margin-left: 0;
+    align-self: flex-start;
+}
+
 
 /* Buttons */
 .button {
@@ -136,7 +121,6 @@ input[type="text"] {
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid #050e14;
-    margin-right: 5px;
 }
 
 .button:hover {
@@ -150,16 +134,6 @@ input[type="text"] {
     color: grey;
     text-decoration: underline;
     cursor: pointer;
-}
-
-.submit-button {
-    background-color: #4A90E2;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin: 6px 2px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid #050e14
 }
 
 .button-group-top {
@@ -218,16 +192,16 @@ input[type="text"] {
     background-color: red;
 }
 
-
+.results-header {
+    margin: 0;
+    padding: .25rem;
+}
 
 /* Typography */
 .header,
 .subject-sub-header,
 .page-title {
     color: #4A90E2;
-}
-
-.page-title {
     margin-bottom: 1rem;
 }
 
@@ -235,19 +209,8 @@ input[type="text"] {
     margin-right: 10px;
 }
 
-
-#id_input_field {
+#card-id-to-follow,
+#id-input-field {
     margin: 5px 5px;
     width: 40px;
-}
-
-.custom-h4 {
-    font-size: 1rem;
-    /* Adjust the font size as needed */
-    margin: 0;
-    /* Remove margin */
-    padding: .25rem;
-    /* Remove padding */
-    line-height: 1;
-    /* Adjust line height if needed */
 }

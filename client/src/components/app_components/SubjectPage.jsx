@@ -8,8 +8,9 @@ export const SubjectPage = () => {
 
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Choose Subject" />
+            <div id="subject-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < SubjectPageBody />
             </div>
         </div>
@@ -23,9 +24,9 @@ const SubjectPageBody = () => {
 
     return (
         <div>
-            <div className="page-section-container">
+            <div className="section-container">
                 < SubjectsDropdown />
-                < SubmitButton showButton={showSubmitButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Select </SubmitButton>
+                < SubmitButton id="select-subject-button" showButton={showSubmitButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Select </SubmitButton>
                 <br />
                 < CreateSubjectForm />
             </div>
@@ -70,6 +71,7 @@ const SubjectsDropdown = () => {
         <div>
             <label>
                 <select
+                    id="subjects-dropdown"
                     value={defaultValue}
                     onChange={myAppUpdateContext.handleSubjectChange}
                     className="select" >
@@ -91,9 +93,9 @@ const CreateSubjectForm = () => {
             <form ref={myAppContext.newSubjectNameFormRef} onSubmit={myAppUpdateContext.handleCreateSubject}>
                 <label>
                     or create new:{" "}
-                    <input id="newSubjectName" name="newSubjectName" type="text" autoComplete="off" autoFocus required minLength="1" />
+                    <input id="new-subject-name" name="newSubjectName" type="text" autoComplete="off" autoFocus required minLength="1" />
                 </label>
-                <button className="submit-button" type="submit" > Add </button>
+                <button id="new-subject-button" className="button" type="submit" > Add </button>
             </form>
         </div>
     )

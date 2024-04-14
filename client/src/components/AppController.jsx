@@ -25,46 +25,46 @@ export const AppController = () => {
 
   switch (myAppContext.currentPage) {
 
-    case "CardMenuPage":
+    case "Card Menu":
       return (< CardMenuPage />)
 
-    case "CreateCardsPage":
+    case "Create Cards":
       return (< CreateCardsPage />)
 
-    case "DeleteCardsPage":
+    case "Delete Cards":
       return (< DeleteCardsPage />)
 
-    case "EditCardsPage":
+    case "Edit Cards":
       return (< EditCardsPage />)
 
-    case "MainMenuPage":
+    case "Main Menu":
       return (< MainMenuPage />)
 
-    case "LoginPage":
+    case "Login":
       return (< LoginPage />)
 
-    case "SubjectPage":
+    case "Subject":
       return (< SubjectPage />)
 
-    case "TrainingMenuPage":
+    case "Training Menu":
       return (< TrainingMenuPage />)
 
-    case "TrainingPage":
+    case "Training":
       return (< TrainingPage />)
 
-    case "TrainingCardResultsPage":
+    case "Training Card Results":
       return (< TrainingCardResultsPage />)
 
-    case "TrainingSessionPage":
+    case "Training Session":
       return (< TrainingSessionPage />)
 
-    case "TrainingSessionsPage":
+    case "Training Sessions":
       return (< TrainingSessionsPage />)
 
-    case "TrainingSetupPage":
+    case "Training Setup":
       return (< TrainingSetupPage />)
 
-    case "TrainingSummaryPage":
+    case "Training Summary":
       return (< TrainingSummaryPage />)
 
     default:

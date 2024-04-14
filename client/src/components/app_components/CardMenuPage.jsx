@@ -8,8 +8,9 @@ export const CardMenuPage = () => {
 
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Card Menu" />
+            <div id="card-menu-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < CardMenuPageBody />
             </div>
         </div>
@@ -18,7 +19,7 @@ export const CardMenuPage = () => {
 
 const CardMenuPageBody = () => {
     return (
-        <div className="page-section-container">
+        <div className="section-container">
             < MenuButtons />
             < CurrentCardsTable />
         </div>
@@ -32,10 +33,10 @@ const MenuButtons = () => {
 
     return (
         <div className="main-menu-button-group">
-            <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("CreateCardsPage")}> Create </SubmitButton>
-            <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.handleLoadEditCardPage()}> Edit </SubmitButton>
-            <SubmitButton showButton={cardsExist} onClick={() => myAppUpdateContext.updateCurrentPageTo("DeleteCardsPage")}> Delete </SubmitButton>
-            <SubmitButton onClick={() => myAppUpdateContext.updateCurrentPageTo("MainMenuPage")}> Cancel </SubmitButton>
+            <SubmitButton id="create-cards-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Create Cards")}> Create </SubmitButton>
+            <SubmitButton id="edit-cards-button" showButton={cardsExist} onClick={() => myAppUpdateContext.handleLoadEditCardPage()}> Edit </SubmitButton>
+            <SubmitButton id="delete-cards-button" showButton={cardsExist} onClick={() => myAppUpdateContext.updateCurrentPageTo("Delete Cards")}> Delete </SubmitButton>
+            <SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Cancel </SubmitButton>
         </div>
     )
 }

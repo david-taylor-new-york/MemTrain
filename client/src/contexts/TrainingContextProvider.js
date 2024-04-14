@@ -41,11 +41,11 @@ export function TrainingContextProvider({ children }) {
     const loadTrainingMenuPage = async () => {
         const trainingSessions = await getTrainingSessions(myAppContext.currentSubjectId)
         setAllTrainingSessions(trainingSessions)
-        myAppUpdateContext.updateCurrentPageTo("TrainingMenuPage")
+        myAppUpdateContext.updateCurrentPageTo("Training Menu")
     }
 
     const loadTrainingSetupPage = () => {
-        myAppUpdateContext.updateCurrentPageTo("TrainingSetupPage")
+        myAppUpdateContext.updateCurrentPageTo("Training Setup")
     }
 
     const startTraining = () => {
@@ -64,7 +64,7 @@ export function TrainingContextProvider({ children }) {
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
         setNumberRemaining(initialCards.length)
-        myAppUpdateContext.updateCurrentPageTo("TrainingPage")
+        myAppUpdateContext.updateCurrentPageTo("Training")
     }
 
     const answerQuestion = () => {
@@ -177,7 +177,7 @@ export function TrainingContextProvider({ children }) {
         setStartTime(new Date())
         setNumberRemaining(failedCards.length)
         setCurrentTrainingState("NotStarted")
-        myAppUpdateContext.updateCurrentPageTo("TrainingMenuPage")
+        myAppUpdateContext.updateCurrentPageTo("Training Menu")
     }
 
     const localUpdateTrainingSession = async () => {
@@ -303,7 +303,7 @@ export function TrainingContextProvider({ children }) {
         }
 
         setCurrentTrainingSession(trainingSessionArray[0])
-        myAppUpdateContext.updateCurrentPageTo("TrainingSessionPage")
+        myAppUpdateContext.updateCurrentPageTo("Training Session")
 
         const sessionResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSessionId)
         setCurrentSessionResults(sessionResultsByTrainingSessionId)
@@ -321,7 +321,7 @@ export function TrainingContextProvider({ children }) {
             return
         }
 
-        myAppUpdateContext.updateCurrentPageTo("TrainingCardResultsPage")
+        myAppUpdateContext.updateCurrentPageTo("Training Card Results")
         setCurrentCardResults(cardResultsByCardId)
         const correct = countCorrect(cardResultsByCardId)
         const incorrect = cardResultsByCardId.length - correct

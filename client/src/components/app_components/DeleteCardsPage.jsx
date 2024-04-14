@@ -7,8 +7,9 @@ export const DeleteCardsPage = () => {
 
     return (
         <div className="page-container">
-            <div className="page-section-container">
-                < PageHeader pageTitle="Delete Card" />
+            <div id="delete-cards-page-id" style={{ display: 'none' }}> </div>
+            <div className="section-container">
+                < PageHeader />
                 < DeleteCardsPageBody />
             </div>
         </div>
