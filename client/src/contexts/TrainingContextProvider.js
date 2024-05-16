@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
-import { showToast } from '../utils/utils'
+import { showToast, wrongAnswerToast } from '../utils/utils'
 import {
     createTrainingSession, getTrainingSession, getTrainingSessions,
     updateTrainingSession, createCardResults, getCardResultsBy
@@ -99,7 +99,7 @@ export function TrainingContextProvider({ children }) {
         if (isCorrect) {
             setNumberCorrect(numberCorrect + 1)
         } else {
-            showToast("NO:  " + card.answer)
+            wrongAnswerToast("NO:  " + card.answer)
             setNumberIncorrect(numberIncorrect + 1)
             updateFailedCards(card)
         }
@@ -231,26 +231,21 @@ export function TrainingContextProvider({ children }) {
     }
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
-        let modifiedExpectedAnswer = expectedAnswer
-
-        if (givenAnswer.includes("*")) {
-            modifiedExpectedAnswer = extractWordsWithAsterisks(expectedAnswer)
-        }
-
-        const expectedWords = normalizeText(modifiedExpectedAnswer).split(' ').sort()
+        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
         const givenWords = normalizeText(givenAnswer).split(' ').sort()
 
         if (expectedWords.length !== givenWords.length) {
             return false
         }
-
         for (let i = 0; i < expectedWords.length; i++) {
-            if (expectedWords[i] !== givenWords[i]) {
-                return false
+            const expectedWord = expectedWords[i]
+            const givenWord = givenWords[i]
+            if ((expectedWord.includes(givenWord)) || (givenWord.includes(expectedWord))) {
+                return true;
+            } else {
+                return false;
             }
         }
-
-        return true
     }
 
     const extractWordsWithAsterisks = (input) => {
@@ -260,6 +255,8 @@ export function TrainingContextProvider({ children }) {
         return cleanedWords.join(" ")
     }
 
+    // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
+    // and removes any characters that are not alphanumeric or spaces.
     const normalizeText = (text) => { return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '') }
 
     const createCardResult = (cardId, question, givenAnswer, answer, isCorrect, secondsToAnswerThisCard) => {

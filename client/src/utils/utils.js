@@ -1,5 +1,8 @@
 import { toast } from 'react-toastify'
 
+export const wrongAnswerToast = (msg) => {
+  toast.info(msg, { autoClose: 4000 })
+}
 export const showToast = (msg) => {
   toast.info(msg, { autoClose: 1000 })
 }
