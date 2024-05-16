@@ -2,30 +2,29 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const app = express()
 const cors = require("cors")
+const path = require('path')
 
-app.use(cors())
+// Serve static files from the client build directory
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.use(cors({ origin: '*', }));
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json())
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers')
-  next()
-})
 
 const Pool = require('pg').Pool
 
 const pool = new Pool({
-  user: 'davidtaylor',
+  user: 'memtrain',
   host: 'localhost',
   database: 'memtrain',
-  password: 'davidtaylor2',
+  password: 'memtrain',
   port: 5432,
 })
 
-app.listen(3001, () => {
-  console.log('Server is running on port 3001')
+app.listen(3000, () => {
+  console.log('Server is running on port 3000')
 })
 
 
@@ -53,11 +52,12 @@ app.get('/get', async (req, res) => {
   const queryText = `SELECT * FROM ${table_name} WHERE ${param_name} = $1`
 
   try {
-    const { rows } = await pool.query(queryText, [paramValue])
     console.log(" ")
     console.log("queryText = {" + queryText + "} paramValue = " + paramValue)
     console.log(" ")
+    console.log(" ")
     console.log("returning:")
+    const { rows } = await pool.query(queryText, [paramValue])
     console.log(rows)
     console.log(" ")
     res.send(rows)
@@ -236,23 +236,3 @@ const handleServerError = (res, error) => {
   console.error(error)
   res.status(500).send("Internal Server Error")
 }
-
-// const pool = new Pool({
-//   user: 'postgres',
-//   host: 'memtrain-db-instance.cghnn3ptithy.us-east-1.rds.amazonaws.com',
-//   database: 'memtrain',
-//   password: 'Fuckyou1$',
-//   port: 5432,
-// })
-// psql \
-//    --host=<DB instance endpoint> \
-//    --port=<port> \
-//    --username=<master username> \
-//    --password \
-//    --dbname=<database name> 
-// psql \
-//    --host='memtrain-db-instance.cghnn3ptithy.us-east-1.rds.amazonaws.com' \
-//    --port='5432' \
-//    --username=postgres \
-//    --password \
-//    --dbname=memtrain

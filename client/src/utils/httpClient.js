@@ -5,6 +5,7 @@ async function performHttp(operationType, endpoint, data) {
     const url = `${API_BASE_URL}/${endpoint}`
 
     console.log("performHttp...")
+    console.log("url: " + url)
     console.log("   (" + operationType + ":" + endpoint + ")")
     console.log("   data: ")
     console.log(data)
