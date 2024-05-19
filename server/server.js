@@ -130,45 +130,6 @@ app.put('/update', async (req, res) => {
 
 })
 
-app.put('/update_card_schedules', async (req, res) => {
-  const { tableName, data } = req.body
-
-  console.log("data=")
-  console.log(data)
-
-  if (!tableName || !data) {
-    res.status(400).send('Missing required parameters')
-    return
-  }
-
-  const updateFields = Object.keys(data)
-    .filter(key => key !== 'card_id') // Exclude 'card_id' from update fields
-    .map((key, index) => `${key} = $${index + 2}`)
-    .join(', ')
-
-  const queryText = `UPDATE ${tableName} SET ${updateFields} WHERE card_id = $1`
-
-  try {
-    const updateValues = Object.values(data).filter((_, index) => index !== 0) // Exclude 'id'
-    console.log("update_card_schedules updateValues=")
-    console.log(updateValues)
-    console.log("update_card_schedules queryText=")
-    console.log(queryText)
-    console.log("update_card_schedules data.card_id=")
-    console.log(data.card_id)
-    const { rowCount } = await pool.query(queryText, [data.card_id, ...updateValues])
-
-    if (rowCount > 0) {
-      res.send("success")
-    } else {
-      res.status(404).send(`Could not update table: ${tableName}`)
-    }
-  } catch (error) {
-    handleServerError(res, error)
-  }
-
-})
-
 app.delete('/delete', async (req, res) => {
   const { tableName, id } = req.body
 

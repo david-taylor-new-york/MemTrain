@@ -116,19 +116,21 @@ export function AppContextProvider({ children }) {
     }
 
     const handleNewUser = async (e) => {
-        e.preventDefault() // this is only for handleSubmit!! <== DO WE NEED THIS???
-
-        const userName = loginPageFormRef.current.user_name.value
+        const userName = loginPageFormRef.current.user_name.value.toLowerCase();
         const password = loginPageFormRef.current.password.value
+        const confirm_password = loginPageFormRef.current.confirm_password.value
 
-        if ((userName === "") || (password === "")) {
-            showToast(`Enter username and password`)
+        if ((password != confirm_password)) {
+            showToast(`PASSWORDS DO NOT MATCH!`)
+            loginPageFormRef.current.reset()
+            loginPageFormRef.current.user_name.focus()
             setIsLoggedIn(false)
             setUserId(null)
             setCurrentPage("Login")
             setPreviousPage(null)
             return
         }
+
         try {
             const user_id = await createUser({ user_name: userName, password: password })
 
@@ -148,15 +150,8 @@ export function AppContextProvider({ children }) {
 
     const handleLogin = async () => {
 
-        const userName = loginPageFormRef.current.user_name.value
+        const userName = loginPageFormRef.current.user_name.value.toLowerCase();
         const password = loginPageFormRef.current.password.value
-
-        if ((userName === "") || (password === "")) {
-            showToast(`Enter username and password`)
-            setIsLoggedIn(false)
-            setUserId(null)
-            return
-        }
 
         setIsLoading(true)
 
@@ -201,7 +196,7 @@ export function AppContextProvider({ children }) {
 
     const handleCreateSubject = async (e) => {
         e.preventDefault() // YES WE DO <== DO WE NEED THIS???
-        const newSubjectName = newSubjectNameFormRef.current.newSubjectName.value
+        const newSubjectName = newSubjectNameFormRef.current.new_subject_name.value
 
         if (newSubjectName === "") {
             showToast(`Enter subject name!`)
@@ -213,8 +208,8 @@ export function AppContextProvider({ children }) {
             const allSubjects = await getSubjectsBy("user_id", userId)
             for (let subject of allSubjects) {
                 if (subject.subject_name === newSubjectName) {
-                    newSubjectNameFormRef.current.newSubjectName.value = ""
-                    newSubjectNameFormRef.current.newSubjectName.focus()
+                    newSubjectNameFormRef.current.new_subject_name.value = ""
+                    newSubjectNameFormRef.current.new_subject_name.focus()
                     showToast(`Subject ${newSubjectName} already exists!`)
                     return
                 }
@@ -280,7 +275,7 @@ export function AppContextProvider({ children }) {
 
         const question = createCardFormRef.current.question.value
         const answer = createCardFormRef.current.answer.value
-        let cardToFollow = createCardFormRef.current.cardToFollow.value
+        let cardToFollow = createCardFormRef.current.card_to_follow.value
         if (cardToFollow === "") { cardToFollow = null }
 
         setIsLoading(true)
@@ -312,7 +307,7 @@ export function AppContextProvider({ children }) {
     }
 
     const handleSetCardToEditId = (e) => {
-        const cardId = editCardFormRef.current.idInputField.value
+        const cardId = editCardFormRef.current.id_input_field.value
 
         let cardToEditIndex = allCardsBySubject.findIndex(card => card.id.toString() === cardId)
 
@@ -323,7 +318,7 @@ export function AppContextProvider({ children }) {
             let tempCardToEditId = allCardsBySubject[cardToEditIndex].id
 
             editCardFormRef.current.reset()
-            editCardFormRef.current.idInputField.focus()
+            editCardFormRef.current.id_input_field.focus()
 
             if (tempCardToEditId < 0) {
                 showToast("DID NOT FIND card --> " + tempCardToEditId + " <--")
@@ -332,7 +327,7 @@ export function AppContextProvider({ children }) {
             setCardToEditId(tempCardToEditId)
         } else {
             editCardFormRef.current.reset()
-            editCardFormRef.current.idInputField.focus()
+            editCardFormRef.current.id_input_field.focus()
             showToast("DID NOT FIND card " + cardId)
             return
         }
@@ -354,7 +349,7 @@ export function AppContextProvider({ children }) {
         const updatedQuestion = editCardWidgetFormRef.current.question.value
         const updatedAnswer = editCardWidgetFormRef.current.answer.value
 
-        let updatedCardToFollow = editCardWidgetFormRef.current.cardToFollow.value
+        let updatedCardToFollow = editCardWidgetFormRef.current.card_to_follow.value
         if (updatedCardToFollow === "") {
             updatedCardToFollow = null
         }
@@ -399,12 +394,12 @@ export function AppContextProvider({ children }) {
     }
 
     const handleDeleteCard = async (e) => {
-        const cardToDeleteNumber = deleteCardFormRef.current.idInputField.value
+        const cardToDeleteNumber = deleteCardFormRef.current.id_input_field.value
 
         if (cardToDeleteNumber === "") {
             showToast("Enter Card to delete")
             deleteCardFormRef.current.reset()
-            deleteCardFormRef.current.idInputField.focus()
+            deleteCardFormRef.current.id_input_field.focus()
             return
         }
 
@@ -417,7 +412,7 @@ export function AppContextProvider({ children }) {
         } else {
             showToast("DID NOT FIND card " + cardToDeleteNumber)
             deleteCardFormRef.current.reset()
-            deleteCardFormRef.current.idInputField.focus()
+            deleteCardFormRef.current.id_input_field.focus()
             return
         }
 
@@ -429,7 +424,7 @@ export function AppContextProvider({ children }) {
             if (response === 'success') {
                 showToast(`CARD ${cardToDeleteId} DELETED!`)
                 deleteCardFormRef.current.reset()
-                deleteCardFormRef.current.idInputField.focus()
+                deleteCardFormRef.current.id_input_field.focus()
             }
 
         } catch {

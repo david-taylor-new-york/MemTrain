@@ -90,6 +90,9 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
+input.half-width {
+    width: 50%;
+}
 
 .radio-tray {
     display: inline-flex;
@@ -138,7 +141,14 @@ input[type="text"] {
 
 .button-group-top {
     display: flex;
+    margin-top: 0;
+    padding-top: 0;
     justify-content: space-between;
+    height: 30px;
+}
+
+.margin-bottom {
+    margin-bottom: 25px;
 }
 
 .main-menu-button-group {
@@ -168,7 +178,7 @@ input[type="text"] {
     text-align: center;
 }
 
-.hidden-input {
+.hidden-element {
     visibility: hidden;
 }
 
@@ -197,12 +207,21 @@ input[type="text"] {
     padding: .25rem;
 }
 
-/* Typography */
-.header,
-.subject-sub-header,
-.page-title {
+.current-page {
     color: #4A90E2;
-    margin-bottom: 1rem;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.current-subject {
+    color: #4A90E2;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Typography */
+.color-blue {
+    color: #4A90E2;
 }
 
 .input-label {

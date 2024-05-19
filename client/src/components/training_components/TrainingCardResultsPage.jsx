@@ -2,7 +2,6 @@ import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingCardResultsPage = () => {
 
@@ -36,10 +35,10 @@ const TrainingSessionsSummary = () => {
 
     return (
         <div className="section-container">
-            <h4 class="results-header"> Card Id: {myTrainingContext.currentCardResults[0].card_id} </h4>
-            <h4 class="results-header"> Question: {myTrainingContext.currentCardResults[0].question} </h4>
-            <h4 class="results-header"> Correct Answer: {myTrainingContext.currentCardResults[0].answer} </h4>
-            <h4 class="results-header"> Correct ({myTrainingContext.numberCorrect})   Incorrect ({myTrainingContext.numberIncorrect}) </h4>
+            <h4 className="results-header"> Card Id: {myTrainingContext.currentCardResults[0].card_id} </h4>
+            <h4 className="results-header"> Question: {myTrainingContext.currentCardResults[0].question} </h4>
+            <h4 className="results-header"> Correct Answer: {myTrainingContext.currentCardResults[0].answer} </h4>
+            <h4 className="results-header"> Correct ({myTrainingContext.numberCorrect})   Incorrect ({myTrainingContext.numberIncorrect}) </h4>
         </div>
     )
 }

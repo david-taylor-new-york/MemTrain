@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, CurrentCardsTable, ChooseIdWidget, CardForm } from '../Components'
-import '../commonStyles.css'
 
 export const EditCardsPage = () => {
     return (

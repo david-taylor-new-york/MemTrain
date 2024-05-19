@@ -2,7 +2,6 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingSetupPage = () => {
     return (
@@ -32,11 +31,11 @@ const PracticeOrRecordedRadioButtons = () => {
         <div className="radio-tray">
             <form ref={myTrainingContext.trainingSettingsFormRef}>
                 <label className="radio-label">
-                    <input id="practice-radiobutton" type="radio" name="trainingType" value="practice" defaultChecked />
+                    <input id="practice-radiobutton" type="radio" name="training_type" value="practice" defaultChecked />
                     Practice
                 </label>
                 <label className="radio-label">
-                    <input id="recorded-radiobutton" type="radio" name="trainingType" value="recorded" />
+                    <input id="recorded-radiobutton" type="radio" name="training_type" value="recorded" />
                     Recorded
                 </label>
             </form>
