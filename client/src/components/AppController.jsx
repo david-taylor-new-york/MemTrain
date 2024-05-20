@@ -14,6 +14,7 @@ import { TrainingSessionPage } from './training_components/TrainingSessionPage'
 import { TrainingSessionsPage } from './training_components/TrainingSessionsPage'
 import { TrainingSummaryPage } from './training_components/TrainingSummaryPage'
 import { useMyAppContext } from '../contexts/AppContextProvider'
+import './commonStyles.css'
 
 export const AppController = () => {
 

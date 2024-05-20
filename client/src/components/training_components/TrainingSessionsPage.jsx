@@ -2,7 +2,6 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingSessionsPage = () => {
 
@@ -34,7 +33,7 @@ const TrainingSessionsTable = () => {
 
     return (
         <div >
-            <table className="table-container">
+            <table className="table-container training-session-table-container">
                 < TrainingSessionsTableHeader />
                 < TrainingSessionsList trainingSessions={trainingSessions} />
             </table>
@@ -75,13 +74,13 @@ const TrainingSessionsList = (props) => {
                 return (
                     <tbody>
                         <tr key={trainingSession.id}>
-                            <td className="center-align">{trainingSession.id}</td>
-                            <td className="center-align">{session_month + "/" + session_start_time.getDate() + "/" + session_start_time.getFullYear().toString().slice(-2)}</td>
-                            <td className="center-align">{session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')}</td>
-                            <td className="center-align">{trainingSession.first_pass_correct}</td>
-                            <td className="center-align">{trainingSession.first_pass_incorrect}</td>
-                            <td className="center-align">{percentCorrect}</td>
-                            <td className="center-align">{trainingSession.rounds_to_finish}</td>
+                            <td>{trainingSession.id}</td>
+                            <td>{session_month + "/" + session_start_time.getDate() + "/" + session_start_time.getFullYear().toString().slice(-2)}</td>
+                            <td>{session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')}</td>
+                            <td>{trainingSession.first_pass_correct}</td>
+                            <td>{trainingSession.first_pass_incorrect}</td>
+                            <td>{percentCorrect}</td>
+                            <td>{trainingSession.rounds_to_finish}</td>
                         </tr>
                     </tbody>
                 )

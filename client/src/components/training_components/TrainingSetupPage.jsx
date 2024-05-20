@@ -2,7 +2,6 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingSetupPage = () => {
     return (
@@ -19,7 +18,7 @@ const TrainingSetupPageBody = () => {
 
     return (
         <div className="section-container">
-            <h3> Total Questions: {myAppContext.allCardsBySubject.length} </h3>
+            <h3> Total Cards: {myAppContext.allCardsBySubject.length} </h3>
             < PracticeOrRecordedRadioButtons />
             < ButtonGroup />
         </div>
@@ -27,22 +26,25 @@ const TrainingSetupPageBody = () => {
 }
 
 const PracticeOrRecordedRadioButtons = () => {
-    const myTrainingContext = useMyTrainingContext()
+    const myTrainingUpdateContext = useMyTrainingUpdateContext()
+
+    const handleChange = (event) => {
+        myTrainingUpdateContext.setTrainingType(event.target.value);
+    };
+
     return (
-        <div className="radio-tray">
-            <form ref={myTrainingContext.trainingSettingsFormRef}>
-                <label className="radio-label">
-                    <input id="practice-radiobutton" type="radio" name="trainingType" value="practice" defaultChecked />
-                    Practice
-                </label>
-                <label className="radio-label">
-                    <input id="recorded-radiobutton" type="radio" name="trainingType" value="recorded" />
-                    Recorded
-                </label>
-            </form>
+        <div className="radio-container">
+            <div className="radio-row">
+                <input id="practice-radiobutton" type="radio" name="training_type" value="practice" onChange={handleChange} />
+                <label htmlFor="practice-radiobutton">Practice</label>
+            </div>
+            <div className="radio-row">
+                <input id="recorded-radiobutton" type="radio" name="training_type" value="recorded" onChange={handleChange} />
+                <label htmlFor="recorded-radiobutton">Recorded</label>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 const ButtonGroup = () => {
     const myAppUpdateContext = useMyAppUpdateContext()

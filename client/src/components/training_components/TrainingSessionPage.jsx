@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingSessionPage = () => {
 
@@ -35,10 +34,10 @@ const TrainingSessionSummary = () => {
 
     return (
         <div className="section-container">
-            <h4 class="results-header"> Date: {session_month + "/" + session_start_time.getDate()} </h4>
-            <h4 class="results-header"> Time: {session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')} </h4>
-            <h4 class="results-header"> First Round: Correct ({myTrainingContext.currentTrainingSession.first_pass_correct}) Incorrect ({myTrainingContext.currentTrainingSession.first_pass_incorrect}) </h4>
-            <h4 class="results-header"> Rounds to Complete: ({myTrainingContext.currentTrainingSession.rounds_to_finish}) </h4>
+            <h4 className="results-header"> Date: {session_month + "/" + session_start_time.getDate()} </h4>
+            <h4 className="results-header"> Time: {session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')} </h4>
+            <h4 className="results-header"> First Round: Correct ({myTrainingContext.currentTrainingSession.first_pass_correct}) Incorrect ({myTrainingContext.currentTrainingSession.first_pass_incorrect}) </h4>
+            <h4 className="results-header"> Rounds to Complete: ({myTrainingContext.currentTrainingSession.rounds_to_finish}) </h4>
         </div>
     )
 }

@@ -1,8 +1,6 @@
 import React from 'react'
 import { CurrentCardsTable, PageHeader, SubmitButton } from '../Components'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import '../commonStyles.css'
-
 
 export const CardMenuPage = () => {
 

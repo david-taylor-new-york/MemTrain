@@ -2,7 +2,6 @@ import { React, useState, useEffect } from 'react'
 import { PageHeader, SubmitButton } from '../Components'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { getSubjectsBy } from '../../utils/httpClient'
-import '../commonStyles.css'
 
 export const SubjectPage = () => {
 
@@ -93,7 +92,7 @@ const CreateSubjectForm = () => {
             <form ref={myAppContext.newSubjectNameFormRef} onSubmit={myAppUpdateContext.handleCreateSubject}>
                 <label>
                     or create new:{" "}
-                    <input id="new-subject-name" name="newSubjectName" type="text" autoComplete="off" autoFocus required minLength="1" />
+                    <input id="new-subject-name" name="new_subject_name" className="half-width" type="text" autoComplete="off" autoFocus required minLength="1" />
                 </label>
                 <button id="new-subject-button" className="button" type="submit" > Add </button>
             </form>

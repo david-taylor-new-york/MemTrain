@@ -39,6 +39,7 @@
     top: 0;
     z-index: 0;
     padding: 4px;
+    border: 1px solid #dddddd;
 }
 
 .table-container thead tr {
@@ -46,28 +47,28 @@
     color: #ffffff;
     text-align: left;
     font-weight: bold;
-    border: 2px solid #009879;
-}
-
-.table-container td,
-.table-container th {
-    padding: 4px;
-    text-align: left;
 }
 
 .table-container tbody td {
     padding: 4px;
+    vertical-align: top;
     text-align: left;
-    width: auto;
+    border: 1px solid #dddddd;
 }
 
-.table-container tbody td:last-child {
-    text-align: right;
+.card-table-container th:nth-child(1),
+.card-table-container td:nth-child(1) {
+    width: 4%;
 }
 
-.table-container thead th:last-child {
-    text-align: right;
-    padding-right: 10px;
+.card-table-container th:nth-child(2),
+.card-table-container td:nth-child(2) {
+    width: 48%;
+}
+
+.card-table-container th:nth-child(3),
+.card-table-container td:nth-child(3) {
+    width: 48%;
 }
 
 /* Forms */
@@ -90,27 +91,31 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
-
-.radio-tray {
-    display: inline-flex;
-    /* Align radio buttons vertically */
-    flex-direction: column;
-    margin-bottom: 10px;
+input.half-width {
+    width: 50%;
 }
 
-.radio-label {
+.radio-container {
     display: flex;
-    align-items: left;
+    flex-direction: column;
 }
 
-.input[type="radio"] {
-    width: 16px;
-    height: 16px;
+.radio-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100px;
+}
+
+.radio-row input[type="radio"] {
     margin-right: 10px;
-    margin-left: 0;
+    align-self: flex-start;
+    width: 24px;
+}
+
+.radio-row label {
     align-self: flex-start;
 }
-
 
 /* Buttons */
 .button {
@@ -138,7 +143,14 @@ input[type="text"] {
 
 .button-group-top {
     display: flex;
+    margin-top: 0;
+    padding-top: 0;
     justify-content: space-between;
+    height: 30px;
+}
+
+.margin-bottom {
+    margin-bottom: 25px;
 }
 
 .main-menu-button-group {
@@ -168,7 +180,7 @@ input[type="text"] {
     text-align: center;
 }
 
-.hidden-input {
+.hidden-element {
     visibility: hidden;
 }
 
@@ -197,12 +209,21 @@ input[type="text"] {
     padding: .25rem;
 }
 
-/* Typography */
-.header,
-.subject-sub-header,
-.page-title {
+.current-page {
     color: #4A90E2;
-    margin-bottom: 1rem;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.current-subject {
+    color: #4A90E2;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Typography */
+.color-blue {
+    color: #4A90E2;
 }
 
 .input-label {

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
-import '../commonStyles.css'
 
 export const TrainingPage = () => {
 
@@ -40,7 +39,7 @@ export const TrainingPage = () => {
         return (
             <div >
                 <h4 className="center-align">[ Enter ] to Start Training</h4>
-                <input type="text" className="hidden-input" autoComplete="off" />
+                <input type="text" className="hidden-element" autoComplete="off" />
             </div>
         )
     }
