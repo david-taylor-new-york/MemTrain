@@ -90,25 +90,26 @@ const LoginPageHeader = () => {
                 <h3 className="color-blue">How It Works <span>&#9658;</span></h3>
                 {showDetails && (
                     <>
-                        <p className="color-blue">
-                        Spaced repetition is a method of reviewing material at systematic intervals.
+                        <p>
+                            MemTrain is a tool to help you memorize information using spaced repetition. You create flashcards
+                            with questions and answers, and MemTrain will schedule them for review at regular intervals.
                         </p>
-                        <p className="color-blue">
-                        At the beginning of the learning process, the intervals are spaced closely together.  But as the
-                        material is reviewed, the intervals become systematically longer.
+                        <p>
+                            At the start, the intervals are short, and you review each card daily. For cards that you answer
+                            correctly, the review interval becomes longer.  Incorrectly answered cards will be reviewed more frequently.
+                            In an ideal system, you would review each card just before it is forgotten. MemTrain uses the
+                            Fibonacci sequence to schedule the review intervals.
                         </p>
-                        <p className="color-blue">
-                        An ideal system of spaced repetition allows you to review the material before it is forgotten,
-                        helping you to retain it in your long term memory.  MemTrain uses the fibonacci sequence to schedule
-                        the review intervals.  This has been shown here: (url). 1,1,2,3,5,8,13...
+                        <p>
+                            <a href="https://en.wikipedia.org/wiki/Spaced_repetition">https://en.wikipedia.org/wiki/Spaced_repetition</a>
                         </p>
-                        <p className="color-blue">
-                        https://apps.ankiweb.net/
+                        <p>
+                            <a href="https://en.wikipedia.org/wiki/Leitner_system">https://en.wikipedia.org/wiki/Leitner_system</a>
                         </p>
                         <hr />
                     </>
                 )}
             </div>
         </div>
-        )
+    )
 }

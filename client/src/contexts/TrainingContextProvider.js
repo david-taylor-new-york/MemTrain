@@ -50,7 +50,7 @@ export function TrainingContextProvider({ children }) {
 
     const startTraining = () => {
         setCurrentTrainingState("Training")
-        setTrainingType(trainingSettingsFormRef.current.training_type.value)
+        console.log("setTrainingType: " + trainingType);
         const initialCards = getTrainingCards(trainingType)
 
         setTrainingCards(initialCards)
@@ -87,6 +87,27 @@ export function TrainingContextProvider({ children }) {
 
         submitAnswerFormRef.current.reset()
         handleNextOrFinish()
+    }
+
+
+    const compareAnswers = (expectedAnswer, givenAnswer) => {
+        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
+        const givenWords = normalizeText(givenAnswer).split(' ').sort()
+
+        if (expectedWords.length !== givenWords.length) {
+            return false
+        }
+        console.log("Comparing answers:")
+        for (let i = 0; i < expectedWords.length; i++) {
+            const expectedWord = expectedWords[i]
+            console.log("expectedWord[" + i + "] = " + expectedWord)
+            console.log("givenWords = " + givenWords.toString())
+            if (givenWords.includes(expectedWord)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     const updateFailedCards = (card) => {
@@ -230,27 +251,6 @@ export function TrainingContextProvider({ children }) {
         setStartTime(new Date())
     }
 
-    const compareAnswers = (expectedAnswer, givenAnswer) => {
-        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
-        const givenWords = normalizeText(givenAnswer).split(' ').sort()
-
-        if (expectedWords.length !== givenWords.length) {
-            return false
-        }
-        console.log("Comparing answers:")
-        for (let i = 0; i < expectedWords.length; i++) {
-            const expectedWord = expectedWords[i]
-            console.log("expectedWord[" + i + "] = " + expectedWord)
-            const givenWord = givenWords[i]
-            console.log("givenWord[" + i + "] = " + givenWord)
-            if ((expectedWord.includes(givenWord)) || (givenWord.includes(expectedWord))) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
     // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
     // and removes any characters that are not alphanumeric or spaces.
     const normalizeText = (text) => { return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '') }
@@ -356,6 +356,7 @@ export function TrainingContextProvider({ children }) {
 
     const allContextUpdates = {
         startTraining,
+        setTrainingType,
         loadTrainingSetupPage,
         answerQuestion,
         finishTrainingRound,

@@ -38,7 +38,7 @@ export const CurrentCardsTable = () => {
     } else {
         return (
             <div>
-                <table className="table-container">
+                <table className="table-container card-table-container">
                     < CurrentCardsTableHeader showAnswer={showAnswer} />
                     < CurrentCardList cards={cards} showAnswer={showAnswer} />
                 </table>
@@ -54,7 +54,6 @@ const CurrentCardsTableHeader = ({ showAnswer }) => {
                 <th>CARD</th>
                 <th>QUESTION</th>
                 {showAnswer && <th>ANSWER</th>}
-                {showAnswer && <th>FOLLOWS</th>}
             </tr>
         </thead>
     )
@@ -70,7 +69,6 @@ const CurrentCardList = ({ cards, showAnswer }) => {
                         <td >{card.id}</td>
                         <td >{card.question}</td>
                         {showAnswer && <td>{card.answer}</td>}
-                        {showAnswer && <td>{card.follows}</td>}
                     </tr>
                 ))}
         </tbody>
