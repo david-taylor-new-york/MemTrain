@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
+import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
 

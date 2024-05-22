@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
 import { showToast, wrongAnswerToast } from '../utils/utils'
 import {
-    createTrainingSession, getTrainingSession, getTrainingSessions,
+    createTrainingSession, getTrainingSessions,
     updateTrainingSession, createCardResults, getCardResultsBy
 } from '../utils/httpClient'
 

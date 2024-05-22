@@ -92,7 +92,7 @@ export function AppContextProvider({ children }) {
         const password = loginPageFormRef.current.password.value
         const confirm_password = loginPageFormRef.current.confirm_password.value
 
-        if ((password != confirm_password)) {
+        if ((password !== confirm_password)) {
             showToast(`PASSWORDS DO NOT MATCH!`)
             loginPageFormRef.current.reset()
             loginPageFormRef.current.user_name.focus()
