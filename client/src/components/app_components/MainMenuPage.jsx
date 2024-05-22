@@ -4,13 +4,12 @@ import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 
 export const MainMenuPage = () => {
-
     return (
         <div className="page-container">
             <div id="main-menu-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < MainMenuPageBody />
+                <PageHeader/>
+                <MainMenuPageBody/>
             </div>
         </div>
     )

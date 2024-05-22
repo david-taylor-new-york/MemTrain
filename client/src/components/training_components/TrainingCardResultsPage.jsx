@@ -4,12 +4,11 @@ import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
 
 export const TrainingCardResultsPage = () => {
-
     return (
         <div className="page-container">
             <div id="training-card-results-page-id" style={{ display: 'none' }}> </div>
-            < PageHeader />
-            < TrainingCardResultsPageBody />
+            <PageHeader/>
+            <TrainingCardResultsPageBody/>
         </div>
     )
 }
@@ -19,9 +18,9 @@ const TrainingCardResultsPageBody = () => {
 
     return (
         <div className="section-container">
-            < TrainingSessionsSummary />
-            < SubmitButton id="cancel-button" onClick={myAppUpdateContext.handleCancel}> Cancel </SubmitButton>
-            < TrainingCardResultsTable />
+            <TrainingSessionsSummary/>
+            <SubmitButton id="cancel-button" onClick={myAppUpdateContext.handleCancel}> Cancel </SubmitButton>
+            <TrainingCardResultsTable/>
         </div>
     )
 }
@@ -41,10 +40,10 @@ const TrainingSessionsSummary = () => {
 
 const TrainingCardResultsTable = () => {
     return (
-        <div >
+        <div>
             <table className="table-container">
-                < TrainingCardResultsTableHeader />
-                < TrainingCardResultsList />
+                <TrainingCardResultsTableHeader/>
+                <TrainingCardResultsList/>
             </table>
         </div>
     )
@@ -52,7 +51,7 @@ const TrainingCardResultsTable = () => {
 
 const TrainingCardResultsTableHeader = () => {
     return (
-        <thead >
+        <thead>
             <tr>
                 <th>DATE</th>
                 <th>TIME</th>
@@ -81,18 +80,16 @@ const TrainingCardResultsList = () => {
                 if (cardResult.is_correct) {
 
                     return (
-                        <tr key={cardResult.card_id} >
+                        <tr key={cardResult.card_id}>
                             <td> {formattedDate} </td>
                             <td> {formattedTime} </td>
                             <td className="correct-row"> {cardResult.guess} </td>
                             <td> {secToAnswer} </td>
                         </tr>
                     )
-
                 } else {
-
                     return (
-                        <tr key={cardResult.id} >
+                        <tr key={cardResult.id}>
                             <td> {formattedDate} </td>
                             <td> {formattedTime} </td>
                             <td className="incorrect-guess"> {cardResult.guess} </td>
@@ -101,7 +98,6 @@ const TrainingCardResultsList = () => {
                     )
 
                 }
-            }
-            )
+            })
     )
 }

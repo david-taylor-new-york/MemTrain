@@ -4,12 +4,11 @@ import { useMyAppContext } from '../../contexts/AppContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
 
 export const TrainingSessionPage = () => {
-
     return (
         <div className="page-container">
             <div id="training-session-page-id" style={{ display: 'none' }}> </div>
-            < PageHeader />
-            < TrainingSessionPageBody />
+            <PageHeader/>
+            <TrainingSessionPageBody/>
         </div>
     )
 }
@@ -20,16 +19,15 @@ const TrainingSessionPageBody = () => {
 
     return (
         <div className="section-container">
-            < TrainingSessionSummary />
-            < ChooseIdWidget formRef={myTrainingContext.trainingSessionFormRef} buttonLabel={'View All Answers'} submitCall={myTrainingUpdateContext.loadTrainingCardResultsPage} idLabel={'CARD:'}/>
-            < TrainingSessionTable />
+            <TrainingSessionSummary/>
+            <ChooseIdWidget formRef={myTrainingContext.trainingSessionFormRef} buttonLabel={'View All Answers'} submitCall={myTrainingUpdateContext.loadTrainingCardResultsPage} idLabel={'CARD:'}/>
+            <TrainingSessionTable/>
         </div>
     )
 }
 
 const TrainingSessionSummary = () => {
     const myTrainingContext = useMyTrainingContext()
-
     const session_start_time = new Date(myTrainingContext.currentTrainingSession.session_start_time)
     const session_month = session_start_time.getMonth() + 1
 
@@ -46,10 +44,10 @@ const TrainingSessionSummary = () => {
 
 const TrainingSessionTable = () => {
     return (
-        <div >
+        <div>
             <table className="table-container">
-                < TrainingSessionTableHeader />
-                < TrainingSessionList />
+                <TrainingSessionTableHeader/>
+                <TrainingSessionList/>
             </table>
         </div>
     )
@@ -57,13 +55,13 @@ const TrainingSessionTable = () => {
 
 const TrainingSessionTableHeader = () => {
     return (
-        <thead >
+        <thead>
             <tr>
                 <th>CARD</th>
                 <th>QUESTION</th>
                 <th>RESPONSE</th>
                 <th>CORRECT ANSWER</th>
-                <th >SECONDS</th>
+                <th>SECONDS</th>
             </tr>
         </thead>
     )
@@ -72,7 +70,6 @@ const TrainingSessionTableHeader = () => {
 const TrainingSessionList = () => {
     const myTrainingContext = useMyTrainingContext()
     const myAppContext = useMyAppContext()
-
     const currentSessionResults = myTrainingContext.currentSessionResults
     const currentCards = myAppContext.allCardsBySubject
 
@@ -86,7 +83,7 @@ const TrainingSessionList = () => {
                 if (card_result.is_correct) {
                     return (
                         <tbody>
-                            <tr key={card_result.card_id} >
+                            <tr key={card_result.card_id}>
                                 <td> {card.card_number} </td>
                                 <td> {card_result.question} </td>
                                 <td> {card_result.guess} </td>
@@ -98,7 +95,7 @@ const TrainingSessionList = () => {
                 } else {
                     return (
                         <tbody>
-                            <tr key={card_result.id} >
+                            <tr key={card_result.id}>
                                 <td> {card.card_number} </td>
                                 <td> {card_result.question} </td>
                                 <td className="incorrect-guess">{card_result.guess}</td>

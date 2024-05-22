@@ -8,8 +8,8 @@ export const TrainingMenuPage = () => {
         <div className="page-container">
             <div id="training-menu-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < TrainingMenuPageBody />
+                <PageHeader/>
+                <TrainingMenuPageBody/>
             </div>
         </div>
     )
@@ -31,7 +31,7 @@ const TrainingMenuPageBody = () => {
                     <SubmitButton id="train-button" showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
                     <SubmitButton id="training-sessions-button" showButton={displayTrainingSessionsButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Training Sessions")}> Training Sessions </SubmitButton>
                     {!displayTrainingPageButton && !displayTrainingSessionsButton && <SubmitButton id="create-some-cards-text" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Create some cards! </SubmitButton>}
-                    < SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Cancel </SubmitButton>
+                    <SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Cancel </SubmitButton>
                 </div>
             </div>
         </div>

@@ -4,12 +4,11 @@ import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
 
 export const TrainingSessionsPage = () => {
-
     return (
         <div className="page-container">
             <div id="training-sessions-page-id" style={{ display: 'none' }}> </div>
-            < PageHeader />
-            < TrainingSessionsPageBody />
+            <PageHeader/>
+            <TrainingSessionsPageBody/>
         </div>
     )
 }
@@ -20,19 +19,19 @@ const TrainingSessionsPageBody = () => {
 
     return (
         <div className="section-container">
-            < ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} idLabel={'ID:'} />
-            < TrainingSummaryButton />
-            < TrainingSessionsTable />
+            <ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} idLabel={'ID:'}/>
+            <TrainingSummaryButton/>
+            <TrainingSessionsTable/>
         </div>
     )
 }
 
 const TrainingSessionsTable = () => {
     return (
-        <div >
+        <div>
             <table className="table-container training-session-table-container">
-                < TrainingSessionsTableHeader />
-                < TrainingSessionsList />
+                <TrainingSessionsTableHeader/>
+                <TrainingSessionsList/>
             </table>
         </div>
     )
@@ -40,7 +39,7 @@ const TrainingSessionsTable = () => {
 
 const TrainingSessionsTableHeader = () => {
     return (
-        <thead >
+        <thead>
             <tr>
                 <th>ID</th>
                 <th>DATE</th>

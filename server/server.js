@@ -4,9 +4,7 @@ const app = express()
 const cors = require("cors")
 const path = require('path')
 
-// Serve static files from the client build directory
 app.use(express.static(path.join(__dirname, '../client/build')));
-
 app.use(cors({ origin: '*', }));
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -151,7 +149,6 @@ app.delete('/delete', async (req, res) => {
   } catch (error) {
     handleServerError(res, error)
   }
-
 })
 
 

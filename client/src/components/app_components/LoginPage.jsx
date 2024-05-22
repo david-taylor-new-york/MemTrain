@@ -1,35 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 
 export const LoginPage = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
 
-    const [formVisible, setFormVisible] = useState(false);
-    const [isNewUser, setIsNewUser] = useState(false);
+    const [formVisible, setFormVisible] = useState(false)
+    const [isNewUser, setIsNewUser] = useState(false)
 
     const handleShowLoginFieldsClick = () => {
-        setFormVisible(true);
-        setIsNewUser(false);
+        setFormVisible(true)
+        setIsNewUser(false)
     }
 
     const handleShowNewFieldsClick = () => {
-        setFormVisible(true);
-        setIsNewUser(true);
+        setFormVisible(true)
+        setIsNewUser(true)
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        isNewUser ? myAppUpdateContext.handleNewUser() : myAppUpdateContext.handleLogin();
-    };
+        e.preventDefault()
+        isNewUser ? myAppUpdateContext.handleNewUser() : myAppUpdateContext.handleLogin()
+    }
 
     const handleCancel = () => {
-        setFormVisible(false);
-        setIsNewUser(false);
+        setFormVisible(false)
+        setIsNewUser(false)
     }
 
     const LoginPageBody = () => {
-
         return (
             <div className="section-container">
                 {!formVisible && (
@@ -42,20 +41,20 @@ export const LoginPage = () => {
                     <form onSubmit={handleSubmit} ref={myAppContext.loginPageFormRef}>
                         <label>
                             Username:{" "}
-                            <input name="user_name" className="half-width" type="text" autoComplete="off" autoFocus required minLength="1" />
+                            <input name="user_name" className="half-width" type="text" autoComplete="off" autoFocus required minLength="1"/>
                         </label>
-                        <br />
-                        <br />
+                        <br/>
+                        <br/>
                         <label>
                             Password:{" "}
-                            <input name="password" className="half-width" type="password" autoComplete="off" required minLength="1" />
+                            <input name="password" className="half-width" type="password" autoComplete="off" required minLength="1"/>
                         </label>
-                        <br />
-                        <br />
+                        <br/>
+                        <br/>
                         {isNewUser && (
                             <label>
                                 Confirm Password:
-                                <input name="confirm_password" className="half-width" type="password" autoComplete="off" required minLength="1" />
+                                <input name="confirm_password" className="half-width" type="password" autoComplete="off" required minLength="1"/>
                             </label>
                         )}
                         <button className="button" type="submit">{isNewUser ? 'Create New' : 'Login'}</button>
@@ -63,23 +62,20 @@ export const LoginPage = () => {
                     </form>
                 )}
             </div>
-        );
+        )
     }
     return (
         <div className="page-container">
             <div id="login-page-id" style={{ display: 'none' }}> </div>
-            < LoginPageHeader />
-            < LoginPageBody />
+            <LoginPageHeader/>
+            <LoginPageBody/>
         </div>
     )
 }
 
 const LoginPageHeader = () => {
-    const [showDetails, setShowDetails] = useState(false);
-
-    const toggleDetails = () => {
-        setShowDetails(!showDetails);
-    };
+    const [showDetails, setShowDetails] = useState(false)
+    const toggleDetails = () => { setShowDetails(!showDetails) }
 
     return (
         <div>
@@ -106,7 +102,7 @@ const LoginPageHeader = () => {
                         <p>
                             <a href="https://en.wikipedia.org/wiki/Leitner_system">https://en.wikipedia.org/wiki/Leitner_system</a>
                         </p>
-                        <hr />
+                        <hr/>
                     </>
                 )}
             </div>

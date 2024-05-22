@@ -7,8 +7,8 @@ export const EditCardsPage = () => {
         <div className="page-container">
             <div id="edit-cards-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < EditCardsPageBody />
+                <PageHeader/>
+                <EditCardsPageBody/>
             </div>
         </div>
     )
@@ -16,9 +16,9 @@ export const EditCardsPage = () => {
 
 const EditCardsPageBody = () => {
     return (
-        <div >
-            < EditPageWidget />
-            < CurrentCardsTable />
+        <div>
+            <EditPageWidget/>
+            <CurrentCardsTable/>
         </div>
     )
 }

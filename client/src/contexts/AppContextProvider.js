@@ -16,89 +16,69 @@ export function useMyAppUpdateContext() {
 
 export function AppContextProvider({ children }) {
 
-    /**
-     * 
-     * Configure Already LOGGED IN vvvv
-     * 
-     */
-
-    // const [currentPage, setCurrentPage] = useState("Subject")
-    // const [isLoggedIn, setIsLoggedIn] = useState(true)
-    // // const [userName, setUserName] = useState("a")
-    // const [userId, setUserId] = useState(1)
-
     const [currentPage, setCurrentPage] = useState("Login")
     const [previousPage, setPreviousPage] = useState(null)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    // const [userName, setUserName] = useState(null)
     const [userId, setUserId] = useState(null)
 
-    /**
-     * 
-     * Configure Already LOGGED IN ^^^^
-     * 
-     */
-
-    // const [subjects, setSubjects] = useState([])
     const [currentSubjectName, setCurrentSubjectName] = useState("unselected")
-    const [currentSubjectId, setCurrentSubjectId] = useState(null) // use this to create cards
+    const [currentSubjectId, setCurrentSubjectId] = useState(null)
     const [allCardsBySubject, setAllCardsBySubject] = useState([])
 
-    // set three of these, for convenience, views, remove later if we can
     const [cardToEdit, setCardToEdit] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
 
     const updateCurrentPageTo = (newCurrentPage) => {
         console.log("setting current page to: " + newCurrentPage)
-        let pPage = ""
+        let previousPage = ""
         setCurrentPage(newCurrentPage)
         switch (newCurrentPage) {
             case "Card Menu":
-                pPage = "Main Menu"
+                previousPage = "Main Menu"
                 break
             case "Create Cards":
-                pPage = "Card Menu"
+                previousPage = "Card Menu"
                 break
             case "Delete Cards":
-                pPage = "Card Menu"
+                previousPage = "Card Menu"
                 break
             case "Edit Cards":
-                pPage = "Card Menu"
+                previousPage = "Card Menu"
                 break
             case "Main Menu":
-                pPage = "Subject"
+                previousPage = "Subject"
                 break
             case "Login":
-                pPage = "Login"
+                previousPage = "Login"
                 break
             case "Subject":
-                pPage = "Subject"
+                previousPage = "Subject"
                 break
             case "Training Menu":
-                pPage = "Main Menu"
+                previousPage = "Main Menu"
                 break
             case "Training":
-                pPage = "Training Menu"
+                previousPage = "Training Menu"
                 break
             case "Training Card Results":
-                pPage = "Training Session"
+                previousPage = "Training Session"
                 break
             case "Training Session":
-                pPage = "Training Sessions"
+                previousPage = "Training Sessions"
                 break
             case "Training Sessions":
-                pPage = "Training Menu"
+                previousPage = "Training Menu"
                 break
             case "Training Setup":
-                pPage = "Training Menu"
+                previousPage = "Training Menu"
                 break
             case "Training Summary":
-                pPage = "Training Sessions"
+                previousPage = "Training Sessions"
                 break
             default:
                 (console.log("PAGE NOT RECOGNIZED: " + newCurrentPage))
         }
-        setPreviousPage(pPage)
+        setPreviousPage(previousPage)
     }
 
     const handleLoadEditCardPage = (e) => {
@@ -108,7 +88,7 @@ export function AppContextProvider({ children }) {
     }
 
     const handleNewUser = async (e) => {
-        const userName = loginPageFormRef.current.user_name.value.toLowerCase();
+        const userName = loginPageFormRef.current.user_name.value.toLowerCase()
         const password = loginPageFormRef.current.password.value
         const confirm_password = loginPageFormRef.current.confirm_password.value
 
@@ -125,7 +105,6 @@ export function AppContextProvider({ children }) {
 
         try {
             const user_id = await createUser({ user_name: userName, password: password })
-
             setIsLoggedIn(true)
             setUserId(user_id.id)
             setCurrentPage("Subject")
@@ -142,7 +121,7 @@ export function AppContextProvider({ children }) {
 
     const handleLogin = async () => {
 
-        const userName = loginPageFormRef.current.user_name.value.toLowerCase();
+        const userName = loginPageFormRef.current.user_name.value.toLowerCase()
         const password = loginPageFormRef.current.password.value
 
         setIsLoading(true)
@@ -158,8 +137,8 @@ export function AppContextProvider({ children }) {
                     setUserId(userData.id)
                     setCurrentPage("Subject")
                 } else {
-                    //                    const notifyA = () => toast('Wow so easy !', {containerId: 'A'})
-                    //                    showToast(`Wrong password!`, {containerId: 'toast_container'})
+//                    const notifyA = () => toast('Wow so easy !', {containerId: 'A'})
+//                    showToast(`Wrong password!`, {containerId: 'toast_container'})
                     showToast(`Wrong password!`)
                     setIsLoggedIn(false)
                     setUserId(null)
@@ -173,7 +152,6 @@ export function AppContextProvider({ children }) {
             console.error(error)
             showToast(error.message || "Error occurred during login")
         }
-
         setIsLoading(false)
     }
 
@@ -195,7 +173,6 @@ export function AppContextProvider({ children }) {
             setCurrentPage("Subject")
             return
         }
-
         try {
             const allSubjects = await getSubjectsBy("user_id", userId)
             for (let subject of allSubjects) {
@@ -224,20 +201,14 @@ export function AppContextProvider({ children }) {
     const handleSubjectChange = async (e) => {
         const newCurrentSubjectName = e.target.value
 
-        if (newCurrentSubjectName === 'Select a subject') {
-            return
-        }
-
+        if (newCurrentSubjectName === 'Select a subject') { return }
         setIsLoading(true)
-
         try {
             const subjectsByName = await getSubjectsBy('subject_name', newCurrentSubjectName)
-
             const subject = subjectsByName.find(subject => subject.user_id === userId)
 
             setCurrentSubjectId(subject.id)
             setCurrentSubjectName(newCurrentSubjectName)
-
             const cardsBySubjectId = await getCards(subject.id)
             setAllCardsBySubject(cardsBySubjectId)
 
@@ -310,7 +281,6 @@ export function AppContextProvider({ children }) {
             showToast("DID NOT FIND card " + cardNumber)
             return
         }
-
     }
 
     const handleCancel = () => {
@@ -327,10 +297,8 @@ export function AppContextProvider({ children }) {
         const updatedQuestion = editCardWidgetFormRef.current.question.value
         const updatedAnswer = editCardWidgetFormRef.current.answer.value
 
-        const updatedCardToFollow = editCardWidgetFormRef.current.card_to_follow.value
-        if (updatedCardToFollow === "") {
-            updatedCardToFollow = null
-        }
+        let updatedCardToFollow = editCardWidgetFormRef.current.card_to_follow.value
+        if (updatedCardToFollow === "") { updatedCardToFollow = null }
 
         if ((updatedQuestion === cardToEdit.question) && (updatedAnswer === cardToEdit.answer) && (updatedCardToFollow === cardToEdit.follows)) {
             showToast("You've made no changes")
@@ -350,9 +318,7 @@ export function AppContextProvider({ children }) {
             answer: updatedAnswer,
             follows: updatedCardToFollow
         }
-
         setIsLoading(true)
-
         try {
             const response = await updateCard(updatedCard)
             if (response === 'success') {
@@ -380,7 +346,6 @@ export function AppContextProvider({ children }) {
             deleteCardFormRef.current.id_input_field.focus()
             return
         }
-
         const updatedCards = [...allCardsBySubject]
         const cardToDeleteIndex = updatedCards.findIndex(card => card.card_number.toString() === cardToDeleteNumber.toString())
 
@@ -396,7 +361,6 @@ export function AppContextProvider({ children }) {
 
         const cardToDeleteId = allCardsBySubject[cardToDeleteIndex].id
         setIsLoading(true)
-
         try {
             const response = await deleteCard(cardToDeleteId)
             if (response === 'success') {
@@ -404,11 +368,9 @@ export function AppContextProvider({ children }) {
                 deleteCardFormRef.current.reset()
                 deleteCardFormRef.current.id_input_field.focus()
             }
-
         } catch {
             showToast(`IN CATCH - Could not DELETE card!`)
         }
-
         setIsLoading(false)
     }
 
@@ -453,10 +415,10 @@ export function AppContextProvider({ children }) {
     }
 
     return (
-        < MyAppContext.Provider value={allContexts} >
-            < MyAppUpdateContext.Provider value={allContextUpdaters} >
+        <MyAppContext.Provider value={allContexts}>
+            <MyAppUpdateContext.Provider value={allContextUpdaters}>
                 {children}
-            </ MyAppUpdateContext.Provider >
-        </ MyAppContext.Provider >
+            </MyAppUpdateContext.Provider>
+        </MyAppContext.Provider>
     )
 }

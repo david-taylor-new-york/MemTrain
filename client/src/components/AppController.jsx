@@ -17,57 +17,41 @@ import { useMyAppContext } from '../contexts/AppContextProvider'
 import './commonStyles.css'
 
 export const AppController = () => {
-
   const myAppContext = useMyAppContext()
 
   if (!myAppContext.isLoggedIn && !myAppContext.isLoading) {
-    return (< LoginPage />)
+    return (<LoginPage/>)
   }
 
   switch (myAppContext.currentPage) {
-
     case "Card Menu":
-      return (< CardMenuPage />)
-
+      return (<CardMenuPage/>)
     case "Create Cards":
-      return (< CreateCardsPage />)
-
+      return (<CreateCardsPage/>)
     case "Delete Cards":
-      return (< DeleteCardsPage />)
-
+      return (<DeleteCardsPage/>)
     case "Edit Cards":
-      return (< EditCardsPage />)
-
+      return (<EditCardsPage/>)
     case "Main Menu":
-      return (< MainMenuPage />)
-
+      return (<MainMenuPage/>)
     case "Login":
-      return (< LoginPage />)
-
+      return (<LoginPage/>)
     case "Subject":
-      return (< SubjectPage />)
-
+      return (<SubjectPage/>)
     case "Training Menu":
-      return (< TrainingMenuPage />)
-
+      return (<TrainingMenuPage/>)
     case "Training":
-      return (< TrainingPage />)
-
+      return (<TrainingPage/>)
     case "Training Card Results":
-      return (< TrainingCardResultsPage />)
-
+      return (<TrainingCardResultsPage/>)
     case "Training Session":
-      return (< TrainingSessionPage />)
-
+      return (<TrainingSessionPage />)
     case "Training Sessions":
-      return (< TrainingSessionsPage />)
-
+      return (<TrainingSessionsPage />)
     case "Training Setup":
-      return (< TrainingSetupPage />)
-
+      return (<TrainingSetupPage />)
     case "Training Summary":
-      return (< TrainingSummaryPage />)
-
+      return (<TrainingSummaryPage />)
     default:
       throw new Error("PAGE NOT RECOGNIZED: " + myAppContext.currentPage)
   }

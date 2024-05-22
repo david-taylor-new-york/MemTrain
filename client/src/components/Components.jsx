@@ -4,7 +4,6 @@ import { useMyAppContext, useMyAppUpdateContext } from '../contexts/AppContextPr
 export const PageHeader = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
-
     const showBackButton = (myAppContext.currentSubjectName !== "unselected")
 
     return (
@@ -30,7 +29,7 @@ export const CurrentCardsTable = () => {
         if (myAppContext.currentPage === "Card Menu") {
             return (
                 <div id="create-some-cards-text">
-                    <br />
+                    <br/>
                     Create some Cards!
                 </div>
             )
@@ -39,8 +38,8 @@ export const CurrentCardsTable = () => {
         return (
             <div>
                 <table className="table-container card-table-container">
-                    < CurrentCardsTableHeader showAnswer={showAnswer} />
-                    < CurrentCardList cards={cards} showAnswer={showAnswer} />
+                    <CurrentCardsTableHeader showAnswer={showAnswer}/>
+                    <CurrentCardList cards={cards} showAnswer={showAnswer}/>
                 </table>
             </div>
         )
@@ -49,7 +48,7 @@ export const CurrentCardsTable = () => {
 
 const CurrentCardsTableHeader = ({ showAnswer }) => {
     return (
-        <thead >
+        <thead>
             <tr>
                 <th>CARD</th>
                 <th>QUESTION</th>
@@ -66,8 +65,8 @@ const CurrentCardList = ({ cards, showAnswer }) => {
                 .sort((a, b) => a.card_number - b.card_number)
                 .map((card) => (
                     <tr key={card.card_number}>
-                        <td >{card.card_number}</td>
-                        <td >{card.question}</td>
+                        <td>{card.card_number}</td>
+                        <td>{card.question}</td>
                         {showAnswer && <td>{card.answer}</td>}
                     </tr>
                 ))}
@@ -96,31 +95,32 @@ export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall, idLabel }) =>
             <form ref={formRef} onSubmit={handleSubmit}>
                 <label>
                     {idLabel}
-                    <input id="id-input-field" type="text" autoComplete="off" name="id_input_field" autoFocus required minLength="1" />
+                    <input id="id-input-field" type="text" autoComplete="off" name="id_input_field" autoFocus required minLength="1"/>
                 </label>
-                <br />
+                <br/>
                 <button id="submit-button" className="button" type="submit"> {buttonLabel} </button>
                 <button id="cancel-button" className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
             </form>
-            <hr />
+            <hr/>
         </div>
     )
 }
 
 export const CardForm = ({ formRef, onSubmit, defaultValue }) => {
     const myAppUpdateContext = useMyAppUpdateContext()
+
     return (
         <div className="section-container">
             <form ref={formRef} onSubmit={onSubmit}>
                 Question:
-                <input id="card-question" type="text" autoComplete="off" name="question" defaultValue={defaultValue ? defaultValue.question : ''} autoFocus required minLength="1" />
+                <input id="card-question" type="text" autoComplete="off" name="question" defaultValue={defaultValue ? defaultValue.question : ''} autoFocus required minLength="1"/>
                 Answer:
-                <input id="card-answer" type="text" autoComplete="off" name="answer" defaultValue={defaultValue ? defaultValue.answer : ''} required minLength="1" />
+                <input id="card-answer" type="text" autoComplete="off" name="answer" defaultValue={defaultValue ? defaultValue.answer : ''} required minLength="1"/>
                 Card (Id) To Follow:
-                <input id="card-id-to-follow" type="number" name="card_to_follow" defaultValue={defaultValue ? defaultValue.follows : ''} minLength="1" />
-                <br />
+                <input id="card-id-to-follow" type="number" name="card_to_follow" defaultValue={defaultValue ? defaultValue.follows : ''} minLength="1"/>
+                <br/>
                 <div className="main-menu-button-group">
-                    <button id="create-update-card-button" className="button" type="submit" >{defaultValue ? 'Update Card' : 'Create Card'}</button>
+                    <button id="create-update-card-button" className="button" type="submit">{defaultValue ? 'Update Card' : 'Create Card'}</button>
                     <button id="cancel-button" className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
                 </div>
             </form>
