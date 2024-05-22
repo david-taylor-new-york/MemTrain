@@ -26,15 +26,14 @@ const EditCardsPageBody = () => {
 const EditPageWidget = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
-    const cardToEdit = myAppContext.allCardsBySubject[myAppContext.cardToEditIndex]
 
-    if (myAppContext.cardToEditIndex === null) {
+    if (myAppContext.cardToEdit === null) {
         return (
-            < ChooseIdWidget formRef={myAppContext.editCardFormRef} buttonLabel={'Edit Card'} submitCall={myAppUpdateContext.handleSetCardToEditId} />
+            <ChooseIdWidget formRef={myAppContext.editCardFormRef} buttonLabel={'Edit Card'} submitCall={myAppUpdateContext.handleSetCardToEdit} idLabel={'CARD:'}/>
         )
     } else {
         return (
-            < CardForm formRef={myAppContext.editCardWidgetFormRef} onSubmit={myAppUpdateContext.handleEditCard} defaultValue={cardToEdit} />
+            <CardForm formRef={myAppContext.editCardWidgetFormRef} onSubmit={myAppUpdateContext.handleEditCard} defaultValue={myAppContext.cardToEdit}/>
         )
     }
 }

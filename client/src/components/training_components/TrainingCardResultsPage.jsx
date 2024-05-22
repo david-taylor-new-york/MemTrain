@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
-import { PageHeader } from '../Components'
+import { PageHeader, SubmitButton } from '../Components'
 
 export const TrainingCardResultsPage = () => {
 
@@ -16,16 +16,12 @@ export const TrainingCardResultsPage = () => {
 
 const TrainingCardResultsPageBody = () => {
     const myAppUpdateContext = useMyAppUpdateContext()
-    const myTrainingContext = useMyTrainingContext()
 
     return (
         <div className="section-container">
             < TrainingSessionsSummary />
-            <button id="cancel-button" className="button" type="button" onClick={myAppUpdateContext.handleCancel}>Cancel</button>
-            <table className="table-container">
-                < TrainingCardResultsTableHeader />
-                < TrainingCardResultsList trainingResults={myTrainingContext.currentCardResults} />
-            </table>
+            < SubmitButton id="cancel-button" onClick={myAppUpdateContext.handleCancel}> Cancel </SubmitButton>
+            < TrainingCardResultsTable />
         </div>
     )
 }
@@ -43,6 +39,17 @@ const TrainingSessionsSummary = () => {
     )
 }
 
+const TrainingCardResultsTable = () => {
+    return (
+        <div >
+            <table className="table-container">
+                < TrainingCardResultsTableHeader />
+                < TrainingCardResultsList />
+            </table>
+        </div>
+    )
+}
+
 const TrainingCardResultsTableHeader = () => {
     return (
         <thead >
@@ -56,13 +63,13 @@ const TrainingCardResultsTableHeader = () => {
     )
 }
 
-const TrainingCardResultsList = (props) => {
+const TrainingCardResultsList = () => {
     const myTrainingContext = useMyTrainingContext()
     const trainingSessions = myTrainingContext.allTrainingSessions
+    const currentCardResults = myTrainingContext.currentCardResults
 
-    let trainingCardResults = props.trainingResults
     return (
-        trainingCardResults.sort((a, b) => a.id - b.id)
+        currentCardResults.sort((a, b) => a.card_id - b.card_id)
             .map((cardResult) => {
                 const secToAnswer = Math.round(cardResult.seconds_to_answer * 10) / 10
                 const trainingSessionIndex = trainingSessions.findIndex(trainingSession => trainingSession.id === cardResult.training_session_id)
@@ -74,7 +81,7 @@ const TrainingCardResultsList = (props) => {
                 if (cardResult.is_correct) {
 
                     return (
-                        <tr key={cardResult.id} >
+                        <tr key={cardResult.card_id} >
                             <td> {formattedDate} </td>
                             <td> {formattedTime} </td>
                             <td className="correct-row"> {cardResult.guess} </td>

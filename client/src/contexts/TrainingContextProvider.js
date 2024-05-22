@@ -50,7 +50,6 @@ export function TrainingContextProvider({ children }) {
 
     const startTraining = () => {
         setCurrentTrainingState("Training")
-        console.log("setTrainingType: " + trainingType);
         const initialCards = getTrainingCards(trainingType)
 
         setTrainingCards(initialCards)
@@ -79,7 +78,7 @@ export function TrainingContextProvider({ children }) {
         const secondsToAnswerThisCard = Math.round((new Date() - startTime) / 1000)
         setCumulativeTrainingSessionTimeInSeconds(cumulativeTrainingSessionTimeInSeconds + secondsToAnswerThisCard)
 
-        let isCorrect = compareAnswers(currentCard.answer, givenAnswer)
+        const isCorrect = compareAnswers(currentCard.answer, givenAnswer)
         updateScores(isCorrect, currentCard)
 
         const cardResult = createCardResult(currentCard.id, currentCard.question, givenAnswer, currentCard.answer, isCorrect, secondsToAnswerThisCard)
@@ -138,10 +137,19 @@ export function TrainingContextProvider({ children }) {
         }
     }
 
+    const getNewSessionNumber = () => {
+        if (allTrainingSessions.length > 0) {
+            return allTrainingSessions[allTrainingSessions.length - 1].session_number + 1
+        } else {
+            return 1
+        }
+    }
+
     const finishTrainingRound = async () => {
         if ((trainingType === "recorded") && (trainingRounds === 1)) {
             const newTrainingSession = {
                 subject_id: myAppContext.currentSubjectId,
+                session_number: getNewSessionNumber(),
                 first_pass_correct: numberCorrect,
                 first_pass_incorrect: numberIncorrect,
                 rounds_to_finish: trainingRounds,
@@ -151,7 +159,7 @@ export function TrainingContextProvider({ children }) {
             const trainingSessionId = await createTrainingSession(newTrainingSession)
             newTrainingSession.id = trainingSessionId.id
             setCurrentTrainingSession(newTrainingSession)
-            let updatedTrainingSessions = [...allTrainingSessions]
+            const updatedTrainingSessions = [...allTrainingSessions]
             updatedTrainingSessions.push(newTrainingSession)
             setAllTrainingSessions(updatedTrainingSessions)
 
@@ -204,6 +212,7 @@ export function TrainingContextProvider({ children }) {
     const localUpdateTrainingSession = async () => {
         const updatedTrainingSession = {
             id: currentTrainingSession.id,
+            session_number: currentTrainingSession.session_number,
             subject_id: currentTrainingSession.subject_id,
             first_pass_correct: currentTrainingSession.first_pass_correct,
             first_pass_incorrect: currentTrainingSession.first_pass_incorrect,
@@ -275,7 +284,7 @@ export function TrainingContextProvider({ children }) {
 
     const addTrainingSessionIdToCardResults = (trainingSessionId) => {
 
-        let cardResultsWithId = []
+        const cardResultsWithId = []
 
         for (let cardResult of currentCardResults) {
             cardResult.training_session_id = trainingSessionId
@@ -285,42 +294,43 @@ export function TrainingContextProvider({ children }) {
     }
 
     const loadTrainingSessionPage = async () => {
-        const trainingSessionId = trainingSessionsFormRef.current.id_input_field.value
-        const trainingSessionArray = await getTrainingSession(trainingSessionId)
+        const trainingSessionNumber = trainingSessionsFormRef.current.id_input_field.value
+        const trainingSessionIndex = allTrainingSessions.findIndex(session => session.session_number.toString() === trainingSessionNumber.toString())
 
-        if (trainingSessionArray.length === 0) {
-            showToast("Training session " + trainingSessionId + " not found!")
+        if (trainingSessionIndex < 0) {
+            showToast("Training session " + trainingSessionNumber + " not found!")
             trainingSessionsFormRef.current.reset()
             trainingSessionsFormRef.current.id_input_field.focus()
             return
         }
+        const trainingSession = allTrainingSessions[trainingSessionIndex]
+        setCurrentTrainingSession(allTrainingSessions[trainingSessionIndex])
 
-        setCurrentTrainingSession(trainingSessionArray[0])
-        myAppUpdateContext.updateCurrentPageTo("Training Session")
-
-        const sessionResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSessionId)
+        const sessionResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSession.id)
         setCurrentSessionResults(sessionResultsByTrainingSessionId)
+        myAppUpdateContext.updateCurrentPageTo("Training Session")
     }
 
     const loadTrainingCardResultsPage = async () => {
-        const cardId = trainingSessionFormRef.current.id_input_field.value
-        myAppUpdateContext.updateIsLoading(true)
-        const cardResultsByCardId = await getCardResultsBy('card_id', cardId)
+        const cardResultsCardNumber = trainingSessionFormRef.current.id_input_field.value
+        const allCardsBySubject = [...myAppContext.allCardsBySubject]
+        const cardResultsIndex = allCardsBySubject.findIndex(card => card.card_number.toString() === cardResultsCardNumber.toString())
 
-        if (cardResultsByCardId.length === 0) {
-            showToast("Results not found for card: " + cardId)
+        if (cardResultsIndex < 0) {
+            showToast("Results not found for card: " + cardResultsCardNumber)
             trainingSessionFormRef.current.reset()
             trainingSessionFormRef.current.id_input_field.focus()
             return
         }
+        const cardThatContainsCardNumber = allCardsBySubject[cardResultsIndex]
+        const cardResults = await getCardResultsBy('card_id', cardThatContainsCardNumber.id)
 
-        myAppUpdateContext.updateCurrentPageTo("Training Card Results")
-        setCurrentCardResults(cardResultsByCardId)
-        const correct = countCorrect(cardResultsByCardId)
-        const incorrect = cardResultsByCardId.length - correct
+        setCurrentCardResults(cardResults)
+        const correct = countCorrect(cardResults)
+        const incorrect = cardResults.length - correct
         setNumberCorrect(correct)
         setNumberIncorrect(incorrect)
-        myAppUpdateContext.updateIsLoading(false)
+        myAppUpdateContext.updateCurrentPageTo("Training Card Results")
     }
 
     const countCorrect = (cardResults) => {

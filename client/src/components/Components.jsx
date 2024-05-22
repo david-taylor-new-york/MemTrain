@@ -63,10 +63,10 @@ const CurrentCardList = ({ cards, showAnswer }) => {
     return (
         <tbody>
             {cards
-                .sort((a, b) => a.id - b.id)
+                .sort((a, b) => a.card_number - b.card_number)
                 .map((card) => (
-                    <tr key={card.id}>
-                        <td >{card.id}</td>
+                    <tr key={card.card_number}>
+                        <td >{card.card_number}</td>
                         <td >{card.question}</td>
                         {showAnswer && <td>{card.answer}</td>}
                     </tr>
@@ -83,7 +83,7 @@ export const SubmitButton = ({ showButton = true, id, onClick, children }) => {
     )
 }
 
-export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall }) => {
+export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall, idLabel }) => {
     const myAppUpdateContext = useMyAppUpdateContext()
 
     const handleSubmit = (e) => {
@@ -95,7 +95,7 @@ export const ChooseIdWidget = ({ formRef, buttonLabel, submitCall }) => {
         <div className="section-container">
             <form ref={formRef} onSubmit={handleSubmit}>
                 <label>
-                    Id:
+                    {idLabel}
                     <input id="id-input-field" type="text" autoComplete="off" name="id_input_field" autoFocus required minLength="1" />
                 </label>
                 <br />

@@ -37,8 +37,7 @@ const SubjectsDropdown = () => {
     const myAppUpdateContext = useMyAppUpdateContext() // Use the app context hook directly
     const myAppContext = useMyAppContext()
     const [subjects, setSubjects] = useState([])
-    let defaultValue = myAppContext.currentSubjectName
-    if (myAppContext.currentSubjectName === "unselected") { defaultValue = 'Select a subject' }
+    const defaultValue = myAppContext.currentSubjectName === "unselected" ? 'Select a subject' : myAppContext.currentSubjectName
 
     useEffect(() => {
         const subjects = []

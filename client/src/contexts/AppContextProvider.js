@@ -45,14 +45,8 @@ export function AppContextProvider({ children }) {
     const [allCardsBySubject, setAllCardsBySubject] = useState([])
 
     // set three of these, for convenience, views, remove later if we can
-    const [cardToEditId, setCardToEditId] = useState(null)
-    const [cardToEditIndex, setCardToEditIndex] = useState(null)
-    const [cardToEditNumber, setCardToEditNumber] = useState(null)
+    const [cardToEdit, setCardToEdit] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
-
-    const updateIsLoading = (loading) => {
-        setIsLoading(loading)
-    }
 
     const updateCurrentPageTo = (newCurrentPage) => {
         console.log("setting current page to: " + newCurrentPage)
@@ -110,9 +104,7 @@ export function AppContextProvider({ children }) {
     const handleLoadEditCardPage = (e) => {
         setPreviousPage(currentPage)
         setCurrentPage("Edit Cards")
-        setCardToEditId(null)
-        setCardToEditNumber(null)
-        setCardToEditIndex(null)
+        setCardToEdit(null)
     }
 
     const handleNewUser = async (e) => {
@@ -241,33 +233,30 @@ export function AppContextProvider({ children }) {
         try {
             const subjectsByName = await getSubjectsBy('subject_name', newCurrentSubjectName)
 
-            if (subjectsByName[0].hasOwnProperty('id')) {
-                let subjectt = null
-                for (subjectt of subjectsByName) {
-                    if (subjectt.user_id === userId) {
-                        setCurrentSubjectId(subjectt.id)
-                        break
-                    }
-                }
-                setCurrentSubjectName(newCurrentSubjectName)
-                const cardsBySubjectId = await getCards(subjectt.id)
-                setAllCardsBySubject(cardsBySubjectId)
-                setCurrentPage("Main Menu")
-                setPreviousPage("Subject")
-                setIsLoading(false)
-            } else {
-                showToast(`Subject: ${currentSubjectId} not found!`)
-                setIsLoggedIn(false)
-                setUserId(null)
-                setCurrentPage("Login")
-                setPreviousPage("Login")
-            }
+            const subject = subjectsByName.find(subject => subject.user_id === userId)
 
+            setCurrentSubjectId(subject.id)
+            setCurrentSubjectName(newCurrentSubjectName)
+
+            const cardsBySubjectId = await getCards(subject.id)
+            setAllCardsBySubject(cardsBySubjectId)
+
+            setCurrentPage("Main Menu")
+            setPreviousPage("Subject")
         } catch (error) {
             console.error(error)
             showToast(error.message || "Error occurred during subject change")
+        } finally {
+            setIsLoading(false)
         }
-        setIsLoading(false)
+    }
+
+    const getNewCardNumber = (cards) => {
+        if (cards.length > 0) {
+            return cards[cards.length - 1].card_number + 1
+        } else {
+            return 1
+        }
     }
 
     const handleCreateCard = async (e) => {
@@ -275,12 +264,15 @@ export function AppContextProvider({ children }) {
 
         const question = createCardFormRef.current.question.value
         const answer = createCardFormRef.current.answer.value
+        const newCardNumber = getNewCardNumber(allCardsBySubject)
         let cardToFollow = createCardFormRef.current.card_to_follow.value
+
         if (cardToFollow === "") { cardToFollow = null }
 
         setIsLoading(true)
 
         const newCard = {
+            card_number: newCardNumber,
             subject_id: currentSubjectId,
             question: question,
             answer: answer,
@@ -288,9 +280,8 @@ export function AppContextProvider({ children }) {
         }
         try {
             const card_id = await createCard(newCard)
-
             newCard.id = card_id.id
-            let updatedCards = [...allCardsBySubject]
+            const updatedCards = [...allCardsBySubject]
             updatedCards.push(newCard)
             setAllCardsBySubject(updatedCards)
 
@@ -306,29 +297,17 @@ export function AppContextProvider({ children }) {
         setIsLoading(false)
     }
 
-    const handleSetCardToEditId = (e) => {
-        const cardId = editCardFormRef.current.id_input_field.value
-
-        let cardToEditIndex = allCardsBySubject.findIndex(card => card.id.toString() === cardId)
+    const handleSetCardToEdit = (e) => {
+        const cardNumber = editCardFormRef.current.id_input_field.value
+        const cardToEditIndex = allCardsBySubject.findIndex(card => card.card_number.toString() === cardNumber.toString())
 
         if (cardToEditIndex > -1) {
-            setCardToEditNumber(cardId)
-            setCardToEditIndex(cardToEditIndex)
-
-            let tempCardToEditId = allCardsBySubject[cardToEditIndex].id
-
-            editCardFormRef.current.reset()
-            editCardFormRef.current.id_input_field.focus()
-
-            if (tempCardToEditId < 0) {
-                showToast("DID NOT FIND card --> " + tempCardToEditId + " <--")
-                return
-            }
-            setCardToEditId(tempCardToEditId)
+            const cardToEdit = allCardsBySubject[cardToEditIndex]
+            setCardToEdit(cardToEdit)
         } else {
             editCardFormRef.current.reset()
             editCardFormRef.current.id_input_field.focus()
-            showToast("DID NOT FIND card " + cardId)
+            showToast("DID NOT FIND card " + cardNumber)
             return
         }
 
@@ -344,12 +323,11 @@ export function AppContextProvider({ children }) {
     const handleEditCard = async (e) => {
         e.preventDefault() // this is only for handleSubmit!!
 
-        let updatedCards = [...allCardsBySubject]
-        const cardToEdit = allCardsBySubject[cardToEditIndex]
+        const updatedCards = [...allCardsBySubject]
         const updatedQuestion = editCardWidgetFormRef.current.question.value
         const updatedAnswer = editCardWidgetFormRef.current.answer.value
 
-        let updatedCardToFollow = editCardWidgetFormRef.current.card_to_follow.value
+        const updatedCardToFollow = editCardWidgetFormRef.current.card_to_follow.value
         if (updatedCardToFollow === "") {
             updatedCardToFollow = null
         }
@@ -361,10 +339,12 @@ export function AppContextProvider({ children }) {
             return
         }
 
+        const cardToEditIndex = allCardsBySubject.findIndex(card => card.id === cardToEdit.id)
         updatedCards.splice(cardToEditIndex, 1) // 2nd parameter means remove one item only
 
         const updatedCard = {
-            id: cardToEditId,
+            id: cardToEdit.id,
+            card_number: cardToEdit.card_number,
             subject_id: cardToEdit.subject_id,
             question: updatedQuestion,
             answer: updatedAnswer,
@@ -376,7 +356,7 @@ export function AppContextProvider({ children }) {
         try {
             const response = await updateCard(updatedCard)
             if (response === 'success') {
-                showToast(`CARD ${cardToEditId} UPDATED`)
+                showToast(`CARD ${cardToEdit.card_number} UPDATED`)
                 updatedCards.push(updatedCard)
                 setAllCardsBySubject(updatedCards)
             } else {
@@ -386,9 +366,7 @@ export function AppContextProvider({ children }) {
             throw new Error('Could not UPDATE Card!')
         }
         setIsLoading(false)
-        setCardToEditId(null)
-        setCardToEditNumber(null)
-        setCardToEditIndex(null)
+        setCardToEdit(null)
         editCardWidgetFormRef.current.reset()
         editCardWidgetFormRef.current.question.focus()
     }
@@ -403,8 +381,8 @@ export function AppContextProvider({ children }) {
             return
         }
 
-        let updatedCards = [...allCardsBySubject]
-        const cardToDeleteIndex = updatedCards.findIndex(card => card.id.toString() === cardToDeleteNumber.toString())
+        const updatedCards = [...allCardsBySubject]
+        const cardToDeleteIndex = updatedCards.findIndex(card => card.card_number.toString() === cardToDeleteNumber.toString())
 
         if (cardToDeleteIndex > -1) {
             updatedCards.splice(cardToDeleteIndex, 1)
@@ -422,7 +400,7 @@ export function AppContextProvider({ children }) {
         try {
             const response = await deleteCard(cardToDeleteId)
             if (response === 'success') {
-                showToast(`CARD ${cardToDeleteId} DELETED!`)
+                showToast(`CARD ${cardToDeleteNumber} DELETED!`)
                 deleteCardFormRef.current.reset()
                 deleteCardFormRef.current.id_input_field.focus()
             }
@@ -448,9 +426,7 @@ export function AppContextProvider({ children }) {
         currentSubjectId,
         currentSubjectName,
         allCardsBySubject,
-        cardToEditIndex,
-        cardToEditId,
-        cardToEditNumber,
+        cardToEdit,
         isLoading,
         isLoggedIn,
         loginPageFormRef,
@@ -467,12 +443,11 @@ export function AppContextProvider({ children }) {
         handleCreateSubject,
         handleSubjectChange,
         handleCreateCard,
-        handleSetCardToEditId,
+        handleSetCardToEdit,
         handleLoadEditCardPage,
         handleEditCard,
         handleDeleteCard,
         handleCancel,
-        updateIsLoading,
         updateCurrentPageTo,
         handleLogout
     }
