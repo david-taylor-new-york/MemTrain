@@ -20,7 +20,7 @@ const TrainingSessionsPageBody = () => {
 
     return (
         <div className="section-container">
-            < ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} />
+            < ChooseIdWidget formRef={myTrainingContext.trainingSessionsFormRef} buttonLabel={'View Session'} submitCall={myTrainingUpdateContext.loadTrainingSessionPage} idLabel={'ID:'} />
             < TrainingSummaryButton />
             < TrainingSessionsTable />
         </div>
@@ -28,14 +28,11 @@ const TrainingSessionsPageBody = () => {
 }
 
 const TrainingSessionsTable = () => {
-    const myTrainingContext = useMyTrainingContext()
-    const trainingSessions = myTrainingContext.allTrainingSessions
-
     return (
         <div >
             <table className="table-container training-session-table-container">
                 < TrainingSessionsTableHeader />
-                < TrainingSessionsList trainingSessions={trainingSessions} />
+                < TrainingSessionsList />
             </table>
         </div>
     )
@@ -57,11 +54,12 @@ const TrainingSessionsTableHeader = () => {
     )
 }
 
-const TrainingSessionsList = (props) => {
-    let localTrainingSessions = props.trainingSessions
+const TrainingSessionsList = () => {
+    const myTrainingContext = useMyTrainingContext()
+    const localTrainingSessions = myTrainingContext.allTrainingSessions
 
     return (
-        localTrainingSessions.sort((a, b) => a.id - b.id)
+        localTrainingSessions.sort((a, b) => a.session_number - b.session_number)
             .map((trainingSession) => {
                 let percentCorrect = 100
                 if (trainingSession.first_pass_incorrect !== 0) {
@@ -73,8 +71,8 @@ const TrainingSessionsList = (props) => {
 
                 return (
                     <tbody>
-                        <tr key={trainingSession.id}>
-                            <td>{trainingSession.id}</td>
+                        <tr key={trainingSession.session_number}>
+                            <td>{trainingSession.session_number}</td>
                             <td>{session_month + "/" + session_start_time.getDate() + "/" + session_start_time.getFullYear().toString().slice(-2)}</td>
                             <td>{session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')}</td>
                             <td>{trainingSession.first_pass_correct}</td>

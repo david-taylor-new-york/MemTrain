@@ -21,7 +21,7 @@ const DeleteCardsPageBody = () => {
 
     return (
         <div>
-            < ChooseIdWidget formRef={myAppContext.deleteCardFormRef} buttonLabel={'Delete Card'} submitCall={myAppUpdateContext.handleDeleteCard} />
+            <ChooseIdWidget formRef={myAppContext.deleteCardFormRef} buttonLabel={'Delete Card'} submitCall={myAppUpdateContext.handleDeleteCard} idLabel={'CARD:'}/>
             < CurrentCardsTable />
         </div>
     )
