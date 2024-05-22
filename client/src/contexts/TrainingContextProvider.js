@@ -102,9 +102,9 @@ export function TrainingContextProvider({ children }) {
             console.log("expectedWord[" + i + "] = " + expectedWord)
             console.log("givenWords = " + givenWords.toString())
             if (givenWords.includes(expectedWord)) {
-                return true;
+                return true
             } else {
-                return false;
+                return false
             }
         }
     }
@@ -281,11 +281,8 @@ export function TrainingContextProvider({ children }) {
         updatedCardResults.push(cardResult)
         setCurrentCardResults(updatedCardResults)
     }
-
     const addTrainingSessionIdToCardResults = (trainingSessionId) => {
-
         const cardResultsWithId = []
-
         for (let cardResult of currentCardResults) {
             cardResult.training_session_id = trainingSessionId
             cardResultsWithId.push(cardResult)
@@ -334,9 +331,7 @@ export function TrainingContextProvider({ children }) {
     }
 
     const countCorrect = (cardResults) => {
-        return cardResults.reduce((count, cardResult) => {
-            return cardResult.is_correct ? count + 1 : count
-        }, 0)
+        return cardResults.reduce((count, cardResult) => { return cardResult.is_correct ? count + 1 : count }, 0)
     }
 
     const submitAnswerFormRef = useRef()
@@ -378,10 +373,10 @@ export function TrainingContextProvider({ children }) {
     }
 
     return (
-        < MyTrainingContext.Provider value={allContexts} >
-            < MyTrainingUpdateContext.Provider value={allContextUpdates} >
+        <MyTrainingContext.Provider value={allContexts}>
+            <MyTrainingUpdateContext.Provider value={allContextUpdates}>
                 {children}
-            </ MyTrainingUpdateContext.Provider >
-        </ MyTrainingContext.Provider >
+            </MyTrainingUpdateContext.Provider>
+        </MyTrainingContext.Provider>
     )
 }

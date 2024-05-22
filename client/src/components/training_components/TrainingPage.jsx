@@ -3,26 +3,19 @@ import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts
 import { PageHeader, SubmitButton } from '../Components'
 
 export const TrainingPage = () => {
-
     const myTrainingContext = useMyTrainingContext()
     const myTrainingUpdateContext = useMyTrainingUpdateContext()
 
     const TrainingWidget = () => {
-
         switch (myTrainingContext.currentTrainingState) {
-
             case "NotStarted":
-                return (< StartTrainingWidget />)
-
+                return (<StartTrainingWidget/>)
             case "Training":
-                return (< AnswerCardWidget />)
-
+                return (<AnswerCardWidget/>)
             case "FinishedTrainingRound":
-                return (< FinishedTrainingRoundWidget />)
-
+                return (<FinishedTrainingRoundWidget/>)
             case "FinishedTraining":
-                return (< FinishedTrainingWidget />)
-
+                return (<FinishedTrainingWidget/>)
             default:
                 return (<div> UNKNOWN TRAINING STATE! </div>)
         }
@@ -37,38 +30,39 @@ export const TrainingPage = () => {
         },)
 
         return (
-            <div >
+            <div>
                 <h4 className="center-align">[ Enter ] to Start Training</h4>
-                <input type="text" className="hidden-element" autoComplete="off" />
+                <input type="text" className="hidden-element" autoComplete="off"/>
             </div>
         )
     }
 
     const AnswerCardWidget = () => {
         const card = myTrainingContext.trainingCards[myTrainingContext.currentCardIndex]
+
         return (
-            <div >
+            <div>
                 <h5>
                     Question:
                 </h5>
                 <div> {card.question} </div>
-                <br />
-                <form ref={myTrainingContext.submitAnswerFormRef} >
+                <br/>
+                <form ref={myTrainingContext.submitAnswerFormRef}>
                     <label>
                         Answer:{" "}
-                        <input id="answer-response" type="text" autoComplete="off" name="answer" autoFocus required minLength="2" />
+                        <input id="answer-response" type="text" autoComplete="off" name="answer" autoFocus required minLength="2"/>
                         {"    "} [ Enter ]
                     </label>
-                    <br />
-                    <button type="text" hidden onClick={myTrainingUpdateContext.answerQuestion} > Start Training </button>
+                    <br/>
+                    <button type="text" hidden onClick={myTrainingUpdateContext.answerQuestion}> Start Training </button>
                 </form>
-                <hr />
+                <hr/>
                 {/* <h4> Time To Answer: { Math.round( myTrainingContext.secondsToAnswerCurrentCard * 10 ) / 10 } seconds </h4> */}
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Remaining: {myTrainingContext.numberRemaining} </h4>
                 <div className="login-button-group">
-                    < SubmitButton id="submit-answer-button" onClick={() => myTrainingUpdateContext.answerQuestion()}> Submit </SubmitButton>
-                    < SubmitButton id="cancel-button" onClick={() => myTrainingUpdateContext.cancelTraining()}> Cancel </SubmitButton>
+                    <SubmitButton id="submit-answer-button" onClick={() => myTrainingUpdateContext.answerQuestion()}> Submit </SubmitButton>
+                    <SubmitButton id="cancel-button" onClick={() => myTrainingUpdateContext.cancelTraining()}> Cancel </SubmitButton>
                 </div>
             </div>
         )
@@ -82,13 +76,13 @@ export const TrainingPage = () => {
         },)
 
         return (
-            <div >
+            <div>
                 <h2 id="done-with-round-text"> DONE with Round {myTrainingContext.trainingRounds}! </h2>
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Total Time: {Math.round(myTrainingContext.cumulativeTrainingSessionTimeInSeconds * 10) / 10} seconds </h4>
                 <h4> [ Enter ] to Continue </h4>
                 <button id="click-enter" className="button" onClick={myTrainingUpdateContext.finishTrainingRound}>Continue</button>
-                <input type="text" autoComplete="off" hidden />
+                <input type="text" autoComplete="off" hidden/>
             </div>
         )
     }
@@ -101,13 +95,13 @@ export const TrainingPage = () => {
         },)
 
         return (
-            <div >
+            <div>
                 <h2 id="done-with-training-text"> DONE with TRAINING! </h2>
                 <h4> Correct: [{myTrainingContext.numberCorrect}] - Incorrect: [{myTrainingContext.numberIncorrect}] </h4>
                 <h4> Total Rounds: {myTrainingContext.trainingRounds} </h4>
                 <h4> [ Enter ] to Continue </h4>
                 <button id="click-enter" className="button" onClick={myTrainingUpdateContext.finishTraining}>Continue</button>
-                <input type="text" autoComplete="off" hidden />
+                <input type="text" autoComplete="off" hidden/>
             </div>
         )
     }
@@ -119,7 +113,7 @@ export const TrainingPage = () => {
                     Progress:
                     <progress className="progress-bar" value={myTrainingContext.progressValue} />
                 </div>
-                < TrainingWidget />
+                <TrainingWidget />
             </div>
         )
     }
@@ -127,8 +121,8 @@ export const TrainingPage = () => {
     return (
         <div>
             <div id="training-page-id" style={{ display: 'none' }}> </div>
-            < PageHeader />
-            < TrainingPageBody />
+            <PageHeader />
+            <TrainingPageBody />
         </div>
     )
 }

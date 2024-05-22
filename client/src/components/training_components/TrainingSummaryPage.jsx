@@ -6,7 +6,8 @@ export const TrainingSummaryPage = () => {
     const TrainingSummaryPageBody = () => {
         return (
             <div className="page-container">
-                <br />
+                TBD
+            <br/>
             </div>
         )
     }
@@ -14,8 +15,8 @@ export const TrainingSummaryPage = () => {
     return (
         <div>
             <div id="training-summary-page-id" style={{ display: 'none' }}> </div>
-            < PageHeader />
-            < TrainingSummaryPageBody />
+            <PageHeader/>
+            <TrainingSummaryPageBody/>
         </div>
     )
 }

@@ -3,13 +3,12 @@ import { CurrentCardsTable, PageHeader, SubmitButton } from '../Components'
 import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 
 export const CardMenuPage = () => {
-
     return (
         <div className="page-container">
             <div id="card-menu-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < CardMenuPageBody />
+                <PageHeader/>
+                <CardMenuPageBody/>
             </div>
         </div>
     )
@@ -18,8 +17,8 @@ export const CardMenuPage = () => {
 const CardMenuPageBody = () => {
     return (
         <div className="section-container">
-            < MenuButtons />
-            < CurrentCardsTable />
+            <MenuButtons/>
+            <CurrentCardsTable/>
         </div>
     )
 }

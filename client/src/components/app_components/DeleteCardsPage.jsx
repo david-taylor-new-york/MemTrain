@@ -3,13 +3,12 @@ import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContex
 import { PageHeader, CurrentCardsTable, ChooseIdWidget } from '../Components'
 
 export const DeleteCardsPage = () => {
-
     return (
         <div className="page-container">
             <div id="delete-cards-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < DeleteCardsPageBody />
+                <PageHeader/>
+                <DeleteCardsPageBody/>
             </div>
         </div>
     )
@@ -22,7 +21,7 @@ const DeleteCardsPageBody = () => {
     return (
         <div>
             <ChooseIdWidget formRef={myAppContext.deleteCardFormRef} buttonLabel={'Delete Card'} submitCall={myAppUpdateContext.handleDeleteCard} idLabel={'CARD:'}/>
-            < CurrentCardsTable />
+            <CurrentCardsTable/>
         </div>
     )
 }

@@ -14,12 +14,12 @@ export default function App() {
 
   return (
     <>
-      < AppContextProvider >
-        < TrainingContextProvider >
-          < AppController />
+      <AppContextProvider>
+        <TrainingContextProvider>
+          <AppController/>
         </TrainingContextProvider>
-      </ AppContextProvider >
-      < ToastContainer />
+      </AppContextProvider>
+      <ToastContainer/>
     </>
   )
 }

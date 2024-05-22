@@ -4,13 +4,12 @@ import { useMyAppContext, useMyAppUpdateContext } from '../../contexts/AppContex
 import { getSubjectsBy } from '../../utils/httpClient'
 
 export const SubjectPage = () => {
-
     return (
         <div className="page-container">
             <div id="subject-page-id" style={{ display: 'none' }}> </div>
             <div className="section-container">
-                < PageHeader />
-                < SubjectPageBody />
+                <PageHeader/>
+                <SubjectPageBody/>
             </div>
         </div>
     )
@@ -24,10 +23,10 @@ const SubjectPageBody = () => {
     return (
         <div>
             <div className="section-container">
-                < SubjectsDropdown />
-                < SubmitButton id="select-subject-button" showButton={showSubmitButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Select </SubmitButton>
-                <br />
-                < CreateSubjectForm />
+                <SubjectsDropdown/>
+                <SubmitButton id="select-subject-button" showButton={showSubmitButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Select </SubmitButton>
+                <br/>
+                <CreateSubjectForm/>
             </div>
         </div>
     )
@@ -72,7 +71,7 @@ const SubjectsDropdown = () => {
                     id="subjects-dropdown"
                     value={defaultValue}
                     onChange={myAppUpdateContext.handleSubjectChange}
-                    className="select" >
+                    className="select">
                     {subjects.map((subject) => (
                         <option key={subject.key}> {subject.value} </option>
                     ))}
@@ -87,13 +86,13 @@ const CreateSubjectForm = () => {
     const myAppContext = useMyAppContext()
 
     return (
-        <div >
+        <div>
             <form ref={myAppContext.newSubjectNameFormRef} onSubmit={myAppUpdateContext.handleCreateSubject}>
                 <label>
                     or create new:{" "}
-                    <input id="new-subject-name" name="new_subject_name" className="half-width" type="text" autoComplete="off" autoFocus required minLength="1" />
+                    <input id="new-subject-name" name="new_subject_name" className="half-width" type="text" autoComplete="off" autoFocus required minLength="1"/>
                 </label>
-                <button id="new-subject-button" className="button" type="submit" > Add </button>
+                <button id="new-subject-button" className="button" type="submit"> Add </button>
             </form>
         </div>
     )
