@@ -198,6 +198,49 @@ export function AppContextProvider({ children }) {
         }
     }
 
+    const handleSharedSubjectCopy = async (subjectToCopy) => {
+        if (subjectToCopy === 'Select a shared subject') { return }
+
+        const subjects = await getSubjectsBy("user_id", userId)
+
+        for (let subject of subjects) {
+            if (subject.subject_name === subjectToCopy) {
+                showToast(`You already have those cards - choose them from Subject dropdown.`)
+                return
+            }
+        }
+
+        const newSubject = await createSubject({ subject_name: subjectToCopy, user_id: userId })
+        const subjectsByName = await getSubjectsBy("subject_name", subjectToCopy);
+        const subject = subjectsByName.find(subject => subject.subject_name === subjectToCopy)
+        const cardsToCopy = await getCards(subject.id)
+
+        for (let card of cardsToCopy) {
+            const newCard = {
+                card_number: card.card_number,
+                subject_id: newSubject.id,
+                question: card.question,
+                answer: card.answer,
+                follows: card.follows,
+                avg_time_sec: 0,
+                review_count: 0
+                }
+            try {
+                 const card = await createCard(newCard)
+
+            } catch (error) {
+                console.error("Error creating card:", error);
+            }
+        }
+        showToast(`Subject ${subjectToCopy} copied!`)
+        setCurrentSubjectId(newSubject.id)
+        setCurrentSubjectName(subject.subject_name)
+        const cardsBySubjectId = await getCards(newSubject.id)
+        setAllCardsBySubject(cardsBySubjectId)
+        setCurrentPage("Main Menu")
+        setPreviousPage("Subject")
+    }
+
     const handleSubjectChange = async (e) => {
         const newCurrentSubjectName = e.target.value
 
@@ -230,6 +273,20 @@ export function AppContextProvider({ children }) {
         }
     }
 
+    const createCardAsync = async (newCard) => {
+        try {
+            const card_id = await createCard(newCard)
+            newCard.id = card_id.id
+            return newCard
+        } catch (error) {
+            console.log(error)
+            showToast(`Could not create card!`)
+            setCurrentPage("Create Card")
+            setPreviousPage("Create Card")
+            throw error // Re-throwing the error to handle it in the caller function if needed
+        }
+    }
+
     const handleCreateCard = async (e) => {
         e.preventDefault() // this is only for handleSubmit!!
 
@@ -248,19 +305,16 @@ export function AppContextProvider({ children }) {
             question: question,
             answer: answer,
             follows: cardToFollow,
+            avg_time_sec: 0,
+            review_count: 0
         }
-        try {
-            const card_id = await createCard(newCard)
-            newCard.id = card_id.id
-            const updatedCards = [...allCardsBySubject]
-            updatedCards.push(newCard)
-            setAllCardsBySubject(updatedCards)
 
+        try {
+            const createdCard = await createCardAsync(newCard)
+            const updatedCards = [...allCardsBySubject, createdCard]
+            setAllCardsBySubject(updatedCards)
         } catch (error) {
-            console.log(error)
-            showToast(`Could not create card!`)
-            setCurrentPage("Create Card")
-            setPreviousPage("Create Card")
+            // Error is already handled inside createCardAsync function
         }
 
         createCardFormRef.current.reset()
@@ -284,10 +338,7 @@ export function AppContextProvider({ children }) {
     }
 
     const handleCancel = () => {
-        console.log("current page = " + currentPage)
-        console.log("previous page = " + previousPage)
         updateCurrentPageTo(previousPage)
-        console.log("updateCurrentPageTo = " + previousPage)
     }
 
     const handleEditCard = async (e) => {
@@ -404,6 +455,7 @@ export function AppContextProvider({ children }) {
         handleNewUser,
         handleCreateSubject,
         handleSubjectChange,
+        handleSharedSubjectCopy,
         handleCreateCard,
         handleSetCardToEdit,
         handleLoadEditCardPage,

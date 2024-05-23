@@ -50,9 +50,20 @@ export function TrainingContextProvider({ children }) {
 
     const startTraining = () => {
         setCurrentTrainingState("Training")
-        const initialCards = getTrainingCards(trainingType)
 
-        setTrainingCards(initialCards)
+        const numberOfCardsToReview = trainingSettingsFormRef.current.numberOfCardsToReview.value
+        const allCards = [...myAppContext.allCardsBySubject]
+
+       if ((numberOfCardsToReview > allCards.length) || (numberOfCardsToReview < 1)) {
+            showToast("You only have " + allCards.length + " cards!")
+            trainingSettingsFormRef.current.reset()
+            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
+            return
+        }
+// this is not correct.
+        const trainingCards = getTrainingCards(numberOfCardsToReview, allCards)
+
+        setTrainingCards(trainingCards)
         setTrainingRounds(0)
         setProgressValue(0)
         setCurrentCardResults([])
@@ -62,8 +73,20 @@ export function TrainingContextProvider({ children }) {
         setNumberIncorrect(0)
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
-        setNumberRemaining(initialCards.length)
+        setNumberRemaining(trainingCards.length)
         myAppUpdateContext.updateCurrentPageTo("Training")
+    }
+
+    const getTrainingCards = (numberOfCardsToReview, allCards) => {
+        return allCards.slice(0, numberOfCardsToReview)
+    }
+
+    const getNextCard = () => {
+        const nextCardIndex = currentCardIndex + 1
+        setCurrentCardIndex(nextCardIndex)
+        const currentProgress = nextCardIndex / trainingCards.length
+        setProgressValue(currentProgress)
+        setStartTime(new Date())
     }
 
     const answerQuestion = () => {
@@ -87,7 +110,6 @@ export function TrainingContextProvider({ children }) {
         submitAnswerFormRef.current.reset()
         handleNextOrFinish()
     }
-
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
         const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
@@ -231,33 +253,6 @@ export function TrainingContextProvider({ children }) {
         } catch {
             throw new Error('Could not UPDATE TrainingSession!')
         }
-    }
-
-    const getTrainingCards = (trainingType) => {
-        let trainingCards = []
-        const allCardsBySubject = [...myAppContext.allCardsBySubject]
-
-        if (trainingType === "recorded") {
-            trainingCards = allCardsBySubject
-            //            for (let card of allCardsBySubject) {
-            //                if (card.trend < 0) {
-            //                    trainingCards.add(card)
-            //                } else if (card.buoyancy > 0) {
-            //                    }
-            //                console.log(card.id)
-            //            }
-            return trainingCards
-        } else {
-            return allCardsBySubject
-        }
-    }
-
-    const getNextCard = () => {
-        const nextCardIndex = currentCardIndex + 1
-        setCurrentCardIndex(nextCardIndex)
-        const currentProgress = nextCardIndex / trainingCards.length
-        setProgressValue(currentProgress)
-        setStartTime(new Date())
     }
 
     // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
