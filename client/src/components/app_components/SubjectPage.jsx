@@ -19,6 +19,12 @@ const SubjectPageBody = () => {
     const myAppContext = useMyAppContext()
     const myAppUpdateContext = useMyAppUpdateContext()
     const showSubmitButton = (myAppContext.currentSubjectName !== "unselected")
+    const [selectedSharedSubject, setSelectedSharedSubject] = useState('Select a subject')
+    const showSharedSubmitButton = (selectedSharedSubject !== "Select a subject")
+
+    const handleSharedSubjectChange = (sharedSubject) => {
+        setSelectedSharedSubject(sharedSubject)
+    }
 
     return (
         <div>
@@ -27,36 +33,34 @@ const SubjectPageBody = () => {
                 <SubmitButton id="select-subject-button" showButton={showSubmitButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Select </SubmitButton>
                 <br/>
                 <CreateSubjectForm/>
+                <br/>
+                <CopySharedCardsDropDown selectedSubject={selectedSharedSubject} onSharedSubjectChange={handleSharedSubjectChange} />
+                <br/>
+                <SubmitButton id="select-shared-subject-button" showButton={showSharedSubmitButton} onClick={() => myAppUpdateContext.handleSharedSubjectCopy(selectedSharedSubject)}> Copy Cards </SubmitButton>
+                <br/>
             </div>
         </div>
     )
 }
 
 const SubjectsDropdown = () => {
-    const myAppUpdateContext = useMyAppUpdateContext() // Use the app context hook directly
+    const myAppUpdateContext = useMyAppUpdateContext()
     const myAppContext = useMyAppContext()
     const [subjects, setSubjects] = useState([])
     const defaultValue = myAppContext.currentSubjectName === "unselected" ? 'Select a subject' : myAppContext.currentSubjectName
 
     useEffect(() => {
-        const subjects = []
-
         async function fetchData() {
-
             try {
                 const response = await getSubjectsBy("user_id", myAppContext.userId)
-                response.forEach((value) => {
-                    subjects.push({
-                        key: value.id,
-                        value: value.subject_name,
-                    })
-                })
-
-                setSubjects([
+                const subjectOptions = response.map(value => ({
+                    key: value.id,
+                    value: value.subject_name,
+                }))
+                setSubjects(prevSubjects => [
                     { key: new Date().getTime(), value: 'Select a subject' },
-                    ...subjects
+                    ...subjectOptions
                 ])
-
             } catch (error) {
                 console.error('Error fetching subjects:', error)
             }
@@ -94,6 +98,54 @@ const CreateSubjectForm = () => {
                 </label>
                 <button id="new-subject-button" className="button" type="submit"> Add </button>
             </form>
+        </div>
+    )
+}
+
+const CopySharedCardsDropDown = ({ selectedSubject, onSharedSubjectChange }) => {
+    const myAppUpdateContext = useMyAppUpdateContext()
+    const myAppContext = useMyAppContext()
+    const [sharedSubjects, setSharedSubjects] = useState([])
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await getSubjectsBy("user_id", 1)
+                const sharedSubjects = response.map(value => ({
+                    key: value.id,
+                    value: value.subject_name,
+                }))
+
+                setSharedSubjects([
+                    { key: new Date().getTime(), value: 'Select a shared subject' },
+                    ...sharedSubjects
+                ])
+            } catch (error) {
+                console.error('Error fetching sharedSubjects:', error)
+            }
+        }
+        fetchData()
+    }, [myAppContext.userId])
+
+    const handleSelectChange = (event) => {
+        const selectedValue = event.target.value
+        onSharedSubjectChange(selectedValue)
+    }
+
+    return (
+        <div>
+            <label>
+                or:{" "}
+                <select
+                    id="shared-subjects-dropdown"
+                    value={selectedSubject}
+                    onChange={handleSelectChange}
+                    className="select" >
+                    {sharedSubjects.map((subject) => (
+                        <option key={subject.key} value={subject.value}>{subject.value}</option>
+                    ))}
+                </select>
+            </label>
         </div>
     )
 }

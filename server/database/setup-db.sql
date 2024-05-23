@@ -24,8 +24,8 @@ CREATE TABLE cards (
     question VARCHAR NOT NULL,
     answer VARCHAR NOT NULL,
     follows INT NULL,
-    buoyancy INT DEFAULT 1,
-    trend INT DEFAULT 0,
+    avg_time_sec INT DEFAULT 0,
+    review_count INT DEFAULT 0,
     FOREIGN KEY (subject_id) REFERENCES subjects(id)
 );
 
