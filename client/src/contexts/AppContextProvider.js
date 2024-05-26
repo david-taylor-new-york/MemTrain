@@ -213,6 +213,7 @@ export function AppContextProvider({ children }) {
         const newSubject = await createSubject({ subject_name: subjectToCopy, user_id: userId })
         const subjectsByName = await getSubjectsBy("subject_name", subjectToCopy);
         const subject = subjectsByName.find(subject => subject.subject_name === subjectToCopy)
+
         const cardsToCopy = await getCards(subject.id)
 
         for (let card of cardsToCopy) {
@@ -221,12 +222,10 @@ export function AppContextProvider({ children }) {
                 subject_id: newSubject.id,
                 question: card.question,
                 answer: card.answer,
-                follows: card.follows,
-                avg_time_sec: 0,
-                review_count: 0
+                follows: card.follows
                 }
             try {
-                 const card = await createCard(newCard)
+                 await createCard(newCard)
 
             } catch (error) {
                 console.error("Error creating card:", error);
@@ -304,9 +303,7 @@ export function AppContextProvider({ children }) {
             subject_id: currentSubjectId,
             question: question,
             answer: answer,
-            follows: cardToFollow,
-            avg_time_sec: 0,
-            review_count: 0
+            follows: cardToFollow
         }
 
         try {

@@ -88,11 +88,16 @@ export const TrainingPage = () => {
     }
 
     const FinishedTrainingWidget = () => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                myTrainingUpdateContext.finishTraining();
+            }
+        }
 
         useEffect(() => {
-            document.addEventListener('keydown', myTrainingUpdateContext.finishTraining)
-            return () => { document.removeEventListener('keydown', myTrainingUpdateContext.finishTraining) }
-        },)
+            document.addEventListener('keydown', handleKeyDown)
+            return () => { document.removeEventListener('keydown', handleKeyDown) }
+        }, [])
 
         return (
             <div>
