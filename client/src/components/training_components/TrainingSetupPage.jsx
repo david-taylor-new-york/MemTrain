@@ -15,12 +15,13 @@ export const TrainingSetupPage = () => {
 
 const TrainingSetupPageBody = () => {
     const myAppContext = useMyAppContext()
+    const myTrainingContext = useMyTrainingContext()
 
     return (
         <div className="section-container">
             <h3> Total Cards: {myAppContext.allCardsBySubject.length} </h3>
-            <h3> Active Cards: {myAppContext.allCardsBySubject.length} (Cards reviewed at least once)</h3>
-            <h3> Cards Due For Review: {myAppContext.allCardsBySubject.length} </h3>
+            <h3> Active Cards: {myTrainingContext.currentTrainingRecords.length} (Cards reviewed at least once)</h3>
+            <h3> Cards Due For Review: {myTrainingContext.dueCards.length} </h3>
             <NumberOfQuestionsToReviewInput/>
             <PracticeOrRecordedRadioButtons/>
             <ButtonGroup/>
@@ -30,13 +31,28 @@ const TrainingSetupPageBody = () => {
 
 const NumberOfQuestionsToReviewInput = () => {
     const myTrainingContext = useMyTrainingContext()
+    const myTrainingUpdateContext = useMyTrainingUpdateContext()
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            const form = myTrainingContext.trainingSettingsFormRef.current
+            const input = form.elements['numberOfCardsToReview']
+
+            if (input.checkValidity()) {
+                myTrainingUpdateContext.startTraining()
+            } else {
+                input.reportValidity()
+            }
+        }
+    }
 
     return (
         <div>
             <form ref={myTrainingContext.trainingSettingsFormRef}>
                 <label>
                     Number of Questions to review:{" "}
-                    <input name="numberOfCardsToReview" id="id-input-field" type="text" autoComplete="off" autoFocus required minLength="1" />
+                    <input name="numberOfCardsToReview" id="id-input-field" type="text" autoComplete="off" autoFocus required minLength="1" onKeyPress={handleKeyPress} />
                 </label>
             </form>
         </div>

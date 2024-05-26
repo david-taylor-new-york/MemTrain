@@ -56,6 +56,14 @@ export const updateCard = updatedCard => updateResource('cards', updatedCard)
 
 export const deleteCard = cardId => performHttp('delete', 'delete', { tableName: 'cards', id: cardId })
 
+export const createTrainingRecord = trainingRecord => createResource('training_records',trainingRecord)
+
+export const getTrainingRecordsBySubjectId = currentSubjectId => getResourcesBy('training_records', 'subject_id', currentSubjectId)
+
+export const getTrainingRecordByCardId = cardId => getResourcesBy('training_records', 'card_id', cardId)
+
+export const updateTrainingRecord = updatedTrainingRecord => updateResource('training_records', updatedTrainingRecord)
+
 export const createCardResults = cardResults => createResource('card_results', cardResults)
 
 export const getCardResultsBy = (param_name, param_value) => getResourcesBy('card_results', param_name, param_value)

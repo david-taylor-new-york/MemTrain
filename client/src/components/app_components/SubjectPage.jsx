@@ -103,7 +103,6 @@ const CreateSubjectForm = () => {
 }
 
 const CopySharedCardsDropDown = ({ selectedSubject, onSharedSubjectChange }) => {
-    const myAppUpdateContext = useMyAppUpdateContext()
     const myAppContext = useMyAppContext()
     const [sharedSubjects, setSharedSubjects] = useState([])
 
