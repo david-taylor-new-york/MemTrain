@@ -164,15 +164,18 @@ async function insertData(tableName, data) {
         const placeholders = values.map((_, index) => `$${index + 1}`).join(', ')
 
         const queryText = `INSERT INTO ${tableName} (${keys}) VALUES (${placeholders}) RETURNING id`
-        console.log("insertData : queryText=")
-        console.log(queryText)
+
+        const queryWithValues = queryText.replace(/\$\d+/g, (match) => {
+            const index = parseInt(match.substring(1)) - 1
+            return values[index] === undefined ? match : `'${values[index]}'`
+        })
+        console.log("insertData : queryText=", queryWithValues);
 
         try {
           const { rowCount, rows } = await pool.query(queryText, values)
 
           if (rowCount > 0) {
-            console.log(`INSERT INTO ${tableName} (${keys})`)
-            console.log("insertData: RETURNING rows[0]:")
+            console.log("insertData: RETURNING:")
             console.log(rows[0])
             return rows[0]
           } else {
