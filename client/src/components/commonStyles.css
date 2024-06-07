@@ -44,14 +44,20 @@
 .table-container thead tr {
     background-color: #009879;
     color: #ffffff;
-    text-align: left;
     font-weight: bold;
 }
 
 .table-container tbody td {
     padding: 4px;
-    text-align: left;
     border: 1px solid #dddddd;
+}
+
+.table-container td {
+    text-align: left;
+}
+
+.table-container td:nth-child(7) {
+    text-align: right;
 }
 
 .card-table-container th:nth-child(1),

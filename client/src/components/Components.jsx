@@ -10,11 +10,11 @@ export const PageHeader = () => {
         <div className="section-container">
             <div className="button-group-top margin-bottom">
                 <button className={`header-button ${showBackButton ? '' : 'hidden-element'}`} onClick={() => myAppUpdateContext.updateCurrentPageTo(myAppContext.previousPage)}>Back</button>
-                <div className="current-page">{myAppContext.currentPage}</div>
-                <button className="header-button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
+                <div id="page-title" className="current-page">{myAppContext.currentPage}</div>
+                <button id="logout-button" className="header-button" onClick={myAppUpdateContext.handleLogout}> Logout </button>
             </div>
             <div className="button-group-top">
-                <div className="current-page"> Subject: {myAppContext.currentSubjectName}</div>
+                <div id="page-subject" className="current-page"> Subject: {myAppContext.currentSubjectName}</div>
             </div>
         </div>
     )

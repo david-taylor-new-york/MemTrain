@@ -234,8 +234,11 @@ export function AppContextProvider({ children }) {
         showToast(`Subject ${subjectToCopy} copied!`)
         setCurrentSubjectId(newSubject.id)
         setCurrentSubjectName(subject.subject_name)
+
         const cardsBySubjectId = await getCards(newSubject.id)
+        cardsBySubjectId.sort((a, b) => a.card_number - b.card_number)
         setAllCardsBySubject(cardsBySubjectId)
+
         setCurrentPage("Main Menu")
         setPreviousPage("Subject")
     }
@@ -251,7 +254,9 @@ export function AppContextProvider({ children }) {
 
             setCurrentSubjectId(subject.id)
             setCurrentSubjectName(newCurrentSubjectName)
+
             const cardsBySubjectId = await getCards(subject.id)
+            cardsBySubjectId.sort((a, b) => a.card_number - b.card_number)
             setAllCardsBySubject(cardsBySubjectId)
 
             setCurrentPage("Main Menu")
@@ -280,8 +285,8 @@ export function AppContextProvider({ children }) {
         } catch (error) {
             console.log(error)
             showToast(`Could not create card!`)
-            setCurrentPage("Create Card")
-            setPreviousPage("Create Card")
+            setCurrentPage("Create Cards")
+            setPreviousPage("Create Cards")
             throw error // Re-throwing the error to handle it in the caller function if needed
         }
     }
@@ -309,6 +314,7 @@ export function AppContextProvider({ children }) {
         try {
             const createdCard = await createCardAsync(newCard)
             const updatedCards = [...allCardsBySubject, createdCard]
+            updatedCards.sort((a, b) => a.card_number - b.card_number)
             setAllCardsBySubject(updatedCards)
         } catch (error) {
             // Error is already handled inside createCardAsync function
@@ -372,6 +378,7 @@ export function AppContextProvider({ children }) {
             if (response === 'success') {
                 showToast(`CARD ${cardToEdit.card_number} UPDATED`)
                 updatedCards.push(updatedCard)
+                updatedCards.sort((a, b) => a.card_number - b.card_number)
                 setAllCardsBySubject(updatedCards)
             } else {
                 throw new Error('Could not UPDATE Card!')
@@ -399,6 +406,7 @@ export function AppContextProvider({ children }) {
 
         if (cardToDeleteIndex > -1) {
             updatedCards.splice(cardToDeleteIndex, 1)
+            updatedCards.sort((a, b) => a.card_number - b.card_number)
             setAllCardsBySubject(updatedCards)
         } else {
             showToast("DID NOT FIND card " + cardToDeleteNumber)

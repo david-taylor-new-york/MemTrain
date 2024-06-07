@@ -37,7 +37,7 @@ const TrainingSessionSummary = () => {
             <h4 className="results-header"> Date: {session_month + "/" + session_start_time.getDate()} </h4>
             <h4 className="results-header"> Time: {session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')} </h4>
             <h4 className="results-header"> First Round: Correct ({myTrainingContext.currentTrainingSession.first_pass_correct}) Incorrect ({myTrainingContext.currentTrainingSession.first_pass_incorrect}) </h4>
-            <h4 className="results-header"> Rounds to Complete: ({myTrainingContext.currentTrainingSession.rounds_to_finish}) </h4>
+            <h4 className="results-header"> Rounds to Complete: {myTrainingContext.currentTrainingSession.rounds_to_finish} </h4>
         </div>
     )
 }
@@ -88,7 +88,7 @@ const TrainingSessionList = () => {
                                 <td> {card_result.question} </td>
                                 <td> {card_result.guess} </td>
                                 <td className="correct-row"> &#10003; </td>
-                                <td> {secToAnswer} </td>
+                                <td className="right-justified"> {secToAnswer} </td>
                             </tr>
                         </tbody>
                     )
@@ -100,7 +100,7 @@ const TrainingSessionList = () => {
                                 <td> {card_result.question} </td>
                                 <td className="incorrect-guess">{card_result.guess}</td>
                                 <td> {card_result.answer} </td>
-                                <td> {secToAnswer} </td>
+                                <td className="right-justified"> {secToAnswer} </td>
                             </tr>
                         </tbody>
                     )

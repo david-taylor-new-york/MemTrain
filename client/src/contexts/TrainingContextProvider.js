@@ -45,20 +45,25 @@ export function TrainingContextProvider({ children }) {
         myAppUpdateContext.updateCurrentPageTo("Training Menu")
     }
 
-    const getCardsDueToday = (currentTrainingRecordsLocal) => {
-        const today = new Date()
+const getCardsDueToday = (currentTrainingRecordsLocal) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
 
-        const dueTrainingRecords = currentTrainingRecordsLocal.filter(trainingRecord => {
-            const reviewDate = new Date(trainingRecord.date_to_review_next)
-            const isDueToday = reviewDate.toDateString() === today.toDateString()
-            return isDueToday
-        })
+    const dueTrainingRecords = currentTrainingRecordsLocal.filter(trainingRecord => {
+        const reviewDate = new Date(trainingRecord.date_to_review_next)
+        const reviewDateUTC = Date.UTC(reviewDate.getFullYear(), reviewDate.getMonth(), reviewDate.getDate())
+        const isDueToday = reviewDateUTC <= todayUTC
+        console.log("reviewDate = " + reviewDate)
+        console.log("reviewDateUTC = " + reviewDateUTC)
+        return isDueToday
+    })
 
-        const dueCardIds = dueTrainingRecords.map(trainingRecord => trainingRecord.card_id)
-        const dueCards = myAppContext.allCardsBySubject.filter(card => dueCardIds.includes(card.id))
+    const dueCardIds = dueTrainingRecords.map(trainingRecord => trainingRecord.card_id)
+    const dueCards = myAppContext.allCardsBySubject.filter(card => dueCardIds.includes(card.id))
 
-        return dueCards
-    }
+    return dueCards
+}
 
     const loadTrainingSetupPage = async () => {
         const trainingRecords = await getTrainingRecordsBySubjectId(myAppContext.currentSubjectId)
@@ -70,15 +75,58 @@ export function TrainingContextProvider({ children }) {
         myAppUpdateContext.updateCurrentPageTo("Training Setup")
     }
 
+    const orderCards = (cards) => {
+        const orderedCardsLocal = []
+        const followsSet = new Set()
+
+        for (const card of cards) {
+            card.follows !== null ? followsSet.add(card) : orderedCardsLocal.push(card)
+        }
+
+        orderedCardsLocal.sort(() => Math.random() - 0.5)
+
+        for (const card of followsSet) {
+            const index = orderedCardsLocal.findIndex(c => c.card_number === card.follows)
+            if (index !== -1) {
+                orderedCardsLocal.splice(index + 1, 0, card)
+            } else {
+                orderedCardsLocal.push(card)
+            }
+        }
+        return orderedCardsLocal
+    }
+
     const startTraining = () => {
         setCurrentTrainingState("Training")
+        const trainingCardsLocal = getTrainingCards()
 
+        if (trainingCardsLocal.length === 0) {
+            showToast("You have no cards to review! Create new ones or come back tomorrow.")
+            trainingSettingsFormRef.current.reset()
+            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
+            return
+        }
+        const orderedCards = orderCards(trainingCardsLocal)
+        console.log("orderedCards = " + JSON.stringify(orderedCards))
+        setTrainingCards(orderedCards)
+        setTrainingRounds(0)
+        setProgressValue(0)
+        setCurrentCardResults([])
+        setFailedCards([])
+        setCurrentCardIndex(0)
+        setNumberCorrect(0)
+        setNumberIncorrect(0)
+        setCumulativeTrainingSessionTimeInSeconds(0)
+        setStartTime(new Date())
+        setNumberRemaining(trainingCardsLocal.length)
+        myAppUpdateContext.updateCurrentPageTo("Training")
+    }
+
+    const getTrainingCards = () => {
         const numberOfCardsToReview = trainingSettingsFormRef.current.numberOfCardsToReview.value
-        const allCards = [...myAppContext.allCardsBySubject]
-        allCards.sort((a, b) => a.card_number - b.card_number)
 
-        if ((numberOfCardsToReview > allCards.length) || (numberOfCardsToReview < 1)) {
-            showToast("You only have " + allCards.length + " cards!")
+        if ((numberOfCardsToReview > myAppContext.allCardsBySubject.length) || (numberOfCardsToReview < 1)) {
+            showToast("You only have " + myAppContext.allCardsBySubject.length + " cards!")
             trainingSettingsFormRef.current.reset()
             trainingSettingsFormRef.current.numberOfCardsToReview.focus()
             return
@@ -90,31 +138,6 @@ export function TrainingContextProvider({ children }) {
             trainingSettingsFormRef.current.numberOfCardsToReview.focus()
             return
         }
-
-        const trainingCards = getTrainingCards(numberOfCardsToReview, allCards)
-
-        if (trainingCards.length === 0) {
-            showToast("You have no cards to review! Create new ones or come back tomorrow.")
-            trainingSettingsFormRef.current.reset()
-            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
-            return
-        }
-
-        setTrainingCards(trainingCards)
-        setTrainingRounds(0)
-        setProgressValue(0)
-        setCurrentCardResults([])
-        setFailedCards([])
-        setCurrentCardIndex(0)
-        setNumberCorrect(0)
-        setNumberIncorrect(0)
-        setCumulativeTrainingSessionTimeInSeconds(0)
-        setStartTime(new Date())
-        setNumberRemaining(trainingCards.length)
-        myAppUpdateContext.updateCurrentPageTo("Training")
-    }
-
-    const getTrainingCards = (numberOfCardsToReview, allCards) => {
         // If there are cards due for review, add them first to the training cards
         const cardsToReturn = dueCards.length > 0 ? [...dueCards] : []
 
@@ -123,11 +146,10 @@ export function TrainingContextProvider({ children }) {
             // Find the index of the last card in currentTrainingRecords - this is the last card that was activated
             const indexOfNextCardToActivate = currentTrainingRecords.length
 
-            for (let i = indexOfNextCardToActivate; i < allCards.length && cardsToReturn.length < numberOfCardsToReview; i++) {
-                cardsToReturn.push(allCards[i])
+            for (let i = indexOfNextCardToActivate; i < myAppContext.allCardsBySubject.length && cardsToReturn.length < numberOfCardsToReview; i++) {
+                cardsToReturn.push(myAppContext.allCardsBySubject[i])
             }
         }
-
         return cardsToReturn
     }
 
@@ -165,22 +187,30 @@ export function TrainingContextProvider({ children }) {
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
         const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
-        const givenWords = normalizeText(givenAnswer).split(' ').sort()
+        let givenWords = normalizeText(givenAnswer).split(' ').sort()
+        console.log("expectedWords after normalization = " + expectedWords.toString())
+        console.log("givenWords after normalization = " + givenWords.toString())
 
         if (expectedWords.length !== givenWords.length) {
             return false
         }
         console.log("Comparing answers:")
+        console.log("expectedWords.length = " + expectedWords.length)
+
         for (let i = 0; i < expectedWords.length; i++) {
             const expectedWord = expectedWords[i]
+            const wordIndex = givenWords.indexOf(expectedWord)
+
             console.log("expectedWord[" + i + "] = " + expectedWord)
             console.log("givenWords = " + givenWords.toString())
-            if (givenWords.includes(expectedWord)) {
-                return true
-            } else {
+
+            if (wordIndex === -1) {
                 return false
+            } else {
+                givenWords.splice(wordIndex, 1)
             }
         }
+        return true
     }
 
     const updateFailedCards = (card) => {
@@ -189,11 +219,33 @@ export function TrainingContextProvider({ children }) {
         setFailedCards(updatedFailedCards)
     }
 
+    function createWrongAnswer(card) {
+        if (card.question.includes("(")) {
+            return card.question;
+        }
+
+        let index = 0;
+        let words = card.question.split(' ');
+        let answerWords = card.answer.split(' ');
+
+        for (let i = 0; i < words.length; i++) {
+            if (words[i] === "_") {
+                if (index >= answerWords.length) {
+                    throw new Error("Number of underscores exceeds number of words in answer");
+                }
+                words[i] = answerWords[index];
+                index++;
+            }
+        }
+
+        return words.join(' ');
+    }
+
     const updateScores = (isCorrect, card) => {
         if (isCorrect) {
             setNumberCorrect(numberCorrect + 1)
         } else {
-            wrongAnswerToast("NO:  " + card.answer)
+            wrongAnswerToast("NO:  " + createWrongAnswer(card));
             setNumberIncorrect(numberIncorrect + 1)
             updateFailedCards(card)
         }
@@ -293,16 +345,16 @@ export function TrainingContextProvider({ children }) {
             let reviewDate = new Date()
 
             try {
-                const trainingRecordsArray = await getTrainingRecordByCardId(cardResultLocal.card_id);
+                const trainingRecordsArray = await getTrainingRecordByCardId(cardResultLocal.card_id)
 
                 if (trainingRecordsArray.length > 0) {
-                    const existingTrainingRecord = trainingRecordsArray[0];
+                    const existingTrainingRecord = trainingRecordsArray[0]
 
                     reviewDate = getReviewDateUsingTrainingRecord(cardResultLocal, existingTrainingRecord)
 
                     let review_count = existingTrainingRecord.review_count
 
-                    let streak = 0;
+                    let streak = 0
                     if (cardResultLocal.is_correct) {
                         streak = existingTrainingRecord.correct_streak + 1
                     }
@@ -393,7 +445,30 @@ export function TrainingContextProvider({ children }) {
     // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
     // and removes any characters that are not alphanumeric or spaces.
     const normalizeText = (text) => {
-        return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
+        console.log("normalizeText: before:  = " + text)
+        let newText = ""
+
+        for (let word of text.split(' ')) {
+
+            let lowerCaseWord = word.toLowerCase()
+
+            if (lowerCaseWord.includes("n't")) {
+                console.log("normalizeText: found n't:  = " + word)
+                lowerCaseWord = lowerCaseWord.replace(/n't$/, " not")
+            }
+
+            if (lowerCaseWord.endsWith("s") && !lowerCaseWord.endsWith("ss") && !text.includes("not")) {
+                console.log("normalizeText: found s and no 'not':  = " + word)
+                lowerCaseWord = lowerCaseWord.replace(/s$/, "")
+            }
+
+            word = lowerCaseWord.trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
+            console.log("normalizeText: adding word:  = " + word)
+            newText += word + ' '
+            console.log("normalizeText: after replace s's and n't:  = " + newText)
+            console.log("")
+        }
+        return newText.trim()
     }
 
     const createCardResult = (cardId, question, givenAnswer, answer, isCorrect, timeToAnswerThisCard) => {

@@ -6,11 +6,14 @@ Login:
 psql -d memtrain -U memtrain
 
 --DUMP:
-pg_dump -h localhost -U memtrain -d memtrain -f "~/memtrain_db_backups/memtrain_backup_file.sql"
+pg_dump -h localhost -U memtrain -d memtrain --data-only --column-inserts --inserts -f ~/projects/memtrain_backups/memtrain_db_dump_{date}.sql
 --RESTORE:
-psql -h localhost -U memtrain -d memtrain < ~/memtrain_db_backups/memtrain_backup_file2.sql
+psql -h localhost -U memtrain -d memtrain < ~/projects/memtrain_backups/memtrain_db_dump_{date}.sql
 --CRON JOB:
-0 0 * * * /usr/bin/pg_dump -h localhost -U memtrain -d memtrain -F c -b -v -f ~/memtrain_db_backups/memtrain_backup_file.sql
+0 0 * * * /usr/local/bin/pg_dump -h localhost -U memtrain -d memtrain --data-only --column-inserts --inserts -f ~/projects/memtrain_backups/memtrain_db_dump_$(date +\%Y\%m\%d).sql
+
+--DON'T FORGET TO SET TIMEZONE ON AWS INSTANCE:
+sudo timedatectl set-timezone America/New_York
 
 \echo\;
 \echo -                        users:\;
@@ -25,6 +28,10 @@ select * from subjects ORDER BY id;
 \echo\;
 select * from cards ORDER BY id;
 \echo\;
+\echo -                        training_records:\;
+\echo\;
+select * from training_records ORDER BY id;
+\echo\;
 \echo -                        training_sessions:\;
 \echo\;
 select * from training_sessions ORDER BY id;
@@ -32,8 +39,4 @@ select * from training_sessions ORDER BY id;
 \echo -                        card_results:\;
 \echo\;
 select * from card_results ORDER BY id;
-\echo\;
-\echo -                        training_records:\;
-\echo\;
-select * from training_records ORDER BY id;
 \echo\;
