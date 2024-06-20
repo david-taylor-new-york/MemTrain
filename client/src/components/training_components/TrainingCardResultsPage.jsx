@@ -2,6 +2,7 @@ import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
+import { DAYS_OF_WEEK, formatDate, formatTime } from '../../utils/utils'
 
 export const TrainingCardResultsPage = () => {
     return (
@@ -28,12 +29,16 @@ const TrainingCardResultsPageBody = () => {
 const TrainingSessionsSummary = () => {
     const myTrainingContext = useMyTrainingContext()
 
+    const reviewDate = new Date(myTrainingContext.nextReviewDate)
+    const reviewDateFormatted = `${reviewDate.getMonth() + 1}/${reviewDate.getDate()}/${reviewDate.getFullYear().toString().slice(-2)}`
+
     return (
         <div className="section-container">
             <h4 className="results-header"> Card Id: {myTrainingContext.currentCardResults[0].card_id} </h4>
             <h4 className="results-header"> Question: {myTrainingContext.currentCardResults[0].question} </h4>
             <h4 className="results-header"> Correct Answer: {myTrainingContext.currentCardResults[0].answer} </h4>
-            <h4 className="results-header"> Correct ({myTrainingContext.numberCorrect})   Incorrect ({myTrainingContext.numberIncorrect}) </h4>
+            <h4 className="results-header"> Correct: {myTrainingContext.numberCorrect},  Incorrect: {myTrainingContext.numberIncorrect} </h4>
+            <h4 className="results-header"> Next Review Date: {DAYS_OF_WEEK[reviewDate.getDay()]} - {reviewDateFormatted} </h4>
         </div>
     )
 }

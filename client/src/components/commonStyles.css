@@ -53,11 +53,7 @@
 }
 
 .table-container td {
-    text-align: left;
-}
-
-.table-container td:nth-child(7) {
-    text-align: right;
+    text-align: center;
 }
 
 .card-table-container th:nth-child(1),
