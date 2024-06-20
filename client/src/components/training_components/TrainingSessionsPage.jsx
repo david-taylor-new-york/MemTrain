@@ -2,6 +2,7 @@ import React from 'react'
 import { useMyTrainingContext, useMyTrainingUpdateContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, ChooseIdWidget } from '../Components'
+import { DAYS_OF_WEEK, formatDate, formatTime, calculatePercentCorrect } from '../../utils/utils'
 
 export const TrainingSessionsPage = () => {
     return (
@@ -42,6 +43,7 @@ const TrainingSessionsTableHeader = () => {
         <thead>
             <tr>
                 <th>ID</th>
+                <th>DAY</th>
                 <th>DATE</th>
                 <th>TIME</th>
                 <th>CORRECT</th>
@@ -58,22 +60,20 @@ const TrainingSessionsList = () => {
     const localTrainingSessions = myTrainingContext.allTrainingSessions
 
     return (
-        localTrainingSessions.sort((a, b) => a.session_number - b.session_number)
+        [...localTrainingSessions].sort((a, b) => a.session_number - b.session_number)
             .map((trainingSession) => {
-                let percentCorrect = 100
-                if (trainingSession.first_pass_incorrect !== 0) {
-                    percentCorrect = Math.trunc(trainingSession.first_pass_correct / (trainingSession.first_pass_correct + trainingSession.first_pass_incorrect) * 100)
-                }
-                percentCorrect = "(" + percentCorrect.toString() + "%)"
-                const session_start_time = new Date(trainingSession.session_start_time)
-                const session_month = session_start_time.getMonth() + 1
+                const percentCorrect = calculatePercentCorrect(trainingSession)
+                const sessionStart = new Date(trainingSession.session_start_time)
+                const sessionStartDateString = formatDate(sessionStart)
+                const sessionStartTime = formatTime(sessionStart)
 
                 return (
                     <tbody>
                         <tr key={trainingSession.session_number}>
                             <td>{trainingSession.session_number}</td>
-                            <td>{session_month + "/" + session_start_time.getDate() + "/" + session_start_time.getFullYear().toString().slice(-2)}</td>
-                            <td>{session_start_time.getHours() + ":" + session_start_time.getMinutes().toString().padStart(2, '0')}</td>
+                            <td>{DAYS_OF_WEEK[sessionStart.getDay()]}</td>
+                            <td>{sessionStartDateString}</td>
+                            <td>{sessionStartTime}</td>
                             <td>{trainingSession.first_pass_correct}</td>
                             <td>{trainingSession.first_pass_incorrect}</td>
                             <td>{percentCorrect}</td>

@@ -37,40 +37,27 @@ export function TrainingContextProvider({ children }) {
     const [numberCorrect, setNumberCorrect] = useState(0)
     const [numberIncorrect, setNumberIncorrect] = useState(0)
     const [numberRemaining, setNumberRemaining] = useState(0)
+    const [nextReviewDate, setNextReviewDate] = useState(null)
     const [progressValue, setProgressValue] = useState(0)
 
     const loadTrainingMenuPage = async () => {
-        const trainingSessions = await getTrainingSessions(myAppContext.currentSubjectId)
+        let trainingSessions = await getTrainingSessions(myAppContext.currentSubjectId)
+        trainingSessions.sort((a, b) => a.id - b.id)
         setAllTrainingSessions(trainingSessions)
-        myAppUpdateContext.updateCurrentPageTo("Training Menu")
-    }
 
-const getCardsDueToday = (currentTrainingRecordsLocal) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
-
-    const dueTrainingRecords = currentTrainingRecordsLocal.filter(trainingRecord => {
-        const reviewDate = new Date(trainingRecord.date_to_review_next)
-        const reviewDateUTC = Date.UTC(reviewDate.getFullYear(), reviewDate.getMonth(), reviewDate.getDate())
-        const isDueToday = reviewDateUTC <= todayUTC
-        console.log("reviewDate = " + reviewDate)
-        console.log("reviewDateUTC = " + reviewDateUTC)
-        return isDueToday
-    })
-
-    const dueCardIds = dueTrainingRecords.map(trainingRecord => trainingRecord.card_id)
-    const dueCards = myAppContext.allCardsBySubject.filter(card => dueCardIds.includes(card.id))
-
-    return dueCards
-}
-
-    const loadTrainingSetupPage = async () => {
-        const trainingRecords = await getTrainingRecordsBySubjectId(myAppContext.currentSubjectId)
+        let trainingRecords = await getTrainingRecordsBySubjectId(myAppContext.currentSubjectId)
         trainingRecords.sort((a, b) => a.card_id - b.card_id)
         setCurrentTrainingRecords(trainingRecords)
 
-        const dueCardsLocal = getCardsDueToday(trainingRecords)
+        myAppUpdateContext.updateCurrentPageTo("Training Menu")
+    }
+
+    const loadTrainingSetupPage = async () => {
+        let trainingRecords = await getTrainingRecordsBySubjectId(myAppContext.currentSubjectId)
+        trainingRecords.sort((a, b) => a.card_id - b.card_id)
+        setCurrentTrainingRecords(trainingRecords)
+
+        const dueCardsLocal = getCardsDueToday()
         setDueCards(dueCardsLocal)
         myAppUpdateContext.updateCurrentPageTo("Training Setup")
     }
@@ -97,15 +84,13 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
     }
 
     const startTraining = () => {
-        setCurrentTrainingState("Training")
         const trainingCardsLocal = getTrainingCards()
 
         if (trainingCardsLocal.length === 0) {
-            showToast("You have no cards to review! Create new ones or come back tomorrow.")
-            trainingSettingsFormRef.current.reset()
-            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
             return
         }
+
+        setCurrentTrainingState("Training")
         const orderedCards = orderCards(trainingCardsLocal)
         console.log("orderedCards = " + JSON.stringify(orderedCards))
         setTrainingCards(orderedCards)
@@ -116,41 +101,81 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         setCurrentCardIndex(0)
         setNumberCorrect(0)
         setNumberIncorrect(0)
+        setNextReviewDate(null)
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
         setNumberRemaining(trainingCardsLocal.length)
         myAppUpdateContext.updateCurrentPageTo("Training")
     }
 
+    const getCardsDueToday = () => {
+        return getCardsDueInNDays(0)
+    }
+
+    const getCardsDueTomorrow = () => {
+        return getCardsDueInNDays(1)
+    }
+
+    const getCardsDueInNDays = (daysFromToday) => {
+        const targetDate = new Date()
+        targetDate.setHours(0, 0, 0, 0)
+        targetDate.setDate(targetDate.getDate() + daysFromToday)
+        const targetDateUTC = Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate())
+
+        const dueTrainingRecords = currentTrainingRecords.filter(trainingRecord => {
+            const reviewDate = new Date(trainingRecord.date_to_review_next)
+            const reviewDateUTC = Date.UTC(reviewDate.getFullYear(), reviewDate.getMonth(), reviewDate.getDate())
+            const isDue = reviewDateUTC <= targetDateUTC
+            return isDue
+        })
+
+        const dueCardIds = dueTrainingRecords.map(trainingRecord => trainingRecord.card_id)
+        const cardsDue = myAppContext.allCardsBySubject
+            .filter(card => dueCardIds.includes(card.id))
+            .sort((a, b) => a.id - b.id)
+
+        return cardsDue
+    }
+
     const getTrainingCards = () => {
         const numberOfCardsToReview = trainingSettingsFormRef.current.numberOfCardsToReview.value
+        const cardsDueToday = getCardsDueToday()
 
-        if ((numberOfCardsToReview > myAppContext.allCardsBySubject.length) || (numberOfCardsToReview < 1)) {
-            showToast("You only have " + myAppContext.allCardsBySubject.length + " cards!")
-            trainingSettingsFormRef.current.reset()
-            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
-            return
+        if (cardsDueToday.length !== 0 && trainingType === "practice") {
+            showToast(`You have ${cardsDueToday.length} cards to review today before practicing.`)
+            resetForm(cardsDueToday.length)
+            return []
         }
 
-        if (numberOfCardsToReview < dueCards.length) {
-            showToast("You need to review at least " + dueCards.length + " cards. They are due today!")
-            trainingSettingsFormRef.current.reset()
-            trainingSettingsFormRef.current.numberOfCardsToReview.focus()
-            return
+        if (cardsDueToday.length > 0 && trainingType === "practice") {
+            showToast(`trainingType = ${trainingType} and cardsDueToday.length = ${cardsDueToday.length}`)
+            resetForm(cardsDueToday.length)
+            return []
         }
-        // If there are cards due for review, add them first to the training cards
-        const cardsToReturn = dueCards.length > 0 ? [...dueCards] : []
 
-        // If due cards are less than the number requested to review, add them to cardsToReturn
-        if ((numberOfCardsToReview - cardsToReturn.length) > 0) {
-            // Find the index of the last card in currentTrainingRecords - this is the last card that was activated
-            const indexOfNextCardToActivate = currentTrainingRecords.length
+        const cardsDue = trainingType === "practice" ? getCardsDueTomorrow() : cardsDueToday
+        const cardsNeeded = numberOfCardsToReview - cardsDue.length
 
-            for (let i = indexOfNextCardToActivate; i < myAppContext.allCardsBySubject.length && cardsToReturn.length < numberOfCardsToReview; i++) {
-                cardsToReturn.push(myAppContext.allCardsBySubject[i])
+        if (cardsNeeded > 0) {
+            const indexOfNextCardToReview = currentTrainingRecords.length
+            const newCards = myAppContext.allCardsBySubject.slice(indexOfNextCardToReview, indexOfNextCardToReview + cardsNeeded)
+            const cardsDueWithNewCards = cardsDue.concat(newCards)
+
+            if (cardsDueWithNewCards.length < numberOfCardsToReview) {
+                showToast(`There are only ${cardsDueWithNewCards.length} cards available for review.`)
+                resetForm(cardsDueWithNewCards.length)
             }
+
+            return cardsDueWithNewCards
         }
-        return cardsToReturn
+
+        return cardsDue
+    }
+
+    const resetForm = (length) => {
+        trainingSettingsFormRef.current.reset()
+        trainingSettingsFormRef.current.numberOfCardsToReview.value = length
+        trainingSettingsFormRef.current.numberOfCardsToReview.focus()
     }
 
     const getNextCard = () => {
@@ -186,7 +211,7 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
     }
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
-        const expectedWords = normalizeText(expectedAnswer).split(' ').sort()
+        let expectedWords = normalizeText(expectedAnswer).split(' ').sort()
         let givenWords = normalizeText(givenAnswer).split(' ').sort()
         console.log("expectedWords after normalization = " + expectedWords.toString())
         console.log("givenWords after normalization = " + givenWords.toString())
@@ -199,16 +224,20 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
 
         for (let i = 0; i < expectedWords.length; i++) {
             const expectedWord = expectedWords[i]
-            const wordIndex = givenWords.indexOf(expectedWord)
+            let foundMatch = false
 
-            console.log("expectedWord[" + i + "] = " + expectedWord)
-            console.log("givenWords = " + givenWords.toString())
+            for (let j = 0; j < givenWords.length; j++) {
+                const givenWord = givenWords[j]
 
-            if (wordIndex === -1) {
-                return false
-            } else {
-                givenWords.splice(wordIndex, 1)
+                if (expectedWord.includes(givenWord) || givenWord.includes(expectedWord)) {
+                    foundMatch = true
+                    givenWords.splice(j, 1)
+                    break
+                }
             }
+
+            if (!foundMatch) { return false }
+
         }
         return true
     }
@@ -219,33 +248,34 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         setFailedCards(updatedFailedCards)
     }
 
-    function createWrongAnswer(card) {
+    const createWrongAnswer = (card) => {
         if (card.question.includes("(")) {
-            return card.question;
+            return card.question
         }
 
-        let index = 0;
-        let words = card.question.split(' ');
-        let answerWords = card.answer.split(' ');
+        let index = 0
+        let words = card.question.split(' ')
+        let answerWords = card.answer.split(' ')
 
         for (let i = 0; i < words.length; i++) {
-            if (words[i] === "_") {
+            console.log("words[i] = " + words[i])
+            if (words[i].includes('_')) {
                 if (index >= answerWords.length) {
-                    throw new Error("Number of underscores exceeds number of words in answer");
+                    throw new Error("Number of underscores exceeds number of words in answer")
                 }
-                words[i] = answerWords[index];
-                index++;
+                words[i] = answerWords[index]
+                index++
             }
         }
 
-        return words.join(' ');
+        return words.join(' ')
     }
 
     const updateScores = (isCorrect, card) => {
         if (isCorrect) {
             setNumberCorrect(numberCorrect + 1)
         } else {
-            wrongAnswerToast("NO:  " + createWrongAnswer(card));
+            wrongAnswerToast("NO:  " + createWrongAnswer(card))
             setNumberIncorrect(numberIncorrect + 1)
             updateFailedCards(card)
         }
@@ -306,6 +336,7 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
             setCurrentCardIndex(0)
             setNumberCorrect(0)
             setNumberIncorrect(0)
+            setNextReviewDate(null)
             setCumulativeTrainingSessionTimeInSeconds(0)
             setStartTime(new Date())
             setNumberRemaining(failedCards.length)
@@ -329,11 +360,13 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         // whether answer is correct or not, default to tomorrow, then addDays if it was correct
         reviewDate.setDate(reviewDate.getDate() + 1)
 
-        if (existingTrainingRecordLocal.correct_streak >= 5) {
-            const daysToAdd = getFibonacci(existingTrainingRecordLocal.correct_streak - 5)
+        if (existingTrainingRecordLocal.correct_streak >= 3) {
+            const daysToAdd = getFibonacci(existingTrainingRecordLocal.correct_streak - 3)
             reviewDate.setDate(reviewDate.getDate() + daysToAdd)
+            console.log(existingTrainingRecordLocal.card_id + ": Streak > 3 - Adding " + daysToAdd + " days to reviewDate: " + reviewDate)
         }
         const formattedDate = reviewDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
+        console.log("nextReviewDate = " + formattedDate)
 
         return formattedDate
     }
@@ -358,7 +391,6 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
                     if (cardResultLocal.is_correct) {
                         streak = existingTrainingRecord.correct_streak + 1
                     }
-
 
                     const total_time_sec = parseFloat(existingTrainingRecord.avg_time_sec) * existingTrainingRecord.review_count
                     const new_total_time_sec = total_time_sec + parseFloat(cardResultLocal.seconds_to_answer)
@@ -411,6 +443,7 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         setCurrentCardIndex(0)
         setNumberCorrect(0)
         setNumberIncorrect(0)
+        setNextReviewDate(null)
         setCumulativeTrainingSessionTimeInSeconds(0)
         setStartTime(new Date())
         setNumberRemaining(failedCards.length)
@@ -445,28 +478,26 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
     // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
     // and removes any characters that are not alphanumeric or spaces.
     const normalizeText = (text) => {
-        console.log("normalizeText: before:  = " + text)
         let newText = ""
 
         for (let word of text.split(' ')) {
 
             let lowerCaseWord = word.toLowerCase()
 
+            if (lowerCaseWord.includes("different")) {
+                lowerCaseWord = lowerCaseWord.replace("different", "multiple")
+            }
+
+            if (lowerCaseWord.includes("use")) {
+                lowerCaseWord = lowerCaseWord.replace("use", "access")
+            }
+
             if (lowerCaseWord.includes("n't")) {
-                console.log("normalizeText: found n't:  = " + word)
                 lowerCaseWord = lowerCaseWord.replace(/n't$/, " not")
             }
 
-            if (lowerCaseWord.endsWith("s") && !lowerCaseWord.endsWith("ss") && !text.includes("not")) {
-                console.log("normalizeText: found s and no 'not':  = " + word)
-                lowerCaseWord = lowerCaseWord.replace(/s$/, "")
-            }
-
             word = lowerCaseWord.trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
-            console.log("normalizeText: adding word:  = " + word)
             newText += word + ' '
-            console.log("normalizeText: after replace s's and n't:  = " + newText)
-            console.log("")
         }
         return newText.trim()
     }
@@ -488,6 +519,7 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         updatedCardResults.push(cardResult)
         setCurrentCardResults(updatedCardResults)
     }
+
     const addTrainingSessionIdToCardResults = (trainingSessionId) => {
         const cardResultsWithId = []
         for (let cardResult of currentCardResults) {
@@ -512,6 +544,11 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
 
         const sessionResultsByTrainingSessionId = await getCardResultsBy('training_session_id', trainingSession.id)
         setCurrentSessionResults(sessionResultsByTrainingSessionId)
+
+        const trainingRecords = await getTrainingRecordsBySubjectId(myAppContext.currentSubjectId)
+        trainingRecords.sort((a, b) => a.card_id - b.card_id)
+        setCurrentTrainingRecords(trainingRecords)
+
         myAppUpdateContext.updateCurrentPageTo("Training Session")
     }
 
@@ -534,6 +571,13 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         const incorrect = cardResults.length - correct
         setNumberCorrect(correct)
         setNumberIncorrect(incorrect)
+        const curTrainingRecord = currentTrainingRecords.find(trainingRecord => trainingRecord.card_id === cardThatContainsCardNumber.id)
+
+        if (curTrainingRecord) {
+            const nextReviewDate = new Date(curTrainingRecord.date_to_review_next)
+            setNextReviewDate(nextReviewDate)
+        }
+
         myAppUpdateContext.updateCurrentPageTo("Training Card Results")
     }
 
@@ -560,6 +604,7 @@ const getCardsDueToday = (currentTrainingRecordsLocal) => {
         currentCardIndex,
         numberCorrect,
         numberIncorrect,
+        nextReviewDate,
         numberRemaining,
         cumulativeTrainingSessionTimeInSeconds,
         progressValue,
