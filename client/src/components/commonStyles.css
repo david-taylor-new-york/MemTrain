@@ -53,7 +53,12 @@
 }
 
 .table-container td {
-    text-align: center;
+    text-align: left;
+}
+
+.table-container td.question,
+.table-container td.answer {
+  text-align: left;
 }
 
 .card-table-container th:nth-child(1),
@@ -63,14 +68,18 @@
 
 .card-table-container th:nth-child(2),
 .card-table-container td:nth-child(2) {
-    width: 48%;
+    width: 46%;
 }
 
 .card-table-container th:nth-child(3),
 .card-table-container td:nth-child(3) {
-    width: 48%;
+    width: 46%;
 }
 
+.card-table-container th:nth-child(4),
+.card-table-container td:nth-child(4) {
+    width: 4%;
+}
 /* Forms */
 .login-form-input {
     width: 500px !important;

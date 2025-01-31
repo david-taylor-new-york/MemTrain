@@ -2,7 +2,7 @@ import React from 'react'
 import { useMyTrainingContext } from '../../contexts/TrainingContextProvider'
 import { useMyAppUpdateContext } from '../../contexts/AppContextProvider'
 import { PageHeader, SubmitButton } from '../Components'
-import { DAYS_OF_WEEK, formatDate, formatTime } from '../../utils/utils'
+import { DAYS_OF_WEEK } from '../../utils/utils'
 
 export const TrainingCardResultsPage = () => {
     return (

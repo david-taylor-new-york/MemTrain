@@ -4,8 +4,8 @@ const app = express()
 const cors = require("cors")
 const path = require('path')
 
-app.use(express.static(path.join(__dirname, '../client/build')));
-app.use(cors({ origin: '*', }));
+app.use(express.static(path.join(__dirname, '../client/build')))
+app.use(cors({ origin: '*' }))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -22,7 +22,8 @@ const pool = new Pool({
 })
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000')
+  console.log('Postgres is running on port 5432')
+  console.log('Express is running on port 3000')
 })
 
 

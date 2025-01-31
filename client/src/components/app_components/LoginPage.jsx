@@ -67,8 +67,10 @@ export const LoginPage = () => {
     return (
         <div className="page-container">
             <div id="login-page-id" style={{ display: 'none' }}> </div>
-            <LoginPageHeader/>
-            <LoginPageBody/>
+            <div className="section-container">
+                <LoginPageHeader/>
+                <LoginPageBody/>
+            </div>
         </div>
     )
 }
@@ -80,7 +82,7 @@ const LoginPageHeader = () => {
     return (
         <div>
             <div className="section-container">
-                <h3 className="color-blue">Welcome to MemTrain!</h3>
+                <h3 id="page-title" className="color-blue">Welcome to MemTrain!</h3>
             </div>
             <div className="section-container" onClick={toggleDetails} style={{ cursor: 'pointer' }}>
                 <h3 className="color-blue">How It Works <span>&#9658;</span></h3>

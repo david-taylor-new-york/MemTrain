@@ -2,11 +2,14 @@ import { toast } from 'react-toastify'
 
 export const DAYS_OF_WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-export const wrongAnswerToast = (msg) => {
-  toast.info(msg, { autoClose: 16000 })
+export const showLingeringToast = (msg) => {
+    console.log("lingering toast...")
+    toast.info(msg, { autoClose: 4000 })
 }
+
 export const showToast = (msg) => {
-  toast.info(msg, { autoClose: 1000 })
+    console.log("regular toast...")
+    toast.info(msg, { autoClose: 1000 })
 }
 
 export const getFibonacci = (n) => {

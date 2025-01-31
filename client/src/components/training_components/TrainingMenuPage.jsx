@@ -28,7 +28,7 @@ const TrainingMenuPageBody = () => {
         <div>
             <div className="section-container">
                 <div className="main-menu-button-group">
-                    <SubmitButton id="train-button" showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
+                    <SubmitButton id="menu-train-button" showButton={displayTrainingPageButton} onClick={() => myTrainingUpdateContext.loadTrainingSetupPage()}> Train </SubmitButton>
                     <SubmitButton id="training-sessions-button" showButton={displayTrainingSessionsButton} onClick={() => myAppUpdateContext.updateCurrentPageTo("Training Sessions")}> Training Sessions </SubmitButton>
                     {!displayTrainingPageButton && !displayTrainingSessionsButton && <SubmitButton id="create-some-cards-text" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Create some cards! </SubmitButton>}
                     <SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Main Menu")}> Cancel </SubmitButton>

@@ -114,6 +114,7 @@ export const TrainingPage = () => {
     const TrainingPageBody = () => {
         return (
             <div className="page-container">
+                <div id="training-page-id" style={{ display: 'none' }}> </div>
                 <div>
                     Progress:
                     <progress className="progress-bar" value={myTrainingContext.progressValue} />
@@ -125,7 +126,6 @@ export const TrainingPage = () => {
 
     return (
         <div>
-            <div id="training-page-id" style={{ display: 'none' }}> </div>
             <PageHeader />
             <TrainingPageBody />
         </div>

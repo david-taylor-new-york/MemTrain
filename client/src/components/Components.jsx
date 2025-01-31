@@ -53,6 +53,7 @@ const CurrentCardsTableHeader = ({ showAnswer }) => {
                 <th>CARD</th>
                 <th>QUESTION</th>
                 {showAnswer && <th>ANSWER</th>}
+                {showAnswer && <th id="right_header">FOLLOWS</th>}
             </tr>
         </thead>
     )
@@ -68,6 +69,7 @@ const CurrentCardList = ({ cards, showAnswer }) => {
                         <td>{card.card_number}</td>
                         <td>{card.question}</td>
                         {showAnswer && <td>{card.answer}</td>}
+                        {showAnswer && <td>{card.follows}</td>}
                     </tr>
                 ))}
         </tbody>
@@ -114,7 +116,7 @@ export const CardForm = ({ formRef, onSubmit, defaultValue }) => {
             <form ref={formRef} onSubmit={onSubmit}>
                 Question:
                 <input id="card-question" type="text" autoComplete="off" name="question" defaultValue={defaultValue ? defaultValue.question : ''} autoFocus required minLength="1"/>
-                Answer:
+                Answer: (*surround req'd words/phrases with "*", eg. "foo", "answer is *foo*", "answer is *foo bar*" )
                 <input id="card-answer" type="text" autoComplete="off" name="answer" defaultValue={defaultValue ? defaultValue.answer : ''} required minLength="1"/>
                 Card (Id) To Follow:
                 <input id="card-id-to-follow" type="number" name="card_to_follow" defaultValue={defaultValue ? defaultValue.follows : ''} minLength="1"/>

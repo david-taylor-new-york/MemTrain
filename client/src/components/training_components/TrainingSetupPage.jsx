@@ -20,7 +20,7 @@ const TrainingSetupPageBody = () => {
     return (
         <div className="section-container">
             <h3> Total Cards: {myAppContext.allCardsBySubject.length} </h3>
-            <h3> Active Cards: {myTrainingContext.currentTrainingRecords.length} (Cards reviewed at least once)</h3>
+            <h3> Active Cards: {myTrainingContext.currentTrainingRecords.length} (reviewed at least once)</h3>
             <h3> Cards Due For Review: {myTrainingContext.dueCards.length} </h3>
             <NumberOfQuestionsToReviewInput/>
             <PracticeOrRecordedRadioButtons/>
@@ -51,7 +51,7 @@ const NumberOfQuestionsToReviewInput = () => {
         <div>
             <form ref={myTrainingContext.trainingSettingsFormRef}>
                 <label>
-                    Number of Questions to review:{" "}
+                    Number of Cards to review:{" "}
                     <input name="numberOfCardsToReview" id="id-input-field" type="text" autoComplete="off" autoFocus required minLength="1" onKeyPress={handleKeyPress} />
                 </label>
             </form>
@@ -92,7 +92,7 @@ const ButtonGroup = () => {
 
     return (
         <div className="main-menu-button-group">
-            <SubmitButton id="train-button" onClick={() => myTrainingUpdateContext.startTraining()}> Train </SubmitButton>
+            <SubmitButton id="setup-train-button" onClick={() => myTrainingUpdateContext.startTraining()}> Train </SubmitButton>
             <SubmitButton id="cancel-button" onClick={() => myAppUpdateContext.updateCurrentPageTo("Training Menu")}> Cancel </SubmitButton>
         </div>
     )

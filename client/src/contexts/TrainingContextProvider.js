@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from 'react'
 import { useMyAppContext, useMyAppUpdateContext } from './AppContextProvider'
-import { showToast, wrongAnswerToast, getFibonacci } from '../utils/utils'
+import { showToast, showLingeringToast, getFibonacci } from '../utils/utils'
 import { createTrainingSession, getTrainingSessions, updateTrainingSession,
     createCardResults, getCardResultsBy, createTrainingRecord, getTrainingRecordByCardId,
     updateTrainingRecord, getTrainingRecordsBySubjectId } from '../utils/httpClient'
@@ -162,7 +162,7 @@ export function TrainingContextProvider({ children }) {
             const cardsDueWithNewCards = cardsDue.concat(newCards)
 
             if (cardsDueWithNewCards.length < numberOfCardsToReview) {
-                showToast(`There are only ${cardsDueWithNewCards.length} cards available for review.`)
+                showLingeringToast(`There are only ${cardsDueWithNewCards.length} cards available for review.`)
                 resetForm(cardsDueWithNewCards.length)
             }
 
@@ -211,35 +211,29 @@ export function TrainingContextProvider({ children }) {
     }
 
     const compareAnswers = (expectedAnswer, givenAnswer) => {
-        let expectedWords = normalizeText(expectedAnswer).split(' ').sort()
-        let givenWords = normalizeText(givenAnswer).split(' ').sort()
-        console.log("expectedWords after normalization = " + expectedWords.toString())
-        console.log("givenWords after normalization = " + givenWords.toString())
+        console.log("expectedAnswer = >" + expectedAnswer + "<")
+        console.log("givenAnswer = >" + givenAnswer + "<")
 
-        if (expectedWords.length !== givenWords.length) {
-            return false
+        // Convert both answers into sets of words
+        let expectedWords = new Set(expectedAnswer.split(/\s+/).map(word => word.trim()).filter(Boolean));
+        let givenWords = new Set(givenAnswer.split(/\s+/).map(word => word.trim()).filter(Boolean));
+
+        console.log("expectedWords = " + Array.from(expectedWords).toString())
+        console.log("givenWords = " + Array.from(givenWords).toString())
+
+        // Compare the sets
+        if (expectedWords.size !== givenWords.size) {
+            return false;
         }
-        console.log("Comparing answers:")
-        console.log("expectedWords.length = " + expectedWords.length)
 
-        for (let i = 0; i < expectedWords.length; i++) {
-            const expectedWord = expectedWords[i]
-            let foundMatch = false
-
-            for (let j = 0; j < givenWords.length; j++) {
-                const givenWord = givenWords[j]
-
-                if (expectedWord.includes(givenWord) || givenWord.includes(expectedWord)) {
-                    foundMatch = true
-                    givenWords.splice(j, 1)
-                    break
-                }
+        // Check if every word in the expectedWords set exists in givenWords
+        for (let word of expectedWords) {
+            if (!givenWords.has(word)) {
+                return false;
             }
-
-            if (!foundMatch) { return false }
-
         }
-        return true
+
+        return true;
     }
 
     const updateFailedCards = (card) => {
@@ -248,34 +242,39 @@ export function TrainingContextProvider({ children }) {
         setFailedCards(updatedFailedCards)
     }
 
-    const createWrongAnswer = (card) => {
-        if (card.question.includes("(")) {
-            return card.question
-        }
-
-        let index = 0
-        let words = card.question.split(' ')
-        let answerWords = card.answer.split(' ')
-
-        for (let i = 0; i < words.length; i++) {
-            console.log("words[i] = " + words[i])
-            if (words[i].includes('_')) {
-                if (index >= answerWords.length) {
-                    throw new Error("Number of underscores exceeds number of words in answer")
-                }
-                words[i] = answerWords[index]
-                index++
-            }
-        }
-
-        return words.join(' ')
-    }
+//    const createWrongAnswer = (card) => {
+//        if (card.question.includes("(")) {
+//            return card.question
+//        }
+//
+//        let index = 0
+//        let words = card.question.split(' ')
+//        let answerWords = card.answer.split(' ')
+//
+//        console.log("STARTING NEW LOGGING:")
+//        console.log("")
+//        for (let i = 0; i < words.length; i++) {
+//            console.log("words[i] = " + words[i])
+//
+//            if (words[i][0] === '"') {
+//                console.log("Found double quotes here");
+////                if (index >= answerWords.length) {
+////                    throw new Error("Unmatched quotes in answer")
+////                }
+//                words[i] = answerWords[index]
+//                index++
+//            }
+//        }
+//
+//        return words.join(' ')
+//    }
 
     const updateScores = (isCorrect, card) => {
         if (isCorrect) {
             setNumberCorrect(numberCorrect + 1)
         } else {
-            wrongAnswerToast("NO:  " + createWrongAnswer(card))
+            showLingeringToast("NO:  " + card.answer)
+//            showLingeringToast("NO:  " + createWrongAnswer(card))
             setNumberIncorrect(numberIncorrect + 1)
             updateFailedCards(card)
         }
@@ -473,33 +472,6 @@ export function TrainingContextProvider({ children }) {
         } catch {
             throw new Error('Could not UPDATE TrainingSession!')
         }
-    }
-
-    // normalizeText() converts to lowercase, removes leading and trailing spaces, replaces multiple spaces with a single space,
-    // and removes any characters that are not alphanumeric or spaces.
-    const normalizeText = (text) => {
-        let newText = ""
-
-        for (let word of text.split(' ')) {
-
-            let lowerCaseWord = word.toLowerCase()
-
-            if (lowerCaseWord.includes("different")) {
-                lowerCaseWord = lowerCaseWord.replace("different", "multiple")
-            }
-
-            if (lowerCaseWord.includes("use")) {
-                lowerCaseWord = lowerCaseWord.replace("use", "access")
-            }
-
-            if (lowerCaseWord.includes("n't")) {
-                lowerCaseWord = lowerCaseWord.replace(/n't$/, " not")
-            }
-
-            word = lowerCaseWord.trim().replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '')
-            newText += word + ' '
-        }
-        return newText.trim()
     }
 
     const createCardResult = (cardId, question, givenAnswer, answer, isCorrect, timeToAnswerThisCard) => {
